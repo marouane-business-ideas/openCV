@@ -39,13 +39,18 @@ const server = http.createServer(async (req, res) => {
                 await page.setContent(htmlContent);
 
                 // Generate the PDF
-                await page.pdf({ path: 'resume.pdf', format: 'A4', margin: { top: "20px", bottom: '20px', } });
+                const pdfBuffer = await page.pdf({ format: 'A4', margin: { top: "20px", bottom: '20px', } });
 
                 console.log('PDF generated successfully');
 
                 await browser.close();
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ status: 'success', message: 'PDF printed successfully' }));
+                res.writeHead(200, {
+                    'Content-Type': 'application/pdf',
+                    'Content-Length': pdfBuffer.length,
+                    'Content-Disposition': 'attachment; filename="CV.pdf"'
+
+                });
+                res.end(pdfBuffer);
             } catch (err) {
                 console.log(err);
                 await browser.close();

@@ -17,13 +17,20 @@ const DownloadPdf = ({ resume }: { resume: resumeInfoType }) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
                 }
-                return response.json();
+                return response.blob();
             })
-            .then(data => {
-                console.log("Success:", data);
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "CV.pdf";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
             })
+
             .catch(error => {
-                console.error("Error:", error);
+                console.error("Error downloading the PDF:", error);
             });
     }
 

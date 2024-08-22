@@ -9,9 +9,6 @@ const App = () => {
         <div className="flex w-full justify-between items-center text-white font-bold text-xl">
           <a href="/">OpenCV</a>
           <nav className="flex items-center gap-5 text-sm">
-            <a href="/">
-              Builder
-            </a>
             <a href="https://github.com/FarisMarouane/openCV" target="_blank" >Github</a>
           </nav>
         </div>
