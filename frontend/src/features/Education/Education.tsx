@@ -1,0 +1,113 @@
+import { useContext } from "react";
+import { TrashIcon } from "@heroicons/react/24/solid";
+
+import { resumeInfoType, ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
+import Card from "../../components/Card/Card";
+import Description from "../../components/Description/Description";
+import { ContentEditableEvent } from "react-simple-wysiwyg";
+import MoveArrows from "../../components/MoveArrows/MoveArrows";
+import classNames from "classnames";
+
+const Education = () => {
+    const { education: educations } = useContext(ResumeContext);
+    const dispatch = useContext(ResumeDispatchContext);
+
+    const handleAddSchool = () => {
+        if (dispatch)
+            dispatch({ type: "ADD_SCHOOL" });
+    };
+
+    const handleDeleteSchool = (index: number) => {
+        if (dispatch)
+            dispatch({ type: "DELETE_SCHOOL", payload: index });
+    };
+
+    const handleSchoolChange = (e: React.ChangeEvent<HTMLInputElement> |
+        ContentEditableEvent, property: keyof resumeInfoType["education"][0], index: number) => {
+        if (dispatch)
+            dispatch({ type: "SET_SCHOOL", payload: { [property]: e.target.value, index } });
+    };
+
+    const movingAroundSchool = (index: number, direction: "up" | "down") => {
+        if (dispatch)
+            dispatch({ type: "MOVE_SCHOOL", payload: { index, direction } });
+    };
+
+    return (
+        <Card>
+            <h2 className="text-lg font-bold text-gray-900 mb-2">EDUCATION</h2>
+            <>
+                {educations.map((education, index) => (
+                    <EducationItem
+                        key={education.id}
+                        education={education}
+                        index={index}
+                        handleSchoolChange={handleSchoolChange}
+                        handleDeleteSchool={handleDeleteSchool}
+                        movingAroundSchool={movingAroundSchool}
+                        educations={educations}
+                    />
+                ))}
+            </>
+            <div className="w-full flex justify-end">
+                <button aria-label="Add school" disabled={!educations[educations.length - 1].schoolName} onClick={handleAddSchool}
+                    className={classNames(
+                        "text-lg font-bold text-gray-900 rounded-lg border-solid border-gray-300 border p-2",
+                        { "cursor-not-allowed": !educations[educations.length - 1].schoolName },
+                        { "hover:bg-gray-400": educations[educations.length - 1].schoolName }
+                    )}>+ Add School</button>
+            </div>
+        </Card>
+    );
+};
+
+interface EducationItemProps {
+    education: resumeInfoType["education"][0];
+    index: number;
+    handleSchoolChange: (e: React.ChangeEvent<HTMLInputElement>
+        | ContentEditableEvent, property: keyof resumeInfoType["education"][0], index: number) => void;
+    handleDeleteSchool: (index: number) => void;
+    movingAroundSchool: (index: number, direction: "up" | "down") => void;
+    educations: resumeInfoType["education"];
+}
+
+const EducationItem = ({ education, index, handleSchoolChange, handleDeleteSchool, movingAroundSchool, educations }: EducationItemProps) => (
+    <div className="flex flex-col gap-2 pb-12">
+        <div className="flex gap-2 justify-between">
+            <div className="flex flex-col gap-2 w-3/5">
+                <label className="text-base font-medium text-gray-700" htmlFor={`school-${index}`}>School</label>
+                <input onChange={(e) => handleSchoolChange(e, "schoolName", index)}
+                    className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                    id={`school-${index}`} name="school" required placeholder="Escp Europe" value={education.schoolName} />
+            </div>
+            <div className="flex flex-col gap-2 w-2/5">
+                <div className="flex justify-between">
+                    <label className="text-base font-medium text-gray-700" htmlFor={`education-date-${index}`}>Date</label>
+                    <div className="flex gap-4">
+                        <MoveArrows handleMovingArround={movingAroundSchool} items={educations} index={index} />
+                        <button onClick={() => handleDeleteSchool(index)} aria-label="Delete school">
+                            {educations.length > 1 && <TrashIcon className="size-4 text-gray-400" />}
+                        </button>
+                    </div>
+                </div>
+                <input onChange={(e) => handleSchoolChange(e, "date", index)}
+                    className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                    id={`education-date-${index}`} name="date" required placeholder="August 2020" value={education.date} />
+            </div>
+        </div>
+        <div className="flex gap-2 justify-between">
+            <div className="flex flex-col gap-2 w-3/5">
+                <label className="text-base font-medium text-gray-700" htmlFor={`degree-${index}`}>Degree</label>
+                <input onChange={(e) => handleSchoolChange(e, "degree", index)}
+                    className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                    id={`degree-${index}`} name="degree" required placeholder="Masters in Computer Science" value={education.degree} />
+            </div>
+        </div>
+        <div className="flex flex-col gap-2">
+            <label className="text-base font-medium text-gray-700" htmlFor={`description-${index}`}>Description</label>
+            <Description onChange={handleSchoolChange} index={index} html={education.description} />
+        </div>
+    </div>
+);
+
+export default Education;

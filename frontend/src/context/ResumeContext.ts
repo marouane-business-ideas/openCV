@@ -1,0 +1,80 @@
+import { createContext, Dispatch } from "react";
+import uniqid from "uniqid";
+
+export type LanguageLevelType = "native" | "fluent" | "intermediate" | "beginner" | "";
+
+const savedState = localStorage.getItem("resumeState");
+
+
+export const defaultContext = savedState ? JSON.parse(savedState) : {
+    personalInfo: {
+        name: "",
+        title: "",
+        email: "",
+        phoneNumber: "",
+        location: "",
+        summary: ""
+    },
+    workExperience: [{
+        company: "",
+        jobTitle: "",
+        date: "",
+        description: "",
+        location: "",
+        id: uniqid(),
+    }],
+    education: [{
+        schoolName: "",
+        degree: "",
+        date: "",
+        description: "",
+        id: uniqid(),
+    }],
+    skills: [""],
+    languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
+    links: [{ linkName: "", linkUrl: "", id: uniqid() } as { linkUrl: string, id: string, linkName: string }],
+    themeColor: "",
+};
+
+export type resumeInfoType = {
+    personalInfo: {
+        name: string;
+        title: string;
+        email: string;
+        phoneNumber: string;
+        location: string;
+        summary: string;
+    };
+    workExperience: {
+        company: string;
+        jobTitle: string;
+        date: string;
+        description: string;
+        location: string;
+        id: string;
+    }[];
+    education: {
+        schoolName: string;
+        degree: string;
+        date: string;
+        description: string;
+        id: string;
+    }[];
+    skills: string[];
+    languages: {
+        language: string;
+        level: LanguageLevelType;
+        id: string;
+    }[];
+    links: {
+        linkName: string;
+        linkUrl: string;
+        id: string;
+    }[];
+    themeColor: string;
+};
+export type actionType = { type: string, payload?: any };
+
+
+export const ResumeContext = createContext(defaultContext as resumeInfoType);
+export const ResumeDispatchContext = createContext<Dispatch<actionType> | null>(null);

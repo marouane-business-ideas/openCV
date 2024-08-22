@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "cp ../frontend/src/features/Preview/Preview.tsx src && babel src --extensions \".js,.tsx\" --out-dir dist"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "isomorphic-dompurify": "^2.14.0",
+    "puppeteer": "^23.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.8",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@types/uniqid": "^5.3.4"
+  }
+}
