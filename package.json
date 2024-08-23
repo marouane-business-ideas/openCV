@@ -1,15 +1,15 @@
 {
   "name": "resumebuilder",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "scripts": {
     "install:all": "npm install --prefix backend && npm install --prefix frontend",
-    "dev": "concurrently \"npm:start:backend\" \"npm:start:frontend\"",
+    "dev": "npm run build:backend && concurrently \"npm:start:backend\" \"npm:start:frontend\"",
     "start:backend": "npm run start --prefix backend",
     "start:frontend": "npm run dev --prefix frontend",
     "build": "concurrently \"npm run build:frontend\" \"npm run build:backend\"",
     "build:frontend": "npm run build --prefix frontend",
     "build:backend": "npm run build --prefix backend",
-    "preview": "concurrently \"npm:start:backend\" \"npm run preview --prefix frontend\""
+    "preview": "npm run build && concurrently \"npm:start:backend\" \"npm run preview --prefix frontend\""
   },
   "keywords": [],
   "author": "Marouane Faris",
