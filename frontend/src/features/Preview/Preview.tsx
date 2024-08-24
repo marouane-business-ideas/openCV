@@ -182,9 +182,9 @@ const Preview = (props: { resume: resumeInfoType }) => {
                             <ExperienceDate themeColor={themeColor}>{job.date}</ExperienceDate>
                             <ExperienceTopSection>
                                 <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
-                                    <div>{job.company}</div>
+                                    <div style={{ fontWeight: 900 }}>{job.company}</div>
                                     <div>•</div>
-                                    <div>{job.location}</div>
+                                    <div style={{ fontWeight: 900 }}>{job.location}</div>
                                 </div>
                                 <div style={{ fontStyle: "italic" }}>{job.jobTitle}</div>
                                 <div style={{ marginTop: "10px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
