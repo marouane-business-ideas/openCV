@@ -8,7 +8,7 @@ import Theme from "../ResumeTheme/ResumeTheme"
 
 const Form = () => {
     return (
-        <div className="h-full w-1/2 p-5 flex flex-col gap-5 overflow-scroll">
+        <div className="h-1/2 2xl:h-full w-5/6 2xl:w-1/2 p-5 flex flex-col gap-5 overflow-y-scroll">
             <Profile />
             <WorkExperience />
             <Education />

@@ -33,7 +33,7 @@ const Languages = () => {
             <div className=" flex flex-col  gap-2 pb-12">
                 <h2 className="text-lg font-bold text-gray-900 mb-2">LANGUAGES</h2>
                 {languages.map((language, index) => (
-                    <div key={language.id} className="flex w-full gap-10">
+                    <div key={language.id} className="flex flex-col 2x-l:flex-row w-full gap-5 2xl:gap-10">
                         <div className="flex flex-col gap-2 w-2/5">
                             <label className="text-base font-medium text-gray-700" htmlFor={`language-${index}`}>Language</label>
                             <input onChange={(e) => handleLanguageChange(e.target.value, index)}
@@ -44,11 +44,11 @@ const Languages = () => {
                         <div className="flex flex-col gap-4">
                             <div className="flex justify-between">
                                 <span className="text-base font-medium text-gray-700">Proficiency level:</span>
-                                <button className="" onClick={() => handleDeleteLanguage(index)} aria-label="Delete school">
+                                <button className="" onClick={() => handleDeleteLanguage(index)} aria-label="Delete language">
                                     {languages.length > 1 && <TrashIcon className="size-4 text-gray-400" />}
                                 </button>
                             </div>
-                            <div className="flex gap-3 text-base font-medium">
+                            <div className="flex gap-3 text-base font-medium flex-wrap">
                                 {["native", "fluent", "intermediate", "beginner"].map((level) => (
                                     <Fragment key={level}>
                                         <input

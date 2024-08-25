@@ -10,11 +10,15 @@ const PdfViewer = () => {
     const resume = useContext(ResumeContext);
 
     return (
-        <div className="w-1/2 h-full flex justify-center pt-5 pb-5">
-            <div className='h-full w-5/6 flex flex-col gap-5 items-center' >
-                <Frame id="pdf-viewer-iframe" title="Marouane-iframe" className='h-full w-full shadow-xl' style={{ minHeight: "700px" }}>
-                    <Preview resume={resume} />
-                </Frame>
+        <div className="w-5/6 2xl:w-1/2 h-1/2 2xl:h-full flex justify-center p-5 2xl:pt-5 2xl:pb-5">
+            <div className='h-full w-full flex flex-col gap-5 items-center' >
+                <div className="flex justify-center h-full w-full overflow-y-scroll 2xl:overflow-y-hidden relative">
+                    <Frame id="pdf-viewer-iframe" title="Marouane-iframe" className='h-full w-full shadow-xl absolute top-0 left-0'
+                        style={{ minHeight: "700px", minWidth: "804px", maxWidth: "804px" }}
+                    >
+                        <Preview resume={resume} />
+                    </Frame>
+                </div>
                 <DownloadPdf resume={resume} />
             </div>
         </div>

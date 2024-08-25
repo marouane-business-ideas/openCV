@@ -13,7 +13,7 @@ const App = () => {
           </nav>
         </div>
       </header>
-      <main className={"flex relative overflow-hidden w-full bg-gray-50 h-[calc(100vh-4rem)]"} >
+      <main className={"flex flex-col 2xl:flex-row relative overflow-y-hidden items-center w-full bg-gray-50 h-screen 2xl:h-[calc(100vh-4rem)]"} >
         <Form />
         <PdfViewer />
       </main>
