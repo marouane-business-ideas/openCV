@@ -1,24 +1,43 @@
-import Form from "./features/Form/Form"
-import ContextProvider from "./context/ContextProvider";
-import PdfViewer from "./features/PdfViewer/PdfViewer";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./routes/Home";
+import SignInPage from "./routes/SignIn"
+import SignUpPage from "./routes/SignUp"
+
+import Layout from "./routes/layouts/RootLayout";
+import ResumeBuilder from "./routes/ResumeBuilder";
+import ErrorPage from "./components/ErrorPage/ErrorPage";
+import Dashboard from "./routes/Dashboard";
+import DashboardLayout from "./routes/layouts/DashboardLayout";
+
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "/resume", element: <ResumeBuilder /> },
+      { path: "/sign-in/*", element: <SignInPage /> },
+      { path: "/sign-up/*", element: <SignUpPage /> },
+      {
+        path: "/dashboard", element: <DashboardLayout />, children: [
+          { index: true, element: <Dashboard /> },
+          { path: "/dashboard/account", element: <div>Account</div> },
+        ]
+      },
+
+    ],
+  },
+]);
+
+
+
+
 
 const App = () => {
   return (
-    <ContextProvider >
-      <header className={"flex h-16 items-center border-b-2 px-3 lg:px-12 bg-blue-400"}>
-        <div className="flex w-full justify-between items-center text-white font-bold text-xl">
-          <a href="/">OpenCV</a>
-          <nav className="flex items-center gap-5 text-sm">
-            <a href="https://github.com/FarisMarouane/openCV" target="_blank" >Github</a>
-          </nav>
-        </div>
-      </header>
-      <main className={"flex flex-col 2xl:flex-row relative overflow-y-hidden items-center w-full bg-gray-50 h-screen 2xl:h-[calc(100vh-4rem)]"} >
-        <Form />
-        <PdfViewer />
-      </main>
-    </ContextProvider>
-
+    <RouterProvider router={router} />
   )
 }
 

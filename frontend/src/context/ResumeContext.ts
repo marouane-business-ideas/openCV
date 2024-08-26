@@ -73,6 +73,7 @@ export type resumeInfoType = {
     }[];
     themeColor: string;
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type actionType = { type: string, payload?: any };
 
 

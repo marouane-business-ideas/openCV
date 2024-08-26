@@ -2,14 +2,19 @@ import { useState } from "react";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { resumeInfoType } from "../../context/ResumeContext";
+import classNames from "classnames";
 
 const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
 
-const DownloadPdf = ({ resume }: { resume: resumeInfoType }) => {
+const DownloadPdf = ({ resume, isSignedIn }: { resume: resumeInfoType; isSignedIn: boolean | undefined }) => {
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadError, setDownloadError] = useState<string | null>(null);
 
     const handleDownload = () => {
+
+        if (!isSignedIn) {
+            return;
+        }
         setDownloadError(null);
         setIsDownloading(true);
         fetch(`http://localhost:${BACKEND_PORT}/print-pdf`, {
@@ -46,8 +51,16 @@ const DownloadPdf = ({ resume }: { resume: resumeInfoType }) => {
     return (
         <>
             <button
+                disabled={!isSignedIn}
                 onClick={handleDownload}
-                className="flex items-center justify-center gap-2 text-white w-5/6 rounded-md px-3 py-2 hover:bg-blue-500 bg-blue-400"
+                title={isSignedIn ? "Download your resume as a PDF" : "Sign in to download your resume as a PDF"}
+                className={classNames(
+                    "flex items-center justify-center gap-2 text-white w-5/6 rounded-md px-3 py-2",
+                    { "bg-blue-500": isSignedIn },
+                    { "hover:bg-blue-600": isSignedIn },
+                    { "bg-gray-300": !isSignedIn },
+                    { "cursor-not-allowed": !isSignedIn }
+                )}
             >
                 <ArrowDownTrayIcon className="size-5" aria-hidden="true" />
                 <span className="whitespace-nowrap text-xl">Download Resume</span>
