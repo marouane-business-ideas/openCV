@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
+
 import Preview from "../features/Preview/Preview";
 import { resumeInfoType } from "../context/ResumeContext";
-import { useUser } from "@clerk/clerk-react";
 
 const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
 
@@ -16,7 +17,6 @@ interface IPdf {
 function Dashboard() {
     const { user, isSignedIn } = useUser();
     const [pdfs, setPdfs] = useState<(IPdf)[]>([]);
-    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -40,9 +40,6 @@ function Dashboard() {
     }
         , [isSignedIn, user?.id]);
 
-    const handleEditResume = (resumeId: number) => {
-        navigate(`/resume/${resumeId}`);
-    }
 
     return (
         <>
@@ -65,25 +62,24 @@ function Dashboard() {
                         </div>
                         {/* Last updated is in GMT time, not user's locale time. Watch out ! */}
                         <p className="mt-2 text-gray-500">Last updated: {pdf.createdAt}</p>
-                        <button onClick={() => handleEditResume(pdf.id)} className="mt-4 w-full bg-blue-500 text-white py-2
+                        <Link to={`/resume/${pdf.id}`} className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
                          px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
                             View/Edit
-                        </button>
+                        </Link>
                     </div>
                     )
                 }
                 )}
             </div>
-            <div className="mt-8">
+            <div className="mt-8 w-2/4">
                 <h3 className="text-2xl font-semibold mb-4">Account Information</h3>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <p className="text-xl font-semibold">John Doe</p>
                     <p className="mt-2 text-gray-500">Email: johndoe@example.com</p>
                     <p className="mt-2 text-gray-500">Subscription: Premium</p>
-                    <Link to="/dashboard/account">
-                        <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
-                            Edit Account
-                        </button>
+                    <Link to="/dashboard/account" className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
+                         px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
+                        Edit Account
                     </Link>
                 </div>
             </div>
