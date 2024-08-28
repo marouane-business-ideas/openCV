@@ -3,7 +3,7 @@ import Home from "./routes/Home";
 import SignInPage from "./routes/SignIn"
 import SignUpPage from "./routes/SignUp"
 
-import Layout from "./routes/layouts/RootLayout";
+import RootLayout from "./routes/layouts/RootLayout";
 import ResumeBuilder from "./routes/ResumeBuilder";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
 import Dashboard from "./routes/Dashboard";
@@ -13,11 +13,15 @@ import DashboardLayout from "./routes/layouts/DashboardLayout";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Home /> },
-      { path: "/resume", element: <ResumeBuilder /> },
+      {
+        path: "/resume", element: <ResumeBuilder />, children: [
+          { path: "/resume/:resumeId", element: <ResumeBuilder /> }
+        ]
+      },
       { path: "/sign-in/*", element: <SignInPage /> },
       { path: "/sign-up/*", element: <SignUpPage /> },
       {

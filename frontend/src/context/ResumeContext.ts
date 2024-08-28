@@ -7,33 +7,65 @@ const savedState = localStorage.getItem("resumeState");
 
 
 export const defaultContext = savedState ? JSON.parse(savedState) : {
-    personalInfo: {
-        name: "",
-        title: "",
-        email: "",
-        phoneNumber: "",
-        location: "",
-        summary: ""
+    onGoingResume: {
+        personalInfo: {
+            name: "",
+            title: "",
+            email: "",
+            phoneNumber: "",
+            location: "",
+            summary: ""
+        },
+        workExperience: [{
+            company: "",
+            jobTitle: "",
+            date: "",
+            description: "",
+            location: "",
+            id: uniqid(),
+        }],
+        education: [{
+            schoolName: "",
+            degree: "",
+            date: "",
+            description: "",
+            id: uniqid(),
+        }],
+        skills: [""],
+        languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
+        links: [{ linkName: "", linkUrl: "", id: uniqid() } as { linkUrl: string, id: string, linkName: string }],
+        themeColor: ""
     },
-    workExperience: [{
-        company: "",
-        jobTitle: "",
-        date: "",
-        description: "",
-        location: "",
-        id: uniqid(),
-    }],
-    education: [{
-        schoolName: "",
-        degree: "",
-        date: "",
-        description: "",
-        id: uniqid(),
-    }],
-    skills: [""],
-    languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
-    links: [{ linkName: "", linkUrl: "", id: uniqid() } as { linkUrl: string, id: string, linkName: string }],
-    themeColor: "",
+
+    resumeBeingEdited: {
+        personalInfo: {
+            name: "",
+            title: "",
+            email: "",
+            phoneNumber: "",
+            location: "",
+            summary: ""
+        },
+        workExperience: [{
+            company: "",
+            jobTitle: "",
+            date: "",
+            description: "",
+            location: "",
+            id: uniqid(),
+        }],
+        education: [{
+            schoolName: "",
+            degree: "",
+            date: "",
+            description: "",
+            id: uniqid(),
+        }],
+        skills: [""],
+        languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
+        links: [{ linkName: "", linkUrl: "", id: uniqid() } as { linkUrl: string, id: string, linkName: string }],
+        themeColor: ""
+    }
 };
 
 export type resumeInfoType = {
@@ -73,9 +105,14 @@ export type resumeInfoType = {
     }[];
     themeColor: string;
 };
+
+export type contextStateType = {
+    onGoingResume: resumeInfoType;
+    resumeBeingEdited: resumeInfoType;
+};
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type actionType = { type: string, payload?: any };
 
 
-export const ResumeContext = createContext(defaultContext as resumeInfoType);
+export const ResumeContext = createContext(defaultContext as contextStateType);
 export const ResumeDispatchContext = createContext<Dispatch<actionType> | null>(null);

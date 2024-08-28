@@ -1,15 +1,17 @@
 import { useContext } from "react";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import Card from "../../components/Card/Card";
-import { ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
+import { ResumeContext, ResumeDispatchContext, resumeInfoType } from "../../context/ResumeContext";
 
-const Theme = () => {
-    const { themeColor } = useContext(ResumeContext);
+const Theme = ({ edited }: { edited: boolean }) => {
+    const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+
+    const themeColor = edited ? (resumeBeingEdited as resumeInfoType).themeColor : onGoingResume.themeColor;
 
     const handleThemeClick = (themeColor: string) => {
         if (dispatch)
-            dispatch({ type: "SET_THEME_COLOR", payload: themeColor })
+            dispatch({ type: `SET_THEME_COLOR${edited ? "_EDITED" : ""}`, payload: themeColor })
     }
     return (
         <Card>

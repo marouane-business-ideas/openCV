@@ -1,31 +1,33 @@
 import { Fragment, useContext } from "react";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import Card from "../../components/Card/Card";
-import { ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
+import { ResumeContext, ResumeDispatchContext, resumeInfoType } from "../../context/ResumeContext";
 import classNames from "classnames";
 
-const Languages = () => {
-    const { languages } = useContext(ResumeContext);
+const Languages = ({ edited }: { edited: boolean }) => {
+    const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+
+    const languages = edited ? (resumeBeingEdited as resumeInfoType).languages : onGoingResume.languages;
 
     const handleAddLanguage = () => {
         if (dispatch)
-            dispatch({ type: "ADD_LANGUAGE" });
+            dispatch({ type: `ADD_LANGUAGE${edited ? "_EDITED" : ""}` });
     };
 
     const handleLanguageChange = (language: string, index: number) => {
         if (dispatch)
-            dispatch({ type: "SET_LANGUAGE", payload: { language, index } })
+            dispatch({ type: `SET_LANGUAGE${edited ? "_EDITED" : ""}`, payload: { language, index } })
     }
 
     const handleLanguageProficiencyLevelChange = (level: string, index: number) => {
         if (dispatch)
-            dispatch({ type: "SET_LANGUAGE_PROFICIENCY_LEVEL", payload: { level, index } })
+            dispatch({ type: `SET_LANGUAGE_PROFICIENCY_LEVEL${edited ? "_EDITED" : ""}`, payload: { level, index } })
     }
 
     const handleDeleteLanguage = (index: number) => {
         if (dispatch)
-            dispatch({ type: "DELETE_LANGUAGE", payload: index });
+            dispatch({ type: `DELETE_LANGUAGE${edited ? "_EDITED" : ""}`, payload: index });
     };
 
     return (

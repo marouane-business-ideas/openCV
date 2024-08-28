@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import Frame from "react-frame-component"
-import { useUser } from "@clerk/clerk-react"
 import Preview from "../Preview/Preview"
-import { ResumeContext } from "../../context/ResumeContext";
+import { ResumeContext, resumeInfoType } from "../../context/ResumeContext";
 import DownloadPdf from "../../components/DownloadPdf/DownloadPdf";
 
-const PdfViewer = () => {
-    const { isSignedIn } = useUser();
-    const resume = useContext(ResumeContext);
+const PdfViewer = ({ edited }: { edited: boolean }) => {
+    const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
+
+    const resume = edited ? (resumeBeingEdited as resumeInfoType) : onGoingResume;
 
     return (
         <div className="w-5/6 2xl:w-1/2 h-1/2 2xl:h-full flex justify-center p-5 2xl:pt-5 2xl:pb-5">
@@ -19,7 +19,7 @@ const PdfViewer = () => {
                         <Preview resume={resume} />
                     </Frame>
                 </div>
-                <DownloadPdf isSignedIn={isSignedIn} resume={resume} />
+                <DownloadPdf resume={resume} isEditing={edited} />
             </div>
         </div>
 

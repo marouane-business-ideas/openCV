@@ -3,26 +3,66 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { resumeInfoType } from "../../context/ResumeContext";
 import classNames from "classnames";
+import { useParams } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 
 const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
 
-const DownloadPdf = ({ resume, isSignedIn }: { resume: resumeInfoType; isSignedIn: boolean | undefined }) => {
+const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing: boolean }) => {
+    const { resumeId } = useParams();
+    const { user, isSignedIn } = useUser();
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadError, setDownloadError] = useState<string | null>(null);
 
     const handleDownload = () => {
-
         if (!isSignedIn) {
             return;
         }
         setDownloadError(null);
         setIsDownloading(true);
-        fetch(`http://localhost:${BACKEND_PORT}/print-pdf`, {
+
+        if (isEditing) {
+            fetch(`http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs/${resumeId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    resume
+                }),
+            }).then(response => {
+                setIsDownloading(false);
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.blob();
+            })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "CV.pdf";
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                })
+
+                .catch(error => {
+                    setIsDownloading(false);
+                    setDownloadError("An error occurred while downloading the PDF. Please try again.");
+                    console.error("Error downloading the PDF:", error);
+                });
+            return;
+        }
+
+        fetch(`http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(resume),
+            body: JSON.stringify({
+                resume
+            }),
         })
             .then(response => {
                 setIsDownloading(false);

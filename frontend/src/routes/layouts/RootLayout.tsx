@@ -34,8 +34,8 @@ function Layout() {
                                     <Link to="/dashboard">Dashboard</Link>
                                 </SignedIn>
                                 <SignedOut>
-                                    <Link to="/sign-up">Create an account</Link>
                                     <Link to="/sign-in">Log in</Link>
+                                    <Link to="/sign-up">Create an account</Link>
                                 </SignedOut>
                             </nav>
                         </div>

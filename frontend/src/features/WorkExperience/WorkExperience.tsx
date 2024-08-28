@@ -8,29 +8,31 @@ import { ContentEditableEvent } from "react-simple-wysiwyg";
 import MoveArrows from "../../components/MoveArrows/MoveArrows";
 import classNames from "classnames";
 
-const WorkExperience = () => {
-    const { workExperience } = useContext(ResumeContext);
+const WorkExperience = ({ edited }: { edited: boolean }) => {
+    const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+
+    const workExperience = edited ? (resumeBeingEdited as resumeInfoType).workExperience : onGoingResume.workExperience;
 
     const handleAddWorkExperience = () => {
         if (dispatch)
-            dispatch({ type: "ADD_WORK_EXPERIENCE" });
+            dispatch({ type: `ADD_WORK_EXPERIENCE${edited ? "_EDITED" : ""}` });
     };
 
     const handleDeletingWorkExperience = (index: number) => {
         if (dispatch)
-            dispatch({ type: "DELETE_WORK_EXPERIENCE", payload: index });
+            dispatch({ type: `DELETE_WORK_EXPERIENCE${edited ? "_EDITED" : ""}`, payload: index });
     };
 
     const handleWorkExperienceChange = (e: React.ChangeEvent<HTMLInputElement> |
         ContentEditableEvent, property: keyof resumeInfoType["workExperience"][0], index: number) => {
         if (dispatch)
-            dispatch({ type: "SET_WORK_EXPERIENCE", payload: { [property]: e.target.value, index } });
+            dispatch({ type: `SET_WORK_EXPERIENCE${edited ? "_EDITED" : ""}`, payload: { [property]: e.target.value, index } });
     };
 
     const movingAroundWorkExperience = (index: number, direction: "up" | "down") => {
         if (dispatch)
-            dispatch({ type: "MOVE_WORK_EXPERIENCE", payload: { index, direction } });
+            dispatch({ type: `MOVE_WORK_EXPERIENCE${edited ? "_EDITED" : ""}`, payload: { index, direction } });
     };
 
     return (

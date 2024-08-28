@@ -6,23 +6,25 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 
 type LinkKeyType = Exclude<keyof resumeInfoType["links"][0], "id">;
 
-const PersonalLinks = () => {
-    const { links } = useContext(ResumeContext);
+const PersonalLinks = ({ edited }: { edited: boolean }) => {
+    const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+
+    const links = edited ? (resumeBeingEdited as resumeInfoType).links : onGoingResume.links;
 
     const handleAddLink = () => {
         if (dispatch)
-            dispatch({ type: "ADD_LINK" });
+            dispatch({ type: `ADD_LINK${edited ? "_EDITED" : ""}` });
     };
 
     const handleLinkChange = (key: LinkKeyType, value: string, index: number) => {
         if (dispatch)
-            dispatch({ type: "SET_LINK", payload: { [key]: value, index } })
+            dispatch({ type: `SET_LINK${edited ? "_EDITED" : ""}`, payload: { [key]: value, index } })
     }
 
     const handleDeleteLink = (index: number) => {
         if (dispatch)
-            dispatch({ type: "DELETE_LINK", payload: index });
+            dispatch({ type: `DELETE_LINK${edited ? "_EDITED" : ""}`, payload: index });
     };
 
     return (

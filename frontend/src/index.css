@@ -14,10 +14,12 @@
 
 :root {
   --header-height: 4rem;
+  --tw-bg-opacity: 1;
 }
 
 body {
   font-family: 'Inter Variable', sans-serif;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity)) /* #f3f4f6 */;
 }
 
 

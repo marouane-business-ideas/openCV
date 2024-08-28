@@ -8,29 +8,31 @@ import { ContentEditableEvent } from "react-simple-wysiwyg";
 import MoveArrows from "../../components/MoveArrows/MoveArrows";
 import classNames from "classnames";
 
-const Education = () => {
-    const { education: educations } = useContext(ResumeContext);
+const Education = ({ edited }: { edited: boolean }) => {
+    const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+
+    const educations = edited ? (resumeBeingEdited as resumeInfoType).education : onGoingResume.education;
 
     const handleAddSchool = () => {
         if (dispatch)
-            dispatch({ type: "ADD_SCHOOL" });
+            dispatch({ type: `ADD_SCHOOL${edited ? "_EDITED" : ""}` });
     };
 
     const handleDeleteSchool = (index: number) => {
         if (dispatch)
-            dispatch({ type: "DELETE_SCHOOL", payload: index });
+            dispatch({ type: `DELETE_SCHOOL${edited ? "_EDITED" : ""}`, payload: index });
     };
 
     const handleSchoolChange = (e: React.ChangeEvent<HTMLInputElement> |
         ContentEditableEvent, property: keyof resumeInfoType["education"][0], index: number) => {
         if (dispatch)
-            dispatch({ type: "SET_SCHOOL", payload: { [property]: e.target.value, index } });
+            dispatch({ type: `SET_SCHOOL${edited ? "_EDITED" : ""}`, payload: { [property]: e.target.value, index } });
     };
 
     const movingAroundSchool = (index: number, direction: "up" | "down") => {
         if (dispatch)
-            dispatch({ type: "MOVE_SCHOOL", payload: { index, direction } });
+            dispatch({ type: `MOVE_SCHOOL${edited ? "_EDITED" : ""}`, payload: { index, direction } });
     };
 
     return (

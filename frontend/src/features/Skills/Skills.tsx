@@ -1,15 +1,17 @@
 import { useContext } from "react";
 import { BulletListTextarea } from "../../components/BulletListTextArea/BulletListTextArea";
 import Card from "../../components/Card/Card";
-import { ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
+import { ResumeContext, ResumeDispatchContext, resumeInfoType } from "../../context/ResumeContext";
 
-const Skills = () => {
-    const { skills } = useContext(ResumeContext);
+const Skills = ({ edited }: { edited: boolean }) => {
+    const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+
+    const skills = edited ? (resumeBeingEdited as resumeInfoType).skills : onGoingResume.skills;
 
     const handleInputChange = (skills: string[]) => {
         if (dispatch)
-            dispatch({ type: "SET_SKILLS", payload: { skills: skills } })
+            dispatch({ type: `SET_SKILLS${edited ? "_EDITED" : ""}`, payload: { skills: skills } })
     }
     return (
         <Card>

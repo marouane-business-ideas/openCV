@@ -3,13 +3,15 @@ import Card from "../../components/Card/Card"
 import { resumeInfoType, ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
 import TextArea from "../../components/TextArea/TextArea";
 
-const Profile = () => {
-    const { personalInfo } = useContext(ResumeContext);
+const Profile = ({ edited }: { edited: boolean }) => {
+    const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+
+    const personalInfo = edited ? (resumeBeingEdited as resumeInfoType).personalInfo : onGoingResume.personalInfo;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: keyof resumeInfoType["personalInfo"]) => {
         if (dispatch)
-            dispatch({ type: "SET_PERSONAL_INFO", payload: { [property]: e.target.value } })
+            dispatch({ type: `SET_PERSONAL_INFO${edited ? "_EDITED" : ""}`, payload: { [property]: e.target.value } })
     }
 
     return (
