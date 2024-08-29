@@ -10,6 +10,7 @@ import ResumeBuilder from "./routes/ResumeBuilder";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
 import Dashboard from "./routes/Dashboard";
 import DashboardLayout from "./routes/layouts/DashboardLayout";
+import AccountPage from "./routes/Account";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
         element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
         children: [
           { index: true, element: <Dashboard /> },
-          { path: "account", element: <div>Account</div> },
+          { path: "account", element: <AccountPage /> },
         ]
       },
     ],
