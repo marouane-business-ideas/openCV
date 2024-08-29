@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 
 import Preview from "../features/Preview/Preview";
 import { resumeInfoType } from "../context/ResumeContext";
@@ -17,6 +17,8 @@ interface IPdf {
 function Dashboard() {
     const { user, isSignedIn } = useUser();
     const [pdfs, setPdfs] = useState<(IPdf)[]>([]);
+    const { getToken } = useAuth();
+
 
 
     useEffect(() => {
@@ -24,21 +26,33 @@ function Dashboard() {
             return;
         }
 
-        fetch(`http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
+        let token;
+
+        (async () => {
+            token = await getToken();
+
+            fetch(`http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
                 }
-                return response.json();
             })
-            .then(data => {
-                setPdfs(data);
-            })
-            .catch(error => {
-                console.error("Error fetching PDFs:", error);
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setPdfs(data);
+                })
+                .catch(error => {
+                    console.error("Error fetching PDFs:", error);
+                });
+        })()
+
+
     }
-        , [isSignedIn, user?.id]);
+        , [getToken, isSignedIn, user?.id]);
 
 
     return (
