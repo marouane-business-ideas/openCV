@@ -4,27 +4,30 @@ import 'dotenv/config';
 import bodyParser from 'body-parser';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import helmet from 'helmet';
+import { Webhook } from "svix";
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 
 import { initDb } from './db.js';
 import Preview from './Preview.js';
 
-
 const app = express();
 const PORT = process.env.PORT || 1337;
+const secret = process.env.CLERK_WEBHOOK_SECRET;
+
+// Use Helmet for security headers
+app.use(helmet());
 
 // Middleware to handle CORS
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN);
     res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', ['Content-Type', 'Authorization']);
     if (req.method === 'OPTIONS') {
         return res.status(204).end();
     }
     next();
 });
-
-// Middleware to parse JSON bodies
-app.use(bodyParser.json());
 
 
 let db;
@@ -43,12 +46,73 @@ initDb().then(database => {
     process.exit(1);
 });
 
+// This route needs to be called before calling app.use(bodyParser.json());
+app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
+    const payload = req.body;
+    const headers = req.headers;
+
+    const wh = new Webhook(secret);
+
+    try {
+        wh.verify(payload, headers);
+    } catch (err) {
+        console.error('Invalid signature:', err);
+        return res.status(401).send('Invalid signature');
+    }
+
+    const { type, data } = JSON.parse(payload);
+
+    if (type === 'user.created') {
+        const { id, first_name, last_name, email_addresses } = data;
+
+        try {
+            await db.run(`
+                INSERT INTO users (id, fullName, email, accountType)
+                VALUES (?, ?, ?, ?)`,
+                [id, first_name + ' ' + last_name, email_addresses[0].email_address, 'free']
+            );
+
+            console.log('User registered in database:', first_name + ' ' + last_name);
+            return res.status(201).send('User registered');
+        } catch (err) {
+            console.error('Error registering user:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+    } else {
+        return res.status(400).send('Unhandled event type');
+    }
+});
+
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
+
+const authMw = (req, res, next) => {
+    const authenticatedUserId = req.auth.userId;
+    const { userId } = req.params;
+    if (authenticatedUserId !== userId) {
+        return res.status(403).send('Unauthorized!');
+    }
+    next();
+}
+
+app.use('/users/:userId/*', (req, res, next) => {
+    next();
+}, (req, res, next) => {
+    ClerkExpressRequireAuth()(req, res, (err) => {
+        if (err) {
+            console.error('Authentication failed:', err);
+            return res.status(401).json({ error: 'Unauthenticated' });
+        }
+        next();
+    });
+}, authMw);
+
 
 /**  PDF routes */
-
 app.post('/users/:userId/pdfs', async (req, res) => {
-    const userId = req.params.userId;
+    const { userId } = req.params;
     const { resume } = req.body;
+
     try {
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
@@ -74,8 +138,8 @@ app.post('/users/:userId/pdfs', async (req, res) => {
             })
             .end(pdfBuffer);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ status: 'error', message: 'Failed to generate PDF' });
+        console.error('PDF generation error:', err);
+        res.status(500).json({ status: 'error', message: 'An error occurred while generating the PDF' });
     }
 });
 
@@ -85,7 +149,7 @@ app.get('/users/:userId/pdfs', async (req, res) => {
         const rows = await db.all('SELECT * FROM pdf_metadata WHERE userId = ?', [userId]);
         res.status(200).json(rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error retrieving PDFs:', err);
         res.status(500).json({ status: 'error', message: 'Failed to retrieve PDFs' });
     }
 });
@@ -107,10 +171,10 @@ app.get('/users/:userId/pdfs/:pdfId', async (req, res) => {
 
 app.put('/users/:userId/pdfs/:pdfId', async (req, res) => {
     const { userId, pdfId } = req.params;
-    const data = req.body;
+    const { resume } = req.body;
 
     try {
-        const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: data.resume }));
+        const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
         const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
@@ -119,7 +183,7 @@ app.put('/users/:userId/pdfs/:pdfId', async (req, res) => {
         // Generate the PDF
         const pdfBuffer = await page.pdf({ format: 'A4', margin: { top: "20px", bottom: '20px' } });
 
-        await db.run('UPDATE pdf_metadata SET content = ? WHERE id = ? AND userId = ?', [JSON.stringify(data.resume), pdfId, userId]);
+        await db.run('UPDATE pdf_metadata SET content = ? WHERE id = ? AND userId = ?', [JSON.stringify(resume), pdfId, userId]);
 
         await browser.close();
         console.log('PDF generated successfully');
@@ -137,28 +201,13 @@ app.put('/users/:userId/pdfs/:pdfId', async (req, res) => {
     }
 });
 
-app.post('/webhook', async (req, res) => {
-    // Verify the webhook signature if Clerk provides one (recommended for security)
-    const { type, data } = req.body;
 
-    if (type === 'user.created') {
-        const { id, first_name, last_name, email_addresses } = data;
+// Implement rate limiting
+// import rateLimit from 'express-rate-limit';
 
-        try {
-            // Insert the new user into your database
-            await db.run(`
-                INSERT INTO users (id, fullName, email, accountType)
-                VALUES (?, ?, ?, ?)`,
-                [id, first_name + ' ' + last_name, email_addresses[0].email_address, 'free'] // Defaults to 'free' account type
-            );
+// const apiLimiter = rateLimit({
+//     windowMs: 15 * 60 * 1000, // 15 minutes
+//     max: 100 // limit each IP to 100 requests per windowMs
+// });
 
-            console.log('User registered in database:', first_name + ' ' + last_name);
-            res.status(201).send('User registered');
-        } catch (err) {
-            console.error('Error registering user:', err);
-            res.status(500).send('Internal Server Error');
-        }
-    } else {
-        res.status(400).send('Unhandled event type');
-    }
-});
+// app.use('/users', apiLimiter);

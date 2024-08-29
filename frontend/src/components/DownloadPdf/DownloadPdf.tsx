@@ -4,7 +4,7 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { resumeInfoType } from "../../context/ResumeContext";
 import classNames from "classnames";
 import { useParams } from "react-router-dom";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 
 const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
 
@@ -13,19 +13,24 @@ const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing:
     const { user, isSignedIn } = useUser();
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadError, setDownloadError] = useState<string | null>(null);
+    const { getToken } = useAuth();
 
-    const handleDownload = () => {
+
+    const handleDownload = async () => {
         if (!isSignedIn) {
             return;
         }
         setDownloadError(null);
         setIsDownloading(true);
 
+        const token = await getToken();
+
         if (isEditing) {
             fetch(`http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs/${resumeId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     resume
@@ -59,6 +64,7 @@ const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing:
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
                 resume

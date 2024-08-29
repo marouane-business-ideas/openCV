@@ -4,15 +4,18 @@
     "build": "cp ../frontend/src/features/Preview/Preview.tsx src && babel src --extensions \".js,.tsx\" --out-dir dist"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^5.0.32",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "helmet": "^7.1.0",
     "isomorphic-dompurify": "^2.14.0",
     "puppeteer": "^23.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "svix": "^1.31.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.8",
