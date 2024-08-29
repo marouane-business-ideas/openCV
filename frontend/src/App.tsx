@@ -24,7 +24,7 @@ const router = createBrowserRouter([
       { path: "resume", element: <ResumeBuilder /> },
       { path: "resume/:resumeId", element: <ProtectedRoute><ResumeBuilder /></ProtectedRoute> },
       { path: "sign-in", element: <SignInPage /> },
-      { path: "sign-up", element: <SignUpPage /> },
+      { path: "sign-up/*", element: <SignUpPage /> },
       {
         path: "/dashboard",
         element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
