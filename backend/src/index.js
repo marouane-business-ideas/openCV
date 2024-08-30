@@ -146,7 +146,7 @@ app.post('/users/:userId/pdfs', async (req, res) => {
 app.get('/users/:userId/pdfs', async (req, res) => {
     const userId = req.params.userId;
     try {
-        const rows = await db.all('SELECT * FROM pdf_metadata WHERE userId = ?', [userId]);
+        const rows = await db.all('SELECT content, datetime(createdAt, "localtime") as createdAt, id FROM pdf_metadata WHERE userId = ?', [userId]);
         res.status(200).json(rows);
     } catch (err) {
         console.error('Error retrieving PDFs:', err);

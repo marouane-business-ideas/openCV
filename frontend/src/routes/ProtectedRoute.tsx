@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import { ReactNode, useEffect, useState } from "react";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/Spinner/Spinner";
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     const { isLoaded, isSignedIn } = useAuth();

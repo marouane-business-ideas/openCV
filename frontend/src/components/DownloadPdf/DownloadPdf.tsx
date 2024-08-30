@@ -36,7 +36,6 @@ const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing:
                     resume
                 }),
             }).then(response => {
-                setIsDownloading(false);
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
                 }
@@ -49,6 +48,7 @@ const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing:
                     a.download = "CV.pdf";
                     document.body.appendChild(a);
                     a.click();
+                    setIsDownloading(false);
                     a.remove();
                 })
 

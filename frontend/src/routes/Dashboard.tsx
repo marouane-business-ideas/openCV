@@ -2,34 +2,28 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 
-import Preview from "../features/Preview/Preview";
-import { resumeInfoType } from "../context/ResumeContext";
+import SkeletonLoader from "../components/Skeleton";
+import PdfCard from "../components/PdfCard/PdfCard";
+import { IPdf } from "../Types/CommonTypes";
 
 const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
 
-interface IPdf {
-    content: string;
-    createdAt: string;
-    filename: string;
-    id: number;
-}
-
 function Dashboard() {
     const { user, isSignedIn } = useUser();
-    const [pdfs, setPdfs] = useState<(IPdf)[]>([]);
     const { getToken } = useAuth();
-
-
+    const [pdfs, setPdfs] = useState<IPdf[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!isSignedIn) {
+            setIsLoading(false);
             return;
         }
 
-        let token;
-
         (async () => {
-            token = await getToken();
+            setIsLoading(true);
+            const token = await getToken();
 
             fetch(`http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs`, {
                 headers: {
@@ -44,53 +38,45 @@ function Dashboard() {
                 })
                 .then(data => {
                     setPdfs(data);
+                    setIsLoading(false);
                 })
                 .catch(error => {
                     console.error("Error fetching PDFs:", error);
+                    setError("Failed to load your resumes. Please try again later.");
+                    setIsLoading(false);
                 });
         })()
-
-
-    }
-        , [getToken, isSignedIn, user?.id]);
-
+    }, [getToken, isSignedIn, user?.id]);
 
     return (
         <>
             <header className="mb-6 flex justify-between items-center">
                 <h2 className="text-3xl font-semibold mb-4">Your Resumes</h2>
-                <Link to="/resume" className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
+                <Link to="/resume" className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200"
+                    aria-label="Create New Resume">
                     Create New Resume
                 </Link>
             </header>
+            {error && <p className="text-sm text-red-500">{error}</p>}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {pdfs.map((pdf: IPdf) => {
-                    const resumeData = JSON.parse(pdf.content) as resumeInfoType;
-                    return (<div key={pdf.createdAt} className="flex flex-col items-center bg-white pt-2 p-6 shadow-md relative overflow-hidden"
-                        style={{ minHeight: "450px", maxHeight: "450px", minWidth: "402px", maxWidth: "402px" }} >
-                        <div className="flex relative overflow-x-hidden overflow-y-scroll">
-                            <Preview
-                                customClassName=""
-                                customStyle={{ minWidth: "851px", transform: "scale(0.4)", transformOrigin: "top" }}
-                                resume={resumeData} />
-                        </div>
-                        {/* Last updated is in GMT time, not user's locale time. Watch out ! */}
-                        <p className="mt-2 text-gray-500">Last updated: {pdf.createdAt}</p>
-                        <Link to={`/resume/${pdf.id}`} className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
-                         px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
-                            View/Edit
-                        </Link>
-                    </div>
-                    )
-                }
+                {isLoading ? (
+                    Array(3).fill(0).map((_, index) => (
+                        <SkeletonLoader key={index} />
+                    ))
+                ) : pdfs.length > 0 ? (
+                    pdfs.map((pdf: IPdf) => (
+                        <PdfCard key={pdf.id} pdf={pdf} />
+                    ))
+                ) : (
+                    <p className="col-span-full text-center text-gray-500">No resumes found. Create your first resume!</p>
                 )}
             </div>
             <div className="mt-8 w-2/4">
                 <h3 className="text-2xl font-semibold mb-4">Account Information</h3>
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                    <p className="text-xl font-semibold">John Doe</p>
-                    <p className="mt-2 text-gray-500">Email: johndoe@example.com</p>
-                    <p className="mt-2 text-gray-500">Subscription: Premium</p>
+                    {user && <p className="text-xl font-semibold">{user.fullName}</p>}
+                    {user && <p className="mt-2 text-gray-500">Email: {user.emailAddresses[0].emailAddress}</p>}
+                    <p className="mt-2 text-gray-500">Subscription: Free plan</p>
                     <Link to="/dashboard/account" className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
                          px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
                         Edit Account
@@ -98,7 +84,6 @@ function Dashboard() {
                 </div>
             </div>
         </>
-
     );
 }
 
