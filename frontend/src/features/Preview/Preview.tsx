@@ -123,7 +123,7 @@ const ExperienceTopSection = ({ children }: { children: JSX.Element[] }) => {
 }
 
 
-const Preview = (props: { resume: resumeInfoType, customStyle?: { [key: string]: React.CSSProperties }, customClassName?: string }) => {
+const Preview = (props: { resume: resumeInfoType, customStyle?: React.CSSProperties, customClassName?: string }) => {
     const { personalInfo, workExperience, education, skills, languages, links, themeColor } = props.resume;
     return (
         <div className={props.customClassName} style={props.customStyle}>
