@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { ArrowDownTrayIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import { resumeInfoType } from "../../context/ResumeContext";
 import classNames from "classnames";
 import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
+import DownloadError from "../../utils/DownloadError";
 
 const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
+
 
 const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing: boolean }) => {
     const { resumeId } = useParams();
@@ -15,84 +16,63 @@ const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing:
     const [downloadError, setDownloadError] = useState<string | null>(null);
     const { getToken } = useAuth();
 
+    const handleError = (error: unknown) => {
+        console.error("Error downloading the PDF:", error);
+        if (error instanceof DownloadError && error.code === "LIMIT_REACHED") {
+            setDownloadError("You reached the limit of PDFs you can generate on the free plan");
+        } else {
+            setDownloadError("An error occurred while downloading the PDF. Please try again.");
+        }
+        setIsDownloading(false);
+    };
+
+    const downloadPdf = async (url: string, method: "PUT" | "POST") => {
+        const token = await getToken();
+        const response = await fetch(url, {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({ resume }),
+        });
+
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            if (errorResponse?.message === "You reached the limit of pdfs you can generate on the free plan") {
+                throw new DownloadError(errorResponse.message, "LIMIT_REACHED");
+            }
+            throw new DownloadError("Network response was not ok", "NETWORK_ERROR");
+        }
+
+        return response.blob();
+    };
 
     const handleDownload = async () => {
-        if (!isSignedIn) {
-            return;
-        }
+        if (!isSignedIn) return;
         setDownloadError(null);
         setIsDownloading(true);
 
-        const token = await getToken();
+        try {
+            const url = isEditing
+                ? `http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs/${resumeId}`
+                : `http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs`;
+            const method = isEditing ? "PUT" : "POST";
 
-        if (isEditing) {
-            fetch(`http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs/${resumeId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    resume
-                }),
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.blob();
-            })
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = "CV.pdf";
-                    document.body.appendChild(a);
-                    a.click();
-                    setIsDownloading(false);
-                    a.remove();
-                })
+            const blob = await downloadPdf(url, method);
 
-                .catch(error => {
-                    setIsDownloading(false);
-                    setDownloadError("An error occurred while downloading the PDF. Please try again.");
-                    console.error("Error downloading the PDF:", error);
-                });
-            return;
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = "CV.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setIsDownloading(false);
+        } catch (error) {
+            handleError(error);
         }
-
-        fetch(`http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                resume
-            }),
-        })
-            .then(response => {
-                setIsDownloading(false);
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.blob();
-            })
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "CV.pdf";
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-            })
-
-            .catch(error => {
-                setIsDownloading(false);
-                setDownloadError("An error occurred while downloading the PDF. Please try again.");
-                console.error("Error downloading the PDF:", error);
-            });
-    }
+    };
 
     return (
         <>

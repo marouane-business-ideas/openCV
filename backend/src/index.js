@@ -8,7 +8,7 @@ import helmet from 'helmet';
 import { Webhook } from "svix";
 import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 
-import { initDb } from './db.js';
+import { getUserDownloadCount, incrementUserDownloadCount, initDb } from './db.js';
 import Preview from './Preview.js';
 
 const app = express();
@@ -114,6 +114,9 @@ app.post('/users/:userId/pdfs', async (req, res) => {
     const { resume } = req.body;
 
     try {
+        const userPdfCount = await getUserDownloadCount(db, userId);
+        if (userPdfCount >= 5) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
+
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
         const browser = await puppeteer.launch({ headless: true });
@@ -128,6 +131,8 @@ app.post('/users/:userId/pdfs', async (req, res) => {
         await db.run('INSERT INTO pdf_metadata (filename, content, userId) VALUES (?, ?, ?)', [filename, JSON.stringify(resume), userId]);
 
         await browser.close();
+
+        await incrementUserDownloadCount(db, userId);
         console.log('PDF generated successfully');
 
         res.status(200)
@@ -138,7 +143,10 @@ app.post('/users/:userId/pdfs', async (req, res) => {
             })
             .end(pdfBuffer);
     } catch (err) {
-        console.error('PDF generation error:', err);
+        console.error(err.message);
+        if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
+            return res.status(403).json({ status: 'error', message: 'You reached the limit of pdfs you can generate on the free plan' });
+        }
         res.status(500).json({ status: 'error', message: 'An error occurred while generating the PDF' });
     }
 });
@@ -174,6 +182,9 @@ app.put('/users/:userId/pdfs/:pdfId', async (req, res) => {
     const { resume } = req.body;
 
     try {
+        const userPdfCount = await getUserDownloadCount(db, userId);
+        if (userPdfCount >= 5) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
+
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
         const browser = await puppeteer.launch({ headless: true });
@@ -186,6 +197,8 @@ app.put('/users/:userId/pdfs/:pdfId', async (req, res) => {
         await db.run('UPDATE pdf_metadata SET content = ? WHERE id = ? AND userId = ?', [JSON.stringify(resume), pdfId, userId]);
 
         await browser.close();
+
+        await incrementUserDownloadCount(db, userId);
         console.log('PDF generated successfully');
 
         res.status(200)
@@ -197,6 +210,9 @@ app.put('/users/:userId/pdfs/:pdfId', async (req, res) => {
             .end(pdfBuffer);
     } catch (err) {
         console.error(err);
+        if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
+            return res.status(403).json({ status: 'error', message: 'You reached the limit of pdfs you can generate on the free plan' });
+        }
         res.status(500).json({ status: 'error', message: 'Failed to generate PDF' });
     }
 });
