@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "node dist/index.js",
+    "dev": "NODE_ENV=development node dist/index.js",
+    "start": "NODE_ENV=production node dist/index.js",
     "build": "cp ../frontend/src/features/Preview/Preview.tsx src && babel src --extensions \".js,.tsx\" --out-dir dist"
   },
   "dependencies": {

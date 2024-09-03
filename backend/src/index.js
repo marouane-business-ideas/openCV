@@ -1,6 +1,6 @@
 import express from 'express';
 import puppeteer from 'puppeteer';
-import 'dotenv/config';
+import dotenv from 'dotenv'
 import bodyParser from 'body-parser';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -10,6 +10,8 @@ import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 
 import { getUserDownloadCount, incrementUserDownloadCount, initDb } from './db.js';
 import Preview from './Preview.js';
+
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 
 const app = express();
 const PORT = process.env.PORT || 1337;
