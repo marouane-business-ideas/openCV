@@ -55,8 +55,8 @@ const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing:
 
         try {
             const url = isEditing
-                ? `http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs/${resumeId}`
-                : `http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs`;
+                ? `http://localhost:${BACKEND_PORT}/api/users/${user.id}/pdfs/${resumeId}`
+                : `http://localhost:${BACKEND_PORT}/api/users/${user.id}/pdfs`;
             const method = isEditing ? "PUT" : "POST";
 
             const blob = await downloadPdf(url, method);

@@ -25,7 +25,7 @@ function Dashboard() {
             setIsLoading(true);
             const token = await getToken();
 
-            fetch(`http://localhost:${BACKEND_PORT}/users/${user.id}/pdfs`, {
+            fetch(`http://localhost:${BACKEND_PORT}/api/users/${user.id}/pdfs`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 }

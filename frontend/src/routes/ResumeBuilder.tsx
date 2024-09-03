@@ -30,7 +30,7 @@ const ResumeBuilder = () => {
                 const token = await getToken();
 
                 if (resumeId && !Number.isNaN(+resumeId)) {
-                    const response = await fetch(`http://localhost:${BACKEND_PORT}/users/${user?.id}/pdfs/${resumeId}`, {
+                    const response = await fetch(`http://localhost:${BACKEND_PORT}/api/users/${user?.id}/pdfs/${resumeId}`, {
                         headers: {
                             "Authorization": `Bearer ${token}`,
                         }

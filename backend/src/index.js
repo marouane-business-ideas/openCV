@@ -49,7 +49,7 @@ initDb().then(database => {
 });
 
 // This route needs to be called before calling app.use(bodyParser.json());
-app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
+app.post('/api/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
     const payload = req.body;
     const headers = req.headers;
 
@@ -97,7 +97,7 @@ const authMw = (req, res, next) => {
     next();
 }
 
-app.use('/users/:userId/*', (req, res, next) => {
+app.use('/api/users/:userId/*', (req, res, next) => {
     next();
 }, (req, res, next) => {
     ClerkExpressRequireAuth()(req, res, (err) => {
@@ -111,7 +111,7 @@ app.use('/users/:userId/*', (req, res, next) => {
 
 
 /**  PDF routes */
-app.post('/users/:userId/pdfs', async (req, res) => {
+app.post('/api/users/:userId/pdfs', async (req, res) => {
     const { userId } = req.params;
     const { resume } = req.body;
 
@@ -157,7 +157,7 @@ app.post('/users/:userId/pdfs', async (req, res) => {
     }
 });
 
-app.get('/users/:userId/pdfs', async (req, res) => {
+app.get('/api/users/:userId/pdfs', async (req, res) => {
     const userId = req.params.userId;
     try {
         const rows = await db.all('SELECT content, datetime(createdAt, "localtime") as createdAt, id FROM pdf_metadata WHERE userId = ?', [userId]);
@@ -168,7 +168,7 @@ app.get('/users/:userId/pdfs', async (req, res) => {
     }
 });
 
-app.get('/users/:userId/pdfs/:pdfId', async (req, res) => {
+app.get('/api/users/:userId/pdfs/:pdfId', async (req, res) => {
     const { userId, pdfId } = req.params;
     try {
         const row = await db.get('SELECT * FROM pdf_metadata WHERE id = ? AND userId = ?', [pdfId, userId]);
@@ -183,7 +183,7 @@ app.get('/users/:userId/pdfs/:pdfId', async (req, res) => {
     }
 });
 
-app.put('/users/:userId/pdfs/:pdfId', async (req, res) => {
+app.put('/api/users/:userId/pdfs/:pdfId', async (req, res) => {
     const { userId, pdfId } = req.params;
     const { resume } = req.body;
 
@@ -236,4 +236,4 @@ app.put('/users/:userId/pdfs/:pdfId', async (req, res) => {
 //     max: 100 // limit each IP to 100 requests per windowMs
 // });
 
-// app.use('/users', apiLimiter);
+// app.use('/api/users', apiLimiter);
