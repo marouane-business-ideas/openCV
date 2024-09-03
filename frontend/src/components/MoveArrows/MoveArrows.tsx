@@ -2,9 +2,9 @@ import { ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/solid";
 import { resumeInfoType } from "../../context/ResumeContext";
 
 interface MoveArrowProps {
-    items: resumeInfoType['workExperience'] | resumeInfoType['education'];
+    items: resumeInfoType["workExperience"] | resumeInfoType["education"];
     index: number;
-    handleMovingArround: (index: number, direction: 'up' | 'down') => void;
+    handleMovingArround: (index: number, direction: "up" | "down") => void;
 }
 
 const MoveArrows = ({ items, index, handleMovingArround }: MoveArrowProps) => {
@@ -17,7 +17,7 @@ const MoveArrows = ({ items, index, handleMovingArround }: MoveArrowProps) => {
         <div className="flex gap-2">
             {!isFirstItem && (
                 <button
-                    onClick={() => handleMovingArround(index, 'up')}
+                    onClick={() => handleMovingArround(index, "up")}
                     aria-label="Move up"
                 >
                     <ArrowUpIcon className="size-4 text-gray-400" />
@@ -25,7 +25,7 @@ const MoveArrows = ({ items, index, handleMovingArround }: MoveArrowProps) => {
             )}
             {!isLastItem && (
                 <button
-                    onClick={() => handleMovingArround(index, 'down')}
+                    onClick={() => handleMovingArround(index, "down")}
                     aria-label="Move down"
                 >
                     <ArrowDownIcon className="size-4 text-gray-400" />

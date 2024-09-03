@@ -57,20 +57,22 @@ function Dashboard() {
                     Create New Resume
                 </Link>
             </header>
-            {error && <p className="text-sm text-red-500">{error}</p>}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {isLoading ? (
-                    Array(3).fill(0).map((_, index) => (
-                        <SkeletonLoader key={index} />
-                    ))
-                ) : pdfs.length > 0 ? (
-                    pdfs.map((pdf: IPdf) => (
-                        <PdfCard key={pdf.id} pdf={pdf} />
-                    ))
-                ) : (
-                    <p className="col-span-full text-center text-gray-500">No resumes found. Create your first resume!</p>
-                )}
-            </div>
+            {error ? <p className="text-sm text-center text-red-500">{error}</p> :
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {isLoading ? (
+                        Array(3).fill(0).map((_, index) => (
+                            <SkeletonLoader key={index} />
+                        ))
+                    ) : pdfs.length > 0 ? (
+                        pdfs.map((pdf: IPdf) => (
+                            <PdfCard key={pdf.id} pdf={pdf} />
+                        ))
+                    ) : (
+                        <p className="col-span-full text-center text-gray-500">No resumes found. Create your first resume!</p>
+                    )}
+                </div>
+            }
+
             <div className="mt-8 w-2/4">
                 <h3 className="text-2xl font-semibold mb-4">Account Information</h3>
                 <div className="bg-white p-6 rounded-lg shadow-md">

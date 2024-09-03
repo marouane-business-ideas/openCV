@@ -38,7 +38,7 @@ initDb().then(database => {
     console.log('Database initialized successfully');
 
     // Start the server after the DB is ready
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
         console.log(`Server is listening on port ${PORT}`);
     });
 }).catch(err => {
@@ -119,7 +119,11 @@ app.post('/users/:userId/pdfs', async (req, res) => {
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({
+            headless: true,
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
         const page = await browser.newPage();
         await page.setContent(htmlContent);
 
@@ -187,7 +191,11 @@ app.put('/users/:userId/pdfs/:pdfId', async (req, res) => {
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({
+            headless: true,
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
         const page = await browser.newPage();
         await page.setContent(htmlContent);
 
