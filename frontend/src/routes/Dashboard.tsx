@@ -6,7 +6,6 @@ import SkeletonLoader from "../components/Skeleton";
 import PdfCard from "../components/PdfCard/PdfCard";
 import { IPdf } from "../Types/CommonTypes";
 
-const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
 
 function Dashboard() {
     const { user, isSignedIn } = useUser();
@@ -25,7 +24,7 @@ function Dashboard() {
             setIsLoading(true);
             const token = await getToken();
 
-            fetch(`http://localhost:${BACKEND_PORT}/api/users/${user.id}/pdfs`, {
+            fetch(`/api/users/${user.id}/pdfs`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 }
