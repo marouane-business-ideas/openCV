@@ -34,7 +34,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
         skills: [""],
         languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
         links: [{ linkName: "", linkUrl: "", id: uniqid() } as { linkUrl: string, id: string, linkName: string }],
-        themeColor: ""
+        themeColor: "#191919"
     },
 
     resumeBeingEdited: {
@@ -64,7 +64,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
         skills: [""],
         languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
         links: [{ linkName: "", linkUrl: "", id: uniqid() } as { linkUrl: string, id: string, linkName: string }],
-        themeColor: "#191919"
+        themeColor: ""
     }
 };
 
