@@ -1,15 +1,16 @@
-import express from 'express';
-import puppeteer from 'puppeteer';
-import dotenv from 'dotenv'
-import bodyParser from 'body-parser';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-import helmet from 'helmet';
+import express from "express";
+import puppeteer from "puppeteer";
+import dotenv from "dotenv"
+import bodyParser from "body-parser";
+import React from "react";
+import ReactDOMServer from "react-dom/server";
+import helmet from "helmet";
 import { Webhook } from "svix";
-import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
+import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
+import process from "process";
 
-import { getUserDownloadCount, incrementUserDownloadCount, initDb } from './db.js';
-import Preview from './Preview.js';
+import { getUserDownloadCount, incrementUserDownloadCount, initDb } from "./db.js";
+import Preview from "./Preview.js";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 
@@ -22,10 +23,10 @@ app.use(helmet());
 
 // Middleware to handle CORS
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN);
-    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PUT');
-    res.setHeader('Access-Control-Allow-Headers', ['Content-Type', 'Authorization']);
-    if (req.method === 'OPTIONS') {
+    res.setHeader("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+    res.setHeader("Access-Control-Allow-Headers", ["Content-Type", "Authorization"]);
+    if (req.method === "OPTIONS") {
         return res.status(204).end();
     }
     next();
@@ -37,19 +38,45 @@ let db;
 // Initialize the database at server start
 initDb().then(database => {
     db = database;
-    console.log('Database initialized successfully');
+    console.log("Database initialized successfully");
 
     // Start the server after the DB is ready
-    app.listen(PORT, '0.0.0.0', () => {
+    app.listen(PORT, "0.0.0.0", () => {
         console.log(`Server is listening on port ${PORT}`);
     });
 }).catch(err => {
-    console.error('Failed to initialize the database:', err);
+    console.error("Failed to initialize the database:", err);
     process.exit(1);
 });
 
+// Initialize a single browser instance
+let browser;
+
+const initializeBrowser = async () => {
+    if (!browser) {
+        browser = await puppeteer.launch({
+            headless: true,
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+            args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--disable-software-rasterizer",
+                "--disable-extensions",
+            ]
+        });
+    }
+};
+
+// Middleware to ensure the browser is initialized
+app.use(async (req, res, next) => {
+    await initializeBrowser();
+    next();
+});
+
 // This route needs to be called before calling app.use(bodyParser.json());
-app.post('/api/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
+app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
     const payload = req.body;
     const headers = req.headers;
 
@@ -58,30 +85,30 @@ app.post('/api/webhook', bodyParser.raw({ type: 'application/json' }), async (re
     try {
         wh.verify(payload, headers);
     } catch (err) {
-        console.error('Invalid signature:', err);
-        return res.status(401).send('Invalid signature');
+        console.error("Invalid signature:", err);
+        return res.status(401).send("Invalid signature");
     }
 
     const { type, data } = JSON.parse(payload);
 
-    if (type === 'user.created') {
+    if (type === "user.created") {
         const { id, first_name, last_name, email_addresses } = data;
 
         try {
             await db.run(`
                 INSERT INTO users (id, fullName, email, accountType)
                 VALUES (?, ?, ?, ?)`,
-                [id, first_name + ' ' + last_name, email_addresses[0].email_address, 'free']
+                [id, first_name + " " + last_name, email_addresses[0].email_address, "free"]
             );
 
-            console.log('User registered in database:', first_name + ' ' + last_name);
-            return res.status(201).send('User registered');
+            console.log("User registered in database:", first_name + " " + last_name);
+            return res.status(201).send("User registered");
         } catch (err) {
-            console.error('Error registering user:', err);
-            return res.status(500).send('Internal Server Error');
+            console.error("Error registering user:", err);
+            return res.status(500).send("Internal Server Error");
         }
     } else {
-        return res.status(400).send('Unhandled event type');
+        return res.status(400).send("Unhandled event type");
     }
 });
 
@@ -92,18 +119,18 @@ const authMw = (req, res, next) => {
     const authenticatedUserId = req.auth.userId;
     const { userId } = req.params;
     if (authenticatedUserId !== userId) {
-        return res.status(403).send('Unauthorized!');
+        return res.status(403).send("Unauthorized!");
     }
     next();
 }
 
-app.use('/api/users/:userId/*', (req, res, next) => {
+app.use("/api/users/:userId/*", (req, res, next) => {
     next();
 }, (req, res, next) => {
     ClerkExpressRequireAuth()(req, res, (err) => {
         if (err) {
-            console.error('Authentication failed:', err);
-            return res.status(401).json({ error: 'Unauthenticated' });
+            console.error("Authentication failed:", err);
+            return res.status(401).json({ error: "Unauthenticated" });
         }
         next();
     });
@@ -111,81 +138,84 @@ app.use('/api/users/:userId/*', (req, res, next) => {
 
 
 /**  PDF routes */
-app.post('/api/users/:userId/pdfs', async (req, res) => {
+app.post("/api/users/:userId/pdfs", async (req, res) => {
     const { userId } = req.params;
     const { resume } = req.body;
 
+    let page;
+
     try {
         const userPdfCount = await getUserDownloadCount(db, userId);
         if (userPdfCount >= 5) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        const browser = await puppeteer.launch({
-            headless: true,
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
-        const page = await browser.newPage();
+        // Open a new browser page
+        page = await browser.newPage();
         await page.setContent(htmlContent);
 
         // Generate the PDF
-        const pdfBuffer = await page.pdf({ format: 'A4', margin: { top: "20px", bottom: '20px' } });
+        const pdfBuffer = await page.pdf({ format: "A4", margin: { top: "20px", bottom: "20px" } });
         const filename = `CV_${Date.now()}.pdf`;
 
         // Insert metadata into SQLite database
-        await db.run('INSERT INTO pdf_metadata (filename, content, userId) VALUES (?, ?, ?)', [filename, JSON.stringify(resume), userId]);
-
-        await browser.close();
+        await db.run("INSERT INTO pdf_metadata (filename, content, userId) VALUES (?, ?, ?)", [filename, JSON.stringify(resume), userId]);
 
         await incrementUserDownloadCount(db, userId);
-        console.log('PDF generated successfully');
+        console.log("PDF generated successfully");
 
-        res.status(200)
-            .set({
-                'Content-Type': 'application/pdf',
-                'Content-Length': pdfBuffer.length,
-                'Content-Disposition': 'attachment; filename="CV.pdf"'
-            })
-            .end(pdfBuffer);
+        res.status(200).set({
+            "Content-Type": "application/pdf",
+            "Content-Length": pdfBuffer.length,
+            "Content-Disposition": `attachment; filename="${filename}"`
+        }).end(pdfBuffer);
+
     } catch (err) {
         console.error(err.message);
         if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
-            return res.status(403).json({ status: 'error', message: 'You reached the limit of pdfs you can generate on the free plan' });
+            return res.status(403).json({ status: "error", message: "You reached the limit of pdfs you can generate on the free plan" });
         }
-        res.status(500).json({ status: 'error', message: 'An error occurred while generating the PDF' });
+        res.status(500).json({ status: "error", message: "An error occurred while generating the PDF" });
+    } finally {
+        // Ensure the page is closed properly
+        if (page) {
+            await page.close();
+        }
     }
+
 });
 
-app.get('/api/users/:userId/pdfs', async (req, res) => {
+app.get("/api/users/:userId/pdfs", async (req, res) => {
     const userId = req.params.userId;
     try {
-        const rows = await db.all('SELECT content, datetime(createdAt, "localtime") as createdAt, id FROM pdf_metadata WHERE userId = ?', [userId]);
+        const rows = await db.all("SELECT content, datetime(createdAt, \"localtime\") as createdAt, id FROM pdf_metadata WHERE userId = ?", [userId]);
         res.status(200).json(rows);
     } catch (err) {
-        console.error('Error retrieving PDFs:', err);
-        res.status(500).json({ status: 'error', message: 'Failed to retrieve PDFs' });
+        console.error("Error retrieving PDFs:", err);
+        res.status(500).json({ status: "error", message: "Failed to retrieve PDFs" });
     }
 });
 
-app.get('/api/users/:userId/pdfs/:pdfId', async (req, res) => {
+app.get("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
     const { userId, pdfId } = req.params;
     try {
-        const row = await db.get('SELECT * FROM pdf_metadata WHERE id = ? AND userId = ?', [pdfId, userId]);
+        const row = await db.get("SELECT * FROM pdf_metadata WHERE id = ? AND userId = ?", [pdfId, userId]);
         if (row) {
             res.status(200).json(row);
         } else {
-            res.status(404).json({ status: 'error', message: 'PDF not found' });
+            res.status(404).json({ status: "error", message: "PDF not found" });
         }
     } catch (err) {
         console.error(err);
-        res.status(500).json({ status: 'error', message: 'Failed to retrieve PDF' });
+        res.status(500).json({ status: "error", message: "Failed to retrieve PDF" });
     }
 });
 
-app.put('/api/users/:userId/pdfs/:pdfId', async (req, res) => {
+app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
     const { userId, pdfId } = req.params;
     const { resume } = req.body;
+
+    let page;
 
     try {
         const userPdfCount = await getUserDownloadCount(db, userId);
@@ -193,38 +223,46 @@ app.put('/api/users/:userId/pdfs/:pdfId', async (req, res) => {
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        const browser = await puppeteer.launch({
-            headless: true,
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
         const page = await browser.newPage();
         await page.setContent(htmlContent);
 
         // Generate the PDF
-        const pdfBuffer = await page.pdf({ format: 'A4', margin: { top: "20px", bottom: '20px' } });
+        const pdfBuffer = await page.pdf({ format: "A4", margin: { top: "20px", bottom: "20px" } });
 
-        await db.run('UPDATE pdf_metadata SET content = ? WHERE id = ? AND userId = ?', [JSON.stringify(resume), pdfId, userId]);
+        await db.run("UPDATE pdf_metadata SET content = ? WHERE id = ? AND userId = ?", [JSON.stringify(resume), pdfId, userId]);
 
-        await browser.close();
 
         await incrementUserDownloadCount(db, userId);
-        console.log('PDF generated successfully');
+        console.log("PDF generated successfully");
 
         res.status(200)
             .set({
-                'Content-Type': 'application/pdf',
-                'Content-Length': pdfBuffer.length,
-                'Content-Disposition': 'attachment; filename="CV.pdf"'
-            })
-            .end(pdfBuffer);
+                "Content-Type": "application/pdf",
+                "Content-Length": pdfBuffer.length,
+                "Content-Disposition": "attachment; filename=\"CV.pdf\""
+            }).end(pdfBuffer);
+
     } catch (err) {
         console.error(err);
         if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
-            return res.status(403).json({ status: 'error', message: 'You reached the limit of pdfs you can generate on the free plan' });
+            return res.status(403).json({ status: "error", message: "You reached the limit of pdfs you can generate on the free plan" });
         }
-        res.status(500).json({ status: 'error', message: 'Failed to generate PDF' });
+        res.status(500).json({ status: "error", message: "Failed to generate PDF" });
+    } finally {
+        // Ensure the page is closed properly
+        if (page) {
+            await page.close();
+        }
     }
+});
+
+// Cleanup browser on server shutdown
+process.on("SIGTERM", async () => {
+    if (browser) {
+        await browser.close();
+        console.log("Browser closed gracefully on server shutdown.");
+    }
+    process.exit(0);
 });
 
 
