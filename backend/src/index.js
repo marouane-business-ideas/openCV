@@ -1,5 +1,5 @@
 import express from "express";
-import puppeteer from "puppeteer";
+import { Cluster } from "puppeteer-cluster";
 import dotenv from "dotenv"
 import bodyParser from "body-parser";
 import React from "react";
@@ -34,29 +34,21 @@ app.use((req, res, next) => {
 
 
 let db;
+let cluster;
 
-// Initialize the database at server start
-initDb().then(database => {
+// Initialize the database and Puppeteer cluster at server start
+initDb().then(async (database) => {
     db = database;
     console.log("Database initialized successfully");
 
-    // Start the server after the DB is ready
-    app.listen(PORT, "0.0.0.0", () => {
-        console.log(`Server is listening on port ${PORT}`);
-    });
-}).catch(err => {
-    console.error("Failed to initialize the database:", err);
-    process.exit(1);
-});
-
-// Initialize a single browser instance
-let browser;
-
-const initializeBrowser = async () => {
-    if (!browser) {
-        browser = await puppeteer.launch({
+    // Initialize the Puppeteer cluster
+    cluster = await Cluster.launch({
+        concurrency: Cluster.CONCURRENCY_PAGE,
+        maxConcurrency: 20,
+        retryLimit: 1,
+        retryDelay: 1000,
+        puppeteerOptions: {
             headless: true,
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
             args: [
                 "--no-sandbox",
                 "--disable-setuid-sandbox",
@@ -64,16 +56,21 @@ const initializeBrowser = async () => {
                 "--disable-gpu",
                 "--disable-software-rasterizer",
                 "--disable-extensions",
-            ]
-        });
-    }
-};
+            ],
+        },
+    });
 
-// Middleware to ensure the browser is initialized
-app.use(async (req, res, next) => {
-    await initializeBrowser();
-    next();
+    console.log("Puppeteer Cluster initialized");
+
+    // Start the server after the DB and cluster are ready
+    app.listen(PORT, "0.0.0.0", () => {
+        console.log(`Server is listening on port ${PORT}`);
+    });
+}).catch(err => {
+    console.error("Failed to initialize the database or Puppeteer Cluster:", err);
+    process.exit(1);
 });
+
 
 // This route needs to be called before calling app.use(bodyParser.json());
 app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
@@ -142,7 +139,6 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
     const { userId } = req.params;
     const { resume } = req.body;
 
-    let page;
 
     try {
         const userPdfCount = await getUserDownloadCount(db, userId);
@@ -150,12 +146,12 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        // Open a new browser page
-        page = await browser.newPage();
-        await page.setContent(htmlContent);
+        const pdfBuffer = await cluster.execute(async ({ page }) => {
+            await page.setContent(htmlContent);
+            const buffer = await page.pdf({ format: "A4", margin: { top: "20px", bottom: "20px" } });
+            return buffer;
+        });
 
-        // Generate the PDF
-        const pdfBuffer = await page.pdf({ format: "A4", margin: { top: "20px", bottom: "20px" } });
         const filename = `CV_${Date.now()}.pdf`;
 
         // Insert metadata into SQLite database
@@ -176,11 +172,6 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
             return res.status(403).json({ status: "error", message: "You reached the limit of pdfs you can generate on the free plan" });
         }
         res.status(500).json({ status: "error", message: "An error occurred while generating the PDF" });
-    } finally {
-        // Ensure the page is closed properly
-        if (page) {
-            await page.close();
-        }
     }
 
 });
@@ -215,19 +206,18 @@ app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
     const { userId, pdfId } = req.params;
     const { resume } = req.body;
 
-    let page;
-
     try {
         const userPdfCount = await getUserDownloadCount(db, userId);
         if (userPdfCount >= 5) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        const page = await browser.newPage();
-        await page.setContent(htmlContent);
-
         // Generate the PDF
-        const pdfBuffer = await page.pdf({ format: "A4", margin: { top: "20px", bottom: "20px" } });
+        const pdfBuffer = await cluster.execute(async ({ page }) => {
+            await page.setContent(htmlContent);
+            const buffer = await page.pdf({ format: "A4", margin: { top: "20px", bottom: "20px" } });
+            return buffer;
+        });
 
         await db.run("UPDATE pdf_metadata SET content = ? WHERE id = ? AND userId = ?", [JSON.stringify(resume), pdfId, userId]);
 
@@ -248,30 +238,16 @@ app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
             return res.status(403).json({ status: "error", message: "You reached the limit of pdfs you can generate on the free plan" });
         }
         res.status(500).json({ status: "error", message: "Failed to generate PDF" });
-    } finally {
-        // Ensure the page is closed properly
-        if (page) {
-            await page.close();
-        }
     }
 });
 
 // Cleanup browser on server shutdown
 process.on("SIGTERM", async () => {
-    if (browser) {
-        await browser.close();
-        console.log("Browser closed gracefully on server shutdown.");
+    if (cluster) {
+        await cluster.idle();
+        await cluster.close();
+        console.log("Puppeteer Cluster closed gracefully on server shutdown.");
     }
+
     process.exit(0);
 });
-
-
-// Implement rate limiting
-// import rateLimit from 'express-rate-limit';
-
-// const apiLimiter = rateLimit({
-//     windowMs: 15 * 60 * 1000, // 15 minutes
-//     max: 100 // limit each IP to 100 requests per windowMs
-// });
-
-// app.use('/api/users', apiLimiter);
