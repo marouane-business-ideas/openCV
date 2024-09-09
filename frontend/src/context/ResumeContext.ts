@@ -24,6 +24,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             description: "",
             location: "",
             id: uniqid(),
+            isValid: undefined,
         }],
         education: [{
             schoolName: "",
@@ -55,6 +56,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             description: "",
             location: "",
             id: uniqid(),
+            isValid: undefined,
         }],
         education: [{
             schoolName: "",
@@ -87,6 +89,7 @@ export type resumeInfoType = {
         description: string;
         location: string;
         id: string;
+        isValid: undefined | boolean;
     }[];
     education: {
         schoolName: string;

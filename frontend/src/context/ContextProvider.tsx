@@ -26,14 +26,20 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                     = action.payload;
                 break;
             case "ADD_WORK_EXPERIENCE":
-                draft.onGoingResume.workExperience.push({ company: "", jobTitle: "", date: "", description: "", location: "", id: uniqid() });
+                draft.onGoingResume.workExperience.push({
+                    company: "", jobTitle: "", date: "", description: "", location: "", id: uniqid(),
+                    isValid: false
+                });
                 break;
             case "DELETE_WORK_EXPERIENCE":
                 draft.onGoingResume.workExperience.splice(action.payload as number, 1);
                 break;
             case "SET_WORK_EXPERIENCE":
-                draft.onGoingResume.workExperience[action.payload.index][Object.keys(action.payload)[0] as keyof resumeInfoType["workExperience"][0]]
-                    = action.payload[Object.keys(action.payload)[0]];
+                const key = Object.keys(action.payload)[0] as keyof Omit<resumeInfoType["workExperience"][0], "isValid">;
+                draft.onGoingResume.workExperience[action.payload.index][key] = action.payload[key];
+                break;
+            case "SET_WORK_EXPERIENCE_VALIDITY":
+                draft.onGoingResume.workExperience[action.payload.index].isValid = action.payload.isValid;
                 break;
             case "MOVE_WORK_EXPERIENCE":
                 const { index: workExperienceIndex, direction: workExperienceDirection } = action.payload;
@@ -108,7 +114,15 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                     = action.payload;
                 break;
             case "ADD_WORK_EXPERIENCE_EDITED":
-                draft.resumeBeingEdited.workExperience.push({ company: "", jobTitle: "", date: "", description: "", location: "", id: uniqid() });
+                draft.resumeBeingEdited.workExperience.push({
+                    company: "",
+                    jobTitle: "",
+                    date: "",
+                    description: "",
+                    location: "",
+                    id: uniqid(),
+                    isValid: false,
+                });
                 break;
             case "DELETE_WORK_EXPERIENCE_EDITED":
                 draft.resumeBeingEdited.workExperience.splice(action.payload as number, 1);
@@ -116,8 +130,11 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
             case "SET_WORK_EXPERIENCE_EDITED":
                 draft.
                     resumeBeingEdited.
-                    workExperience[action.payload.index][Object.keys(action.payload)[0] as keyof resumeInfoType["workExperience"][0]]
+                    workExperience[action.payload.index][Object.keys(action.payload)[0] as keyof Omit<resumeInfoType["workExperience"][0], "isValid">]
                     = action.payload[Object.keys(action.payload)[0]];
+                break;
+            case "SET_WORK_EXPERIENCE_VALIDITY_EDITED":
+                draft.resumeBeingEdited.workExperience[action.payload.index].isValid = action.payload.isValid;
                 break;
             case "MOVE_WORK_EXPERIENCE_EDITED":
                 const { index: workExperienceIndexEdited, direction: workExperienceDirectionEdited } = action.payload;
