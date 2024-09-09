@@ -64,14 +64,17 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                 }
                 break;
             case "ADD_SCHOOL":
-                draft.onGoingResume.education.push({ schoolName: "", degree: "", date: "", description: "", id: uniqid() });
+                draft.onGoingResume.education.push({ schoolName: "", degree: "", date: "", description: "", id: uniqid(), isValid: false });
                 break;
             case "DELETE_SCHOOL":
                 draft.onGoingResume.education.splice(action.payload as number, 1);
                 break;
             case "SET_SCHOOL":
                 draft.onGoingResume.education[action.payload.index][Object.keys(action.payload)[0] as keyof
-                    resumeInfoType["education"][0]] = action.payload[Object.keys(action.payload)[0]];
+                    Omit<resumeInfoType["education"][0], "isValid">] = action.payload[Object.keys(action.payload)[0]];
+                break;
+            case "SET_EDUCATION_VALIDITY":
+                draft.onGoingResume.education[action.payload.index].isValid = action.payload.isValid;
                 break;
             case "SET_SKILLS":
                 draft.onGoingResume.skills = action.payload.skills;
@@ -161,14 +164,17 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                 }
                 break;
             case "ADD_SCHOOL_EDITED":
-                draft.resumeBeingEdited.education.push({ schoolName: "", degree: "", date: "", description: "", id: uniqid() });
+                draft.resumeBeingEdited.education.push({ schoolName: "", degree: "", date: "", description: "", id: uniqid(), isValid: false });
                 break;
             case "DELETE_SCHOOL_EDITED":
                 draft.resumeBeingEdited.education.splice(action.payload as number, 1);
                 break;
             case "SET_SCHOOL_EDITED":
                 draft.resumeBeingEdited.education[action.payload.index][Object.keys(action.payload)[0] as keyof
-                    resumeInfoType["education"][0]] = action.payload[Object.keys(action.payload)[0]];
+                    Omit<resumeInfoType["education"][0], "isValid">] = action.payload[Object.keys(action.payload)[0]];
+                break;
+            case "SET_EDUCATION_VALIDITY_EDITED":
+                draft.resumeBeingEdited.education[action.payload.index].isValid = action.payload.isValid;
                 break;
             case "SET_SKILLS_EDITED":
                 draft.resumeBeingEdited.skills = action.payload.skills;

@@ -32,6 +32,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             date: "",
             description: "",
             id: uniqid(),
+            isValid: undefined,
         }],
         skills: [""],
         languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
@@ -64,6 +65,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             date: "",
             description: "",
             id: uniqid(),
+            isValid: undefined,
         }],
         skills: [""],
         languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
@@ -97,6 +99,7 @@ export type resumeInfoType = {
         date: string;
         description: string;
         id: string;
+        isValid: undefined | boolean;
     }[];
     skills: string[];
     languages: {
