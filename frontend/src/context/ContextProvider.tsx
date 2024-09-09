@@ -97,11 +97,14 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                 draft.onGoingResume.languages.splice(action.payload as number, 1);
                 break;
             case "ADD_LINK":
-                draft.onGoingResume.links.push({ linkName: "", linkUrl: "", id: uniqid() });
+                draft.onGoingResume.links.push({ linkName: "", linkUrl: "", id: uniqid(), isValid: false });
                 break;
             case "SET_LINK":
                 draft.onGoingResume.links[action.payload.index][Object.keys(action.payload)[0] as keyof
-                    resumeInfoType["links"][0]] = action.payload[Object.keys(action.payload)[0]];
+                    Omit<resumeInfoType["links"][0], "isValid">] = action.payload[Object.keys(action.payload)[0]];
+                break;
+            case "SET_LINK_VALIDITY":
+                draft.onGoingResume.links[action.payload.index].isValid = action.payload.isValid;
                 break;
             case "DELETE_LINK":
                 draft.onGoingResume.links.splice(action.payload as number, 1);
@@ -198,11 +201,14 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                 draft.resumeBeingEdited.languages.splice(action.payload as number, 1);
                 break;
             case "ADD_LINK_EDITED":
-                draft.resumeBeingEdited.links.push({ linkName: "", linkUrl: "", id: uniqid() });
+                draft.resumeBeingEdited.links.push({ linkName: "", linkUrl: "", id: uniqid(), isValid: false });
                 break;
             case "SET_LINK_EDITED":
                 draft.resumeBeingEdited.links[action.payload.index][Object.keys(action.payload)[0] as keyof
-                    resumeInfoType["links"][0]] = action.payload[Object.keys(action.payload)[0]];
+                    Omit<resumeInfoType["links"][0], "isValid">] = action.payload[Object.keys(action.payload)[0]];
+                break;
+            case "SET_LINK_VALIDITY_EDITED":
+                draft.resumeBeingEdited.links[action.payload.index].isValid = action.payload.isValid;
                 break;
             case "DELETE_LINK_EDITED":
                 draft.resumeBeingEdited.links.splice(action.payload as number, 1);
