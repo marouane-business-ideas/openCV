@@ -9,31 +9,45 @@ const savedState = localStorage.getItem("resumeState");
 export const defaultContext = savedState ? JSON.parse(savedState) : {
     onGoingResume: {
         personalInfo: {
-            name: "",
-            title: "",
-            email: "",
-            phoneNumber: "",
-            location: "",
-            summary: ""
+            name: "John Doe",
+            title: "Software Developer",
+            email: "john.doe@example.com",
+            phoneNumber: "+1 (555) 123-4567",
+            location: "New York, NY",
+            summary: "Experienced software developer with a passion for creating efficient and scalable applications."
         },
         workExperience: [{
-            company: "",
-            jobTitle: "",
-            date: "",
-            description: "",
-            location: "",
+            company: "Tech Solutions Inc.",
+            jobTitle: "Senior Developer",
+            date: "2018 - Present",
+            description: "Led a team of 5 developers in creating innovative web applications using React and Node.js.",
+            location: "New York, NY",
+            id: uniqid(),
+        },
+        {
+            company: "StartUp Innovations",
+            jobTitle: "Junior Developer",
+            date: "2015 - 2018",
+            description: "Developed and maintained various features for the company's main product using Angular and Python.",
+            location: "San Francisco, CA",
             id: uniqid(),
         }],
         education: [{
-            schoolName: "",
-            degree: "",
-            date: "",
-            description: "",
+            schoolName: "University of Technology",
+            degree: "Bachelor of Science in Computer Science",
+            date: "2011 - 2015",
+            description: "Graduated with honors. Specialized in software engineering and artificial intelligence.",
             id: uniqid(),
         }],
-        skills: [""],
-        languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
-        links: [{ linkName: "", linkUrl: "", id: uniqid() } as { linkUrl: string, id: string, linkName: string }],
+        skills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "Git", "AWS", "Docker"],
+        languages: [
+            { language: "English", level: "native", id: uniqid() },
+            { language: "Spanish", level: "intermediate", id: uniqid() }
+        ],
+        links: [
+            { linkName: "https://github.com/johndoe", linkUrl: "https://github.com/johndoe", id: uniqid() },
+            { linkName: "https://linkedin.com/in/johndoe", linkUrl: "https://linkedin.com/in/johndoe", id: uniqid() }
+        ],
         themeColor: "#191919"
     },
 
