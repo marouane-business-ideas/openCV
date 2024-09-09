@@ -35,7 +35,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             isValid: undefined,
         }],
         skills: [""],
-        languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
+        languages: [{ language: "", level: "", id: uniqid(), isValid: undefined, }],
         links: [{ linkName: "", linkUrl: "", id: uniqid() } as { linkUrl: string, id: string, linkName: string }],
         themeColor: "#191919"
     },
@@ -68,7 +68,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             isValid: undefined,
         }],
         skills: [""],
-        languages: [{ language: "", level: "", id: uniqid() } as { language: string, level: LanguageLevelType, id: string }],
+        languages: [{ language: "", level: "", id: uniqid(), isValid: undefined, }],
         links: [{ linkName: "", linkUrl: "", id: uniqid() } as { linkUrl: string, id: string, linkName: string }],
         themeColor: ""
     }
@@ -106,6 +106,7 @@ export type resumeInfoType = {
         language: string;
         level: LanguageLevelType;
         id: string;
+        isValid: undefined | boolean;
     }[];
     links: {
         linkName: string;

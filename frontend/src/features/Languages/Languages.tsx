@@ -1,4 +1,4 @@
-import { Fragment, useContext } from "react";
+import { Fragment, useContext, useState } from "react";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import Card from "../../components/Card/Card";
 import { ResumeContext, ResumeDispatchContext, resumeInfoType } from "../../context/ResumeContext";
@@ -7,17 +7,34 @@ import classNames from "classnames";
 const Languages = ({ edited }: { edited: boolean }) => {
     const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+    const [errors, setErrors] = useState<{ [key: number]: string }>({});
 
     const languages = edited ? (resumeBeingEdited as resumeInfoType).languages : onGoingResume.languages;
 
+    const validateLanguage = (language: string): boolean => {
+        return /^[a-zA-Z\s]+$/.test(language);
+    };
+
     const handleAddLanguage = () => {
-        if (dispatch)
+        if (dispatch) {
             dispatch({ type: `ADD_LANGUAGE${edited ? "_EDITED" : ""}` });
+        }
     };
 
     const handleLanguageChange = (language: string, index: number) => {
-        if (dispatch)
-            dispatch({ type: `SET_LANGUAGE${edited ? "_EDITED" : ""}`, payload: { language, index } })
+        const isValidName = validateLanguage(language);
+        const hasSelectedLevel = languages[index].level !== "";
+        const isValid = isValidName && hasSelectedLevel;
+
+        if (dispatch) {
+            dispatch({ type: `SET_LANGUAGE${edited ? "_EDITED" : ""}`, payload: { language, index, isValid } });
+        }
+
+        if (isValid) {
+            setErrors(prev => ({ ...prev, [index]: "" }));
+        } else {
+            setErrors(prev => ({ ...prev, [index]: "Please enter a valid language name and select a proficiency level" }));
+        }
     }
 
     const handleLanguageProficiencyLevelChange = (level: string, index: number) => {
@@ -30,6 +47,13 @@ const Languages = ({ edited }: { edited: boolean }) => {
             dispatch({ type: `DELETE_LANGUAGE${edited ? "_EDITED" : ""}`, payload: index });
     };
 
+    const checkIfLastLanguageComplete = () => {
+        const lastLanguage = languages[languages.length - 1];
+        return validateLanguage(lastLanguage.language) && lastLanguage.level !== "";
+    };
+
+    const isLastLanguageComplete = checkIfLastLanguageComplete();
+
     return (
         <Card>
             <div className=" flex flex-col  gap-2 pb-12">
@@ -38,10 +62,16 @@ const Languages = ({ edited }: { edited: boolean }) => {
                     <div key={language.id} className="flex flex-col 2x-l:flex-row w-full gap-5 2xl:gap-10">
                         <div className="flex flex-col gap-2 w-2/5">
                             <label className="text-base font-medium text-gray-700" htmlFor={`language-${index}`}>Language</label>
-                            <input onChange={(e) => handleLanguageChange(e.target.value, index)}
+                            <input
+                                onChange={(e) => handleLanguageChange(e.target.value, index)}
                                 aria-label="Language name"
-                                className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
-                                id={`language-${index}`} placeholder="English" value={languages[index].language} />
+                                className={`border p-1 rounded-md focus:outline-none ${errors[index] ? "border-red-500" : "border-gray-300"}`}
+                                type="text"
+                                id={`language-${index}`}
+                                placeholder="English"
+                                value={languages[index].language}
+                            />
+                            {errors[index] && <span className="text-red-500 text-sm">{errors[index]}</span>}
                         </div>
                         <div className="flex flex-col gap-4">
                             <div className="flex justify-between">
@@ -71,12 +101,18 @@ const Languages = ({ edited }: { edited: boolean }) => {
                 ))}
             </div>
             <div className="w-full flex justify-end">
-                <button aria-label="Add language" disabled={!languages[languages.length - 1].language} onClick={handleAddLanguage}
+                <button
+                    aria-label="Add language"
+                    disabled={!isLastLanguageComplete}
+                    onClick={handleAddLanguage}
                     className={classNames(
                         "text-lg font-bold text-gray-900 rounded-lg border-solid border-gray-300 border p-2",
-                        { "cursor-not-allowed": !languages[languages.length - 1]?.language },
-                        { "hover:bg-gray-400": languages[languages.length - 1]?.language }
-                    )}>+ Add Language</button>
+                        { "cursor-not-allowed": !isLastLanguageComplete },
+                        { "hover:bg-gray-400": isLastLanguageComplete }
+                    )}
+                >
+                    + Add Language
+                </button>
             </div>
         </Card >)
 };

@@ -80,13 +80,14 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                 draft.onGoingResume.skills = action.payload.skills;
                 break;
             case "ADD_LANGUAGE":
-                draft.onGoingResume.languages.push({ language: "", level: "", id: uniqid() });
+                draft.onGoingResume.languages.push({ language: "", level: "", id: uniqid(), isValid: false });
                 break;
             case "SET_LANGUAGE":
                 draft.onGoingResume.languages[action.payload.index] = {
                     language: action.payload.language,
                     level: draft.onGoingResume.languages[action.payload.index].level,
-                    id: draft.onGoingResume.languages[action.payload.index].id
+                    id: draft.onGoingResume.languages[action.payload.index].id,
+                    isValid: action.payload.isValid,
                 };
                 break;
             case "SET_LANGUAGE_PROFICIENCY_LEVEL":
@@ -180,13 +181,14 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                 draft.resumeBeingEdited.skills = action.payload.skills;
                 break;
             case "ADD_LANGUAGE_EDITED":
-                draft.resumeBeingEdited.languages.push({ language: "", level: "", id: uniqid() });
+                draft.resumeBeingEdited.languages.push({ language: "", level: "", id: uniqid(), isValid: false });
                 break;
             case "SET_LANGUAGE_EDITED":
                 draft.resumeBeingEdited.languages[action.payload.index] = {
                     language: action.payload.language,
                     level: draft.resumeBeingEdited.languages[action.payload.index].level,
-                    id: draft.resumeBeingEdited.languages[action.payload.index].id
+                    id: draft.resumeBeingEdited.languages[action.payload.index].id,
+                    isValid: action.payload.isValid,
                 };
                 break;
             case "SET_LANGUAGE_PROFICIENCY_LEVEL_EDITED":
