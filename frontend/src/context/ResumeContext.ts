@@ -14,7 +14,8 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             email: "",
             phoneNumber: "",
             location: "",
-            summary: ""
+            summary: "",
+            isValid: undefined,
         },
         workExperience: [{
             company: "",
@@ -44,7 +45,8 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             email: "",
             phoneNumber: "",
             location: "",
-            summary: ""
+            summary: "",
+            isValid: undefined,
         },
         workExperience: [{
             company: "",
@@ -76,6 +78,7 @@ export type resumeInfoType = {
         phoneNumber: string;
         location: string;
         summary: string;
+        isValid: undefined | boolean;
     };
     workExperience: {
         company: string;

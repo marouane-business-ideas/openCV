@@ -18,8 +18,12 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                 draft.resumeBeingEdited = defaultContext.resumeBeingEdited;
                 break;
             case "SET_PERSONAL_INFO":
-                draft.onGoingResume.personalInfo[Object.keys(action.payload)[0] as keyof resumeInfoType["personalInfo"]]
+                draft.onGoingResume.personalInfo[Object.keys(action.payload)[0] as keyof Omit<resumeInfoType["personalInfo"], "isValid">]
                     = action.payload[Object.keys(action.payload)[0]];
+                break;
+            case "SET_PROFILE_VALIDITY":
+                draft.onGoingResume.personalInfo["isValid"]
+                    = action.payload;
                 break;
             case "ADD_WORK_EXPERIENCE":
                 draft.onGoingResume.workExperience.push({ company: "", jobTitle: "", date: "", description: "", location: "", id: uniqid() });
@@ -96,8 +100,12 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                 draft.onGoingResume.themeColor = action.payload;
                 break;
             case "SET_PERSONAL_INFO_EDITED":
-                draft.resumeBeingEdited.personalInfo[Object.keys(action.payload)[0] as keyof resumeInfoType["personalInfo"]]
+                draft.resumeBeingEdited.personalInfo[Object.keys(action.payload)[0] as keyof Omit<resumeInfoType["personalInfo"], "isValid">]
                     = action.payload[Object.keys(action.payload)[0]];
+                break;
+            case "SET_PROFILE_VALIDITY_EDITED":
+                draft.resumeBeingEdited.personalInfo["isValid"]
+                    = action.payload;
                 break;
             case "ADD_WORK_EXPERIENCE_EDITED":
                 draft.resumeBeingEdited.workExperience.push({ company: "", jobTitle: "", date: "", description: "", location: "", id: uniqid() });
