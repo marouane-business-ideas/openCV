@@ -10,7 +10,7 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
     const resume = edited ? (resumeBeingEdited as resumeInfoType) : onGoingResume;
 
     return (
-        <div className="w-5/6 2xl:w-1/2 h-1/2 2xl:h-full flex justify-center p-5 2xl:pt-5 2xl:pb-5 shadow-xl shadow-blue-500/60">
+        <div className="w-full lg:w-5/6 2xl:w-1/2 h-1/2 2xl:h-full flex justify-center p-5 2xl:pt-5 2xl:pb-5 shadow-xl shadow-blue-500/60">
             <div className='h-full w-full flex flex-col gap-5 items-center' >
                 <div id="pdf-viewer-iframe-container" className="flex justify-center h-full w-full overflow-y-scroll 2xl:overflow-y-hidden
                  relative @container/Iframe-container">
