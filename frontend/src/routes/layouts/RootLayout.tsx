@@ -1,9 +1,12 @@
-import { Outlet, Link } from "react-router-dom";
-import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react"
+import { Outlet, Link, useLocation } from "react-router-dom";
+import { SignedIn, SignedOut, useClerk } from "@clerk/clerk-react"
 
 import ContextProvider from "../../context/ContextProvider";
 
 function Layout() {
+    const { signOut } = useClerk();
+    const location = useLocation();
+
     return (
         <ContextProvider >
             <div className="h-full 2xl:overflow-hidden">
@@ -12,12 +15,29 @@ function Layout() {
                         <Link className="lg:text-2xl text-lg" to="/">OnlineResume</Link>
                         <nav className="flex items-center gap-5 text-base">
                             <SignedIn>
-                                <UserButton />
-                                <Link to="/dashboard">Dashboard</Link>
+                                {location.pathname !== "/dashboard" && (
+                                    <Link
+                                        className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
+                                         hover:shadow-lg hover:scale-105"
+                                        to="/dashboard">Dashboard</Link>
+                                )}
+                                <button
+                                    onClick={() => signOut({ redirectUrl: "/" })}
+                                    className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
+                                     hover:shadow-lg hover:scale-105"
+                                >
+                                    Sign out
+                                </button>
                             </SignedIn>
                             <SignedOut>
-                                <Link to="/sign-in">Log in</Link>
-                                <Link to="/sign-up">Create an account</Link>
+                                <Link
+                                    className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
+                                         hover:shadow-lg hover:scale-105"
+                                    to="/sign-in">Log in</Link>
+                                <Link
+                                    className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
+                                         hover:shadow-lg hover:scale-105"
+                                    to="/sign-up">Create an account</Link>
                             </SignedOut>
                         </nav>
                     </div>
