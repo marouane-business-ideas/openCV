@@ -87,6 +87,7 @@ app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), async (re
     }
 
     const { type, data } = JSON.parse(payload);
+    console.log("*** Received webhook event:", type);
 
     if (type === "user.created") {
         const { id, first_name, last_name, email_addresses } = data;
@@ -102,6 +103,17 @@ app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), async (re
             return res.status(201).send("User registered");
         } catch (err) {
             console.error("Error registering user:", err);
+            return res.status(500).send("Internal Server Error");
+        }
+    } else if (type === "user.deleted") {
+        const { id } = data;
+
+        try {
+            await db.run("DELETE FROM users WHERE id = ?", [id]);
+            console.log("User deleted from database:", id);
+            return res.status(200).send("User deleted");
+        } catch (err) {
+            console.error("Error deleting user:", err);
             return res.status(500).send("Internal Server Error");
         }
     } else {
