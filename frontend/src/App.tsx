@@ -12,6 +12,7 @@ import Dashboard from "./routes/Dashboard";
 import DashboardLayout from "./routes/layouts/DashboardLayout";
 import AccountPage from "./routes/Account";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import SSOCallBack from "./routes/SSOCallback";
 
 
 const router = createBrowserRouter([
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: "resume", element: <ResumeBuilder /> },
       { path: "resume/:resumeId", element: <ProtectedRoute><ResumeBuilder /></ProtectedRoute> },
       { path: "sign-in", element: <SignInPage /> },
+      { path: "sign-in/sso-callback", element: <SSOCallBack /> },
       { path: "sign-up/*", element: <SignUpPage /> },
       {
         path: "/dashboard",
