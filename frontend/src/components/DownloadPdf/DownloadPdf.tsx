@@ -89,6 +89,7 @@ const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing:
                 <ArrowDownTrayIcon className="size-5" aria-hidden="true" />
                 <span className="whitespace-nowrap text-xl">Download Resume</span>
             </button>
+            {!isSignedIn && <p className="md:text-sm text-xs text-gray-500">Sign in to download your resume as a PDF</p>}
             {isDownloading && <ArrowPathIcon className="animate-spin size-7 text-blue-400" aria-hidden="true" />}
             {downloadError && <p className="text-sm text-red-500">{downloadError}</p>}
         </>
