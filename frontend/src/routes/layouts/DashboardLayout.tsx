@@ -2,7 +2,7 @@ import { Link, Outlet } from "react-router-dom";
 
 function DashboardLayout() {
     return (
-        <div className="2xl:h-[calc(100vh-4rem)] flex">
+        <div className="h-[calc(100vh-4rem)] flex">
             <div className="w-64 bg-white shadow-md">
                 <div className="p-6">
                     <h1 className="text-xl font-semibold">Resume Builder</h1>
