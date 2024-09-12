@@ -21,6 +21,15 @@ body {
   font-family: 'Inter Variable', sans-serif;
 }
 
+/** 
+    Custom styles to adding directly to the Preview component makes puppeteer print an extra empty page
+    Has to be the same value inside index file in the backend
+*/
+
+#pdf-viewer-iframe {
+  padding-top: 35px;
+}
+
 /** Tailwind Container queries implementation doesn't allow max-width. Hence the css code below */
 @container Iframe-container (max-width: 804px) {
   iframe {

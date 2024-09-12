@@ -12,7 +12,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
         display: "flex",
         flexDirection: "column",
         gap: "15px",
-        padding: "35px 70px",
+        padding: "0px 70px",
     },
     personnalInfoContainer: {
         padding: "10px",
@@ -124,11 +124,15 @@ const ExperienceTopSection = ({ children }: { children: JSX.Element[] }) => {
 }
 
 
-const Preview = (props: { resume: resumeInfoType, customStyle?: React.CSSProperties, customClassName?: string }) => {
+const Preview = (props: {
+    resume: resumeInfoType,
+    customStyle?: React.CSSProperties,
+    customClassName?: string,
+}) => {
     const { personalInfo, workExperience, education, skills, languages, links, themeColor } = props.resume;
     return (
-        <div className={props.customClassName} style={props.customStyle}>
-            <div style={Styles.pageContainer}>
+        <>
+            <div className={props.customClassName} style={{ ...Styles.pageContainer, ...props.customStyle }}>
                 <div style={Styles.personnalInfoContainer}>
                     <div style={{ ...Styles.personnalInfoName, color: themeColor }}>{personalInfo.name}</div>
                     <div style={{ ...Styles.personnalTitle, color: themeColor }}>{personalInfo.title}</div>
@@ -244,7 +248,7 @@ const Preview = (props: { resume: resumeInfoType, customStyle?: React.CSSPropert
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
