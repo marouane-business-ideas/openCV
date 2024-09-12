@@ -50,14 +50,15 @@ function Dashboard() {
     return (
         <>
             <header className="mb-6 flex justify-between items-center">
-                <h2 className="text-3xl font-semibold mb-4">Your Resumes</h2>
-                <Link to="/resume" className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200"
+                <h2 className="text-3xl text-center md:text-left w-full md:w-fit font-semibold mb-4">Your Resumes</h2>
+                <Link to="/resume" className="bg-blue-500 text-white py-2 px-4 hidden lg:block rounded-lg shadow-md
+                 hover:bg-blue-600 transition duration-200"
                     aria-label="Create New Resume">
                     Create New Resume
                 </Link>
             </header>
             {error ? <p className="text-sm text-center text-red-500">{error}</p> :
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center md:justify-items-start">
                     {isLoading ? (
                         Array(3).fill(0).map((_, index) => (
                             <SkeletonLoader key={index} />
@@ -72,8 +73,8 @@ function Dashboard() {
                 </div>
             }
 
-            <div className="mt-8 w-2/4">
-                <h3 className="text-2xl font-semibold mb-4">Account Information</h3>
+            <div className="mt-8 w-full flex flex-col lg:w-2/4">
+                <h3 className="text-2xl text-center lg:text-left font-semibold mb-4">Account Information</h3>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     {user && <p className="text-xl font-semibold">{user.fullName}</p>}
                     {user && <p className="mt-2 text-gray-500">Email: {user.emailAddresses[0].emailAddress}</p>}

@@ -1,17 +1,35 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 function DashboardLayout() {
+    const location = useLocation();
+
     return (
-        <div className="h-[calc(100vh-4rem)] flex">
-            <div className="w-64 bg-white shadow-md">
-                <div className="p-6">
-                    <h1 className="text-xl font-semibold">Resume Builder</h1>
-                    <nav className="mt-6">
-                        <Link to="/dashboard" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-200">
+        <div className="h-[calc(100vh-4rem)] flex flex-col md:flex-row">
+            <div className="w-full md:w-64 bg-white shadow-md">
+                <div className="md:p-6 p-2">
+                    <nav className="md:hidden">
+                        <Link to="/dashboard" className={`inline-block py-2 px-4 rounded transition duration-200
+                             ${location.pathname === "/dashboard" ? "bg-gray-200" : ""}`}>
                             Resume Previews
                         </Link>
-                        <Link to="/dashboard/account" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-200">
+                        <Link to="/dashboard/account" className={`inline-block py-2 px-4 rounded transition duration-200
+                             ${location.pathname === "/dashboard/account" ? "bg-gray-200" : ""}`}>
                             Account
+                        </Link>
+                    </nav>
+                    <nav className="hidden md:flex flex-col gap-3">
+                        <Link to="/dashboard" className={`block py-2.5 px-4 rounded transition duration-200
+                             ${location.pathname === "/dashboard" ? "bg-gray-200" : ""}`}>
+                            Resume Previews
+                        </Link>
+                        <Link to="/dashboard/account" className={`block py-2.5 px-4 rounded transition duration-200
+                             ${location.pathname === "/dashboard/account" ? "bg-gray-200" : ""}`}>
+                            Account
+                        </Link>
+                        <Link to="/resume" className="bg-blue-500 text-white text-center py-2 rounded-lg shadow-md
+                 hover:bg-blue-600 transition duration-200 mt-16 lg:hidden"
+                            aria-label="Create New Resume">
+                            Create New Resume
                         </Link>
                     </nav>
                 </div>
