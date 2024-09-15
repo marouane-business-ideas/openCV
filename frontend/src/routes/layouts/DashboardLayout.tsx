@@ -26,11 +26,6 @@ function DashboardLayout() {
                              ${location.pathname === "/dashboard/account" ? "bg-gray-200" : ""}`}>
                             Account
                         </Link>
-                        <Link to="/resume" className="bg-blue-500 text-white text-center py-2 rounded-lg shadow-md
-                 hover:bg-blue-600 transition duration-200 mt-16 lg:hidden"
-                            aria-label="Create New Resume">
-                            Create New Resume
-                        </Link>
                     </nav>
                 </div>
             </div>
