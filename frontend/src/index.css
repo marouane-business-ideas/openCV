@@ -47,4 +47,10 @@ body {
       margin: revert;
     }
   }
-  
+
+  @media (min-width: 1204px) {
+  .dashboard-grid::after {
+    content: "";
+    flex: auto;
+  }
+}

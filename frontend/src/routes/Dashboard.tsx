@@ -58,7 +58,7 @@ function Dashboard() {
                 </Link>
             </header>
             {error ? <p className="text-sm text-center text-red-500">{error}</p> :
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center md:justify-items-start">
+                <div className="dashboard-grid flex flex-wrap justify-center xl:justify-normal">
                     {isLoading ? (
                         Array(3).fill(0).map((_, index) => (
                             <SkeletonLoader key={index} />
