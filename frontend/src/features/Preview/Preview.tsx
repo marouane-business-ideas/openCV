@@ -29,7 +29,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
         fontWeight: 900,
     },
     personnalTitle: {
-        fontSize: "16px",
+        fontSize: "12px",
         textTransform: "uppercase",
         letterSpacing: "0.10em",
         fontWeight: 500,
@@ -70,7 +70,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
     },
     SectionTitle: {
         fontSize: "16px",
-        fontWeight: 500,
+        fontWeight: 900,
         letterSpacing: "0.10em",
         width: firstColumnWidth,
         minWidth: firstColumnWidth,
@@ -88,6 +88,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
         fontSize: "14px",
         letterSpacing: "0.175px",
         minWidth: firstColumnWidth,
+        fontWeight: 900,
     },
     experienceTopSection: {
         display: "flex",
