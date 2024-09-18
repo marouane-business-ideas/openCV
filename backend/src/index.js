@@ -160,7 +160,7 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
 
         const pdfBuffer = await cluster.execute(async ({ page }) => {
             await page.setContent(htmlContent);
-            const buffer = await page.pdf({ format: "A4", margin: { top: "35px" } });
+            const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
             return buffer;
         });
 
@@ -227,7 +227,7 @@ app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
         // Generate the PDF
         const pdfBuffer = await cluster.execute(async ({ page }) => {
             await page.setContent(htmlContent);
-            const buffer = await page.pdf({ format: "A4", margin: { top: "35px" } });
+            const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
             return buffer;
         });
 
