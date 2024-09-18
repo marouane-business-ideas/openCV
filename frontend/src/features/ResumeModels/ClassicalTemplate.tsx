@@ -100,9 +100,9 @@ const Styles: { [key: string]: React.CSSProperties } = {
     }
 };
 
-const SectionTitle = ({ children, themeColor }: { children: string, themeColor: string }) => {
+const SectionTitle = ({ children }: { children: string }) => {
     return (
-        <div style={{ ...Styles.SectionTitle, color: themeColor }} >{children}</div>
+        <div style={{ ...Styles.SectionTitle }} >{children}</div>
     );
 }
 
@@ -112,9 +112,9 @@ const SectionText = ({ children }: { children: string }) => {
     );
 }
 
-const ExperienceDate = ({ children, themeColor }: { children: string, themeColor: string }) => {
+const ExperienceDate = ({ children }: { children: string }) => {
     return (
-        <div style={{ ...Styles.experienceDate, color: themeColor }}>{children}</div>
+        <div style={{ ...Styles.experienceDate }}>{children}</div>
     );
 }
 
@@ -133,14 +133,13 @@ const Preview = (props: {
     const { personalInfo, workExperience, education, skills, languages, links, themeColor } = props.resume;
     return (
         <>
-            <div className={props.customClassName} style={{ ...Styles.pageContainer, ...props.customStyle }}>
+            <div className={props.customClassName} style={{ ...Styles.pageContainer, ...props.customStyle, color: themeColor }}>
                 <div style={Styles.personnalInfoContainer}>
-                    <div style={{ ...Styles.personnalInfoName, color: themeColor }}>{personalInfo.name}</div>
-                    <div style={{ ...Styles.personnalTitle, color: themeColor }}>{personalInfo.title}</div>
+                    <div style={{ ...Styles.personnalInfoName }}>{personalInfo.name}</div>
+                    <div style={{ ...Styles.personnalTitle }}>{personalInfo.title}</div>
                 </div>
                 <div style={{
                     ...Styles.personnalInfoAdresses,
-                    color: themeColor,
                     borderTop: `1px solid ${themeColor}`,
                     borderBottom: `1px solid ${themeColor}`
                 }}>
@@ -174,18 +173,18 @@ const Preview = (props: {
                 </div>
                 <div style={Styles.resumeContentContainer}>
                     <div style={Styles.sectionRow}>
-                        <SectionTitle themeColor={themeColor}>PROFILE</SectionTitle>
+                        <SectionTitle>PROFILE</SectionTitle>
                         <SectionText>{personalInfo.summary}</SectionText>
                     </div>
                     <div style={Styles.sectionRow}>
-                        <SectionTitle themeColor={themeColor}>EXPERIENCE</SectionTitle>
+                        <SectionTitle>EXPERIENCE</SectionTitle>
                     </div>
                     {workExperience.map((job, index) => (
                         <div key={`${index}-${job.date}-${job.company}`} style={{
                             ...Styles.sectionRow,
                             marginTop: `${index === 0 ? "10px" : "20px"}`
                         }}>
-                            <ExperienceDate themeColor={themeColor}>{job.date}</ExperienceDate>
+                            <ExperienceDate>{job.date}</ExperienceDate>
                             <ExperienceTopSection>
                                 <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
                                     <div style={{ fontWeight: 900 }}>{job.company}</div>
@@ -198,14 +197,14 @@ const Preview = (props: {
                         </div>
                     ))}
                     <div style={Styles.sectionRow}>
-                        <SectionTitle themeColor={themeColor}>EDUCATION</SectionTitle>
+                        <SectionTitle>EDUCATION</SectionTitle>
                     </div>
                     {education.map((school, index) => (
                         <div key={`${index}-${school.date}-${school.schoolName}`} style={{
                             ...Styles.sectionRow,
                             marginTop: `${index === 0 ? "10px" : "0"}`
                         }}>
-                            <ExperienceDate themeColor={themeColor}>{school.date}</ExperienceDate>
+                            <ExperienceDate>{school.date}</ExperienceDate>
                             <ExperienceTopSection>
                                 <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
                                     <div style={{ fontWeight: 900 }}>{school.schoolName}</div>
@@ -216,7 +215,7 @@ const Preview = (props: {
                         </div>
                     ))}
                     <div style={Styles.sectionRow}>
-                        <SectionTitle themeColor={themeColor}>SKILLS</SectionTitle>
+                        <SectionTitle>SKILLS</SectionTitle>
                         <div style={{ fontWeight: "900" }}>
                             {skills.map((skill, index) => (
                                 <span key={`${skill}-${index}`}>
@@ -225,7 +224,7 @@ const Preview = (props: {
                         </div>
                     </div>
                     <div style={Styles.sectionRow}>
-                        <SectionTitle themeColor={themeColor}>LANGUAGES</SectionTitle>
+                        <SectionTitle>LANGUAGES</SectionTitle>
                         <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap" }}>
                             {languages.map((language, index) => (
                                 <div key={language.id} style={{ display: "flex", gap: "3px" }}>
@@ -237,11 +236,11 @@ const Preview = (props: {
                         </div>
                     </div>
                     <div style={Styles.sectionRow}>
-                        <SectionTitle themeColor={themeColor}>PERSONAL LINKS</SectionTitle>
+                        <SectionTitle>PERSONAL LINKS</SectionTitle>
                         <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap" }}>
                             {links.map((link, index) => (
                                 <div key={link.id} style={{ display: "flex", gap: "3px" }}>
-                                    <a style={Styles.link} target="_blank" href={link.linkUrl} >{link.linkName}</a>
+                                    <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={link.linkUrl} >{link.linkName}</a>
                                     <span style={{ fontWeight: "900", marginLeft: "2px" }} >{index !== links.length - 1 ? "•" : ""}</span>
                                 </div>))
                             }

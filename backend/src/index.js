@@ -9,7 +9,7 @@ import { Webhook } from "svix";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import process from "process";
 
-import { getUserDownloadCount, incrementUserDownloadCount, initDb } from "./db.js";
+import { getUserDownloadCount, getUserMaxPdfs, incrementUserDownloadCount, initDb } from "./db.js";
 import Preview from "./Preview.js";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
@@ -149,12 +149,12 @@ app.use("/api/users/:userId/*", (req, res, next) => {
 /**  PDF routes */
 app.post("/api/users/:userId/pdfs", async (req, res) => {
     const { userId } = req.params;
-    const { resume } = req.body;
-
+    const { resume, template } = req.body;
 
     try {
         const userPdfCount = await getUserDownloadCount(db, userId);
-        if (userPdfCount >= 5) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
+        const userMaxPdfs = await getUserMaxPdfs(db, userId);
+        if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
@@ -167,7 +167,9 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
         const filename = `CV_${Date.now()}.pdf`;
 
         // Insert metadata into SQLite database
-        await db.run("INSERT INTO pdf_metadata (filename, content, userId) VALUES (?, ?, ?)", [filename, JSON.stringify(resume), userId]);
+        await db.run("INSERT INTO pdf_metadata (filename, content, userId, template) VALUES (?, ?, ?, ?)",
+            [filename, JSON.stringify(resume), userId, template]
+        );
 
         await incrementUserDownloadCount(db, userId);
         console.log("PDF generated successfully");
@@ -191,7 +193,8 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
 app.get("/api/users/:userId/pdfs", async (req, res) => {
     const userId = req.params.userId;
     try {
-        const rows = await db.all("SELECT content, datetime(createdAt, \"localtime\") as createdAt, id FROM pdf_metadata WHERE userId = ?", [userId]);
+        // eslint-disable-next-line max-len
+        const rows = await db.all("SELECT content, datetime(createdAt, \"localtime\") as createdAt, id, template FROM pdf_metadata WHERE userId = ?", [userId]);
         res.status(200).json(rows);
     } catch (err) {
         console.error("Error retrieving PDFs:", err);
@@ -216,11 +219,12 @@ app.get("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
 
 app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
     const { userId, pdfId } = req.params;
-    const { resume } = req.body;
+    const { resume, template } = req.body;
 
     try {
         const userPdfCount = await getUserDownloadCount(db, userId);
-        if (userPdfCount >= 5) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
+        const userMaxPdfs = await getUserMaxPdfs(db, userId);
+        if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
@@ -231,7 +235,9 @@ app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
             return buffer;
         });
 
-        await db.run("UPDATE pdf_metadata SET content = ? WHERE id = ? AND userId = ?", [JSON.stringify(resume), pdfId, userId]);
+        await db.run("UPDATE pdf_metadata SET content = ?, template = ? WHERE id = ? AND userId = ?",
+            [JSON.stringify(resume), template, pdfId, userId]
+        );
 
 
         await incrementUserDownloadCount(db, userId);

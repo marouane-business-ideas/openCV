@@ -1,13 +1,41 @@
-import { useContext, useRef, useState, useEffect } from "react";
-import Frame from "react-frame-component"
-import Preview from "../Preview/Preview"
+import { useContext, useRef, useState, useEffect, lazy, Suspense } from "react";
+import Frame, { FrameContextConsumer } from "react-frame-component"
 import { ResumeContext, resumeInfoType } from "../../context/ResumeContext";
 import DownloadPdf from "../../components/DownloadPdf/DownloadPdf";
+import ClassicalTemplate from "../ResumeModels/ClassicalTemplate";
+
+/*
+   Can't use Spinner component because we can't use tailwind classes in iframe,
+   so we need to define the spinner styles here
+
+ **/
+const CustomIframeSpinner = () => {
+    return (
+        <div style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+        }}>
+            <div
+                className="spinner animate-spin rounded-full border-b-2 border-blue-500"
+                style={{
+                    width: "3.5rem",
+                    height: "3.5rem",
+                    borderBottomStyle: "solid",
+                }}
+            />
+        </div>
+    );
+};
+
+const ProfessionalTemplate = lazy(() => import("../ResumeModels/ProfessionalTemplate"));
 
 const PdfViewer = ({ edited }: { edited: boolean }) => {
     const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
 
     const resume = edited ? (resumeBeingEdited as resumeInfoType) : onGoingResume;
+    const resumeTemplate = resume.resumeTemplate;
 
     const containerRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
@@ -44,7 +72,49 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
                             transformOrigin: "left top",
                         }}
                     >
-                        <Preview resume={resume} />
+                        <FrameContextConsumer>
+                            {
+                                ({ document }) => {
+                                    if (document) {
+                                        const style = document.createElement("style");
+                                        style.innerHTML = `
+                                            @keyframes spin {
+                                              to {
+                                                transform: rotate(360deg);
+                                              }
+                                            }
+
+                                            .animate-spin {
+                                              animation: spin 1s linear infinite;
+                                            }
+
+                                            .rounded-full {
+                                                 border-radius: 9999px;
+                                                }
+
+                                                .border-b-2 {
+                                                    border-bottom-width: 2px;
+                                                }
+
+                                                .border-blue-500 {
+                                                    --tw-border-opacity: 1;
+                                                    border-color: rgb(59 130 246 / var(--tw-border-opacity));
+                                                }
+}
+                                        `;
+                                        document.head.appendChild(style);
+
+                                        return <Suspense fallback={<CustomIframeSpinner />}>
+                                            {resumeTemplate === "professional" ?
+                                                <ProfessionalTemplate resume={resume} />
+                                                :
+                                                <ClassicalTemplate resume={resume} />}
+                                        </Suspense>
+                                    }
+                                }
+                            }
+                        </FrameContextConsumer>
+
                     </Frame>
                 </div>
                 <DownloadPdf resume={resume} isEditing={edited} />

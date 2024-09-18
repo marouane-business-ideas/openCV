@@ -1,9 +1,9 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
 
 export async function initDb() {
     const db = await open({
-        filename: './database.db',
+        filename: "./database.db",
         driver: sqlite3.Database
     });
 
@@ -25,6 +25,7 @@ export async function initDb() {
             userId TEXT NOT NULL,
             filename TEXT NOT NULL,
             content TEXT NOT NULL,
+            template TEXT NOT NULL CHECK (template IN ('classic', 'professional')),
             createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE
         )
@@ -34,31 +35,6 @@ export async function initDb() {
     await db.exec(`
         CREATE INDEX IF NOT EXISTS idx_pdf_metadata_userId ON pdf_metadata(userId);
     `);
-
-    // Create a trigger to enforce PDF limit per user
-    // await db.exec(`
-    //     CREATE TRIGGER IF NOT EXISTS enforce_pdf_limit_insert
-    //     BEFORE INSERT ON pdf_metadata
-    //     BEGIN
-    //         SELECT CASE
-    //             WHEN (SELECT COUNT(*) FROM pdf_metadata WHERE userId = NEW.userId) >= 
-    //                  (SELECT maxPdfs FROM users WHERE id = NEW.userId)
-    //             THEN RAISE(ABORT, 'PDF limit exceeded for this user')
-    //         END;
-    //     END;
-    // `);
-
-    // await db.exec(`
-    //     CREATE TRIGGER IF NOT EXISTS enforce_pdf_limit_update
-    //     BEFORE UPDATE ON pdf_metadata
-    //     BEGIN
-    //         SELECT CASE
-    //             WHEN (SELECT COUNT(*) FROM pdf_metadata WHERE userId = NEW.userId) >= 
-    //                  (SELECT maxPdfs FROM users WHERE id = NEW.userId)
-    //             THEN RAISE(ABORT, 'PDF limit exceeded for this user')
-    //         END;
-    //     END;
-    // `);
 
     return db;
 }
@@ -75,7 +51,6 @@ export async function incrementUserDownloadCount(db, userId) {
     return userPdfCount;
 }
 
-// Add a function to get total downloads for a user
 export async function getUserDownloadCount(db, userId) {
     const result = await db.get(`
         SELECT downloadedPdfs
@@ -83,4 +58,14 @@ export async function getUserDownloadCount(db, userId) {
         WHERE id = ?
     `, [userId]);
     return result ? result.downloadedPdfs : 0;
+}
+
+
+export async function getUserMaxPdfs(db, userId) {
+    const result = await db.get(`
+        SELECT maxPdfs
+        FROM users
+        WHERE id = ?
+    `, [userId]);
+    return result ? result.maxPdfs : 5;
 }
