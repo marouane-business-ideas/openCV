@@ -2,12 +2,14 @@ import { createContext, Dispatch } from "react";
 import uniqid from "uniqid";
 
 export type LanguageLevelType = "native" | "fluent" | "intermediate" | "beginner" | "";
+export type templateType = "classic" | "professional";
 
 const savedState = localStorage.getItem("resumeState");
 
 
 export const defaultContext = savedState ? JSON.parse(savedState) : {
     onGoingResume: {
+        resumeTemplate: "classic",
         personalInfo: {
             name: "John Doe",
             title: "Software Developer",
@@ -50,8 +52,8 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
         ],
         themeColor: "#191919"
     },
-
     resumeBeingEdited: {
+        resumeTemplate: "classic",
         personalInfo: {
             name: "",
             title: "",
@@ -83,6 +85,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
 };
 
 export type resumeInfoType = {
+    resumeTemplate: templateType;
     personalInfo: {
         name: string;
         title: string;

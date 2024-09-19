@@ -5,6 +5,7 @@ import Skills from "../Skills/Skills"
 import Languages from "../Languages/Languages"
 import PersonnalLinks from "../PersonnalLinks/PersonnalLinks"
 import Theme from "../ResumeTheme/ResumeTheme"
+import ResumeTemplate from "../ResumeTemplate/ResumeTemplate"
 
 const Form = ({ edited }: { edited: boolean }) => {
     return (
@@ -17,6 +18,7 @@ const Form = ({ edited }: { edited: boolean }) => {
             <Languages edited={edited} />
             <PersonnalLinks edited={edited} />
             <Theme edited={edited} />
+            <ResumeTemplate edited={edited} />
         </div>
     )
 }

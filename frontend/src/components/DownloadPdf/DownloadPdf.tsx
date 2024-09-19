@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { ArrowDownTrayIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
-import { resumeInfoType } from "../../context/ResumeContext";
+import { resumeInfoType, templateType } from "../../context/ResumeContext";
 import classNames from "classnames";
 import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import DownloadError from "../../utils/DownloadError";
 
 
-const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing: boolean }) => {
+const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfoType; isEditing: boolean, resumeTemplate: templateType }) => {
     const { resumeId } = useParams();
     const { user, isSignedIn } = useUser();
     const [isDownloading, setIsDownloading] = useState(false);
@@ -32,7 +32,7 @@ const DownloadPdf = ({ resume, isEditing }: { resume: resumeInfoType; isEditing:
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             },
-            body: JSON.stringify({ resume }),
+            body: JSON.stringify({ resume, template: resumeTemplate }),
         });
 
         if (!response.ok) {

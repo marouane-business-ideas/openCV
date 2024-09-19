@@ -95,6 +95,9 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
             case "SET_THEME_COLOR":
                 draft.onGoingResume.themeColor = action.payload;
                 break;
+            case "SET_TEMPLATE":
+                draft.onGoingResume.resumeTemplate = action.payload;
+                break;
             case "SET_PERSONAL_INFO_EDITED":
                 draft.resumeBeingEdited.personalInfo[Object.keys(action.payload)[0] as keyof resumeInfoType["personalInfo"]]
                     = action.payload[Object.keys(action.payload)[0]];
@@ -176,6 +179,9 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
                 break;
             case "SET_THEME_COLOR_EDITED":
                 draft.resumeBeingEdited.themeColor = action.payload;
+                break;
+            case "SET_TEMPLATE_EDITED":
+                draft.resumeBeingEdited.resumeTemplate = action.payload;
                 break;
             default:
                 break;

@@ -48,10 +48,6 @@ const Theme = ({ edited }: { edited: boolean }) => {
                             style={{ backgroundColor: "#8C9399" }}>
                             {themeColor === "#8C9399" && <CheckIcon className="w-6 h-6 text-white" />}
                         </button>
-                        <button onClick={() => handleThemeClick("#C2C3C3")} className={"w-10 h-10 flex items-center justify-center"}
-                            style={{ backgroundColor: "#C2C3C3" }}>
-                            {themeColor === "#C2C3C3" && <CheckIcon className="w-6 h-6 text-white" />}
-                        </button>
                         <button onClick={() => handleThemeClick("#7A6C55")} className={"w-10 h-10 flex items-center justify-center"}
                             style={{ backgroundColor: "#7A6C55" }}>
                             {themeColor === "#7A6C55" && <CheckIcon className="w-6 h-6 text-white" />}
@@ -63,18 +59,6 @@ const Theme = ({ edited }: { edited: boolean }) => {
                         <button onClick={() => handleThemeClick("#968C77")} className={"w-10 h-10 flex items-center justify-center"}
                             style={{ backgroundColor: "#968C77" }}>
                             {themeColor === "#968C77" && <CheckIcon className="w-6 h-6 text-white" />}
-                        </button>
-                        <button onClick={() => handleThemeClick("#C2C7CC")} className={"w-10 h-10 flex items-center justify-center"}
-                            style={{ backgroundColor: "#C2C7CC" }}>
-                            {themeColor === "#C2C7CC" && <CheckIcon className="w-6 h-6 text-white" />}
-                        </button>
-                        <button onClick={() => handleThemeClick("#D0D4D8")} className={"w-10 h-10 flex items-center justify-center"}
-                            style={{ backgroundColor: "#D0D4D8" }}>
-                            {themeColor === "#D0D4D8" && <CheckIcon className="w-6 h-6 text-white" />}
-                        </button>
-                        <button onClick={() => handleThemeClick("#D9DCDF")} className={"w-10 h-10 flex items-center justify-center"}
-                            style={{ backgroundColor: "#D9DCDF" }}>
-                            {themeColor === "#D9DCDF" && <CheckIcon className="w-6 h-6 text-white" />}
                         </button>
                     </div>
                 </div>

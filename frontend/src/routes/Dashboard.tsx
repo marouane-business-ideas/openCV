@@ -68,7 +68,12 @@ function Dashboard() {
                             <PdfCard key={pdf.id} pdf={pdf} />
                         ))
                     ) : (
-                        <p className="col-span-full text-center text-gray-500">No resumes found. <Link to="/resume" className="underline underline-offset-2 hover:underline-offset-4" aria-label="Create New Resume">Create your first resume!</Link></p>
+                        <p className="col-span-full text-center text-gray-500">
+                            No resumes found.{" "}
+                            <Link to="/resume" className="underline underline-offset-2 hover:underline-offset-4" aria-label="Create New Resume">
+                                Create your first resume !
+                            </Link>
+                        </p>
                     )}
                 </div>
             }
