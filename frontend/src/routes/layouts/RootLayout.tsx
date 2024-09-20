@@ -101,6 +101,14 @@ function Layout() {
 
                 <main className="h-full w-full">
                     <Outlet />
+                    {location.pathname === "/" && <footer className="flex justify-center w-full text-xs md:text-sm">
+                        <div className="px-5 pb-8">
+                            Copyright ©
+                            {new Date().getFullYear()}
+                            {" "}Made with ❤️ by <a target="_blank" className="underline underline-offset-4" href="https://marouanefaris.dev/">Marouane Faris</a>
+                        </div>
+                    </footer>
+                    }
                 </main>
             </div>
         </ContextProvider >
