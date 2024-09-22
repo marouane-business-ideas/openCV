@@ -71,7 +71,7 @@ const Languages = ({ edited }: { edited: boolean }) => {
                 ))}
             </div>
             <div className="w-full flex justify-end">
-                <button aria-label="Add language" disabled={!languages[languages.length - 1].language} onClick={handleAddLanguage}
+                <button aria-label="Add language" disabled={!languages[languages.length - 1]?.language} onClick={handleAddLanguage}
                     className={classNames(
                         "text-lg font-bold text-gray-900 rounded-lg border-solid border-gray-300 border p-2",
                         { "cursor-not-allowed": !languages[languages.length - 1]?.language },

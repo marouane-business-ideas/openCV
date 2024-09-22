@@ -70,12 +70,12 @@ const PersonalLinks = ({ edited }: { edited: boolean }) => {
             <div className="w-full flex justify-end">
                 <button
                     aria-label="Add link"
-                    disabled={!links[links.length - 1].linkName}
+                    disabled={!links[links.length - 1]?.linkName}
                     onClick={handleAddLink}
                     className={classNames(
                         "text-lg font-bold text-gray-900 rounded-lg border-solid border-gray-300 border p-2",
-                        { "cursor-not-allowed": !links[links.length - 1].linkName },
-                        { "hover:bg-gray-400": links[links.length - 1].linkName },
+                        { "cursor-not-allowed": !links[links.length - 1]?.linkName },
+                        { "hover:bg-gray-400": links[links.length - 1]?.linkName },
                     )}
                 >
                     + Add Link
