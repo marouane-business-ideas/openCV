@@ -2,8 +2,8 @@ import { useState } from "react";
 import { ArrowDownTrayIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import { resumeInfoType, templateType } from "../../context/ResumeContext";
 import classNames from "classnames";
-import { useParams } from "react-router-dom";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useParams } from "next/navigation";
+import { useAuth, useUser } from "@clerk/nextjs";
 import DownloadError from "../../utils/DownloadError";
 
 

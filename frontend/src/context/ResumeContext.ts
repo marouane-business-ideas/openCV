@@ -4,7 +4,7 @@ import uniqid from "uniqid";
 export type LanguageLevelType = "native" | "fluent" | "intermediate" | "beginner" | "";
 export type templateType = "classic" | "professional";
 
-const savedState = localStorage.getItem("resumeState");
+const savedState = typeof window !== "undefined" ? localStorage.getItem("resumeState") : "";
 
 
 export const defaultContext = savedState ? JSON.parse(savedState) : {

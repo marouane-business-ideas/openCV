@@ -1,6 +1,6 @@
 import { Suspense, lazy } from "react";
-import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import Link from "next/link";
 import { resumeInfoType } from "../../context/ResumeContext";
 import { IPdf } from "../../Types/CommonTypes";
 import ClassicalTemplate from "../ResumeModels/ClassicalTemplate";
@@ -22,7 +22,7 @@ const PdfCard = ({ pdf }: { pdf: IPdf }) => {
                         resume={resumeData} />
                 </div>
                 <p className="mt-2 text-gray-500">Last updated: {format(new Date(pdf.createdAt), "MMM d, yyyy hh:mm a")}</p>
-                <Link to={`/resume/${pdf.id}`} className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
+                <Link href={`/resume/${pdf.id}`} className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
                     px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
                     View/Edit
                 </Link>

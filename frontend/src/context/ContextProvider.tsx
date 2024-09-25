@@ -14,9 +14,6 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
             case "SET_EDITED_RESUME":
                 draft.resumeBeingEdited = action.payload;
                 break;
-            case "CLEAR_EDITED_RESUME":
-                draft.resumeBeingEdited = defaultContext.resumeBeingEdited;
-                break;
             case "SET_PERSONAL_INFO":
                 draft.onGoingResume.personalInfo[Object.keys(action.payload)[0] as keyof resumeInfoType["personalInfo"]]
                     = action.payload[Object.keys(action.payload)[0]];

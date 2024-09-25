@@ -1,5 +1,7 @@
 import classNames from "classnames";
 
+export const dynamic = "force-static";
+
 const AccountPage = () => {
     return (
         <div className="p-6 bg-white shadow-md rounded-lg">

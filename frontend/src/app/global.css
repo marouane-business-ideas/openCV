@@ -7,10 +7,6 @@
   --tw-bg-opacity: 1;
 }
 
-body {
-  font-family: 'Inter Variable', sans-serif;
-}
-
 /** 
     Custom styles to adding directly to the Preview component makes puppeteer print an extra empty page
     Has to be the same value inside index file in the backend

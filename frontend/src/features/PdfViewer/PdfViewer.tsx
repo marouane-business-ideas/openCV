@@ -100,7 +100,7 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
                                                     --tw-border-opacity: 1;
                                                     border-color: rgb(59 130 246 / var(--tw-border-opacity));
                                                 }
-}
+                                        }
                                         `;
                                         document.head.appendChild(style);
 

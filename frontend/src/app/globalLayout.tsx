@@ -1,11 +1,15 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { SignedIn, SignedOut, useClerk } from "@clerk/clerk-react"
-import { useState, useRef, useEffect } from "react";
-import ContextProvider from "../../context/ContextProvider";
+"use client";
 
-function Layout() {
+import { SignedIn, SignedOut, useClerk } from "@clerk/nextjs"
+import { useState, useRef, useEffect, ReactNode } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import ContextProvider from "../context/ContextProvider";
+
+function GlobalLayout({ children }: { children: ReactNode }) {
     const { signOut } = useClerk();
-    const location = useLocation();
+    const pathname = usePathname();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -21,14 +25,14 @@ function Layout() {
 
     useEffect(() => {
         setIsMenuOpen(false);
-    }, [location]);
+    }, [pathname]);
 
     return (
         <ContextProvider >
             <div className="h-full">
                 <header className={"flex h-[var(--header-height)] items-center border-b-2 px-3 lg:px-12 bg-blue-500"}>
                     <div className="flex w-full justify-between items-center text-white font-bold">
-                        <Link className="lg:text-2xl text-lg" to="/">OnlineResume</Link>
+                        <Link className="lg:text-2xl text-lg" href="/">OnlineResume</Link>
 
                         <button
                             className="lg:hidden text-white"
@@ -39,11 +43,11 @@ function Layout() {
 
                         <nav role="navigation" className="hidden lg:flex items-center gap-5 text-base">
                             <SignedIn>
-                                {location.pathname !== "/dashboard" && (
+                                {pathname !== "/dashboard" && (
                                     <Link
                                         className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-400
                                          hover:shadow-lg hover:scale-105"
-                                        to="/dashboard">Dashboard</Link>
+                                        href="/dashboard">Dashboard</Link>
                                 )}
                                 <button
                                     onClick={() => signOut({ redirectUrl: "/" })}
@@ -57,11 +61,11 @@ function Layout() {
                                 <Link
                                     className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
                                          hover:shadow-lg hover:scale-105"
-                                    to="/sign-in">Login</Link>
+                                    href="/sign-in">Login</Link>
                                 <Link
                                     className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
                                          hover:shadow-lg hover:scale-105"
-                                    to="/sign-up">Create an account</Link>
+                                    href="/sign-up">Create an account</Link>
                             </SignedOut>
                         </nav>
                     </div>
@@ -74,10 +78,10 @@ function Layout() {
                 >
                     <nav role="navigation" className="p-4">
                         <SignedIn>
-                            {location.pathname !== "/dashboard" && (
+                            {pathname !== "/dashboard" && (
                                 <Link
                                     className="block bg-white text-blue-500 px-4 py-2 rounded-md mb-2 text-center"
-                                    to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+                                    href="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
                             )}
                             <button
                                 onClick={() => { signOut({ redirectUrl: "/" }); setIsMenuOpen(false); }}
@@ -90,22 +94,29 @@ function Layout() {
                             <div className="flex flex-col items-center">
                                 <Link
                                     className="block bg-white text-blue-500 px-4 py-2 rounded-md mb-2 w-full text-center"
-                                    to="/sign-in" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                                    href="/sign-in" onClick={() => setIsMenuOpen(false)}>Login</Link>
                                 <Link
                                     className="block bg-white text-blue-500 px-4 py-2 rounded-md mb-2 w-full text-center"
-                                    to="/sign-up" onClick={() => setIsMenuOpen(false)}>Create an account</Link>
+                                    href="/sign-up" onClick={() => setIsMenuOpen(false)}>Create an account</Link>
                             </div>
                         </SignedOut>
                     </nav>
                 </div>
 
                 <main className="h-full w-full">
-                    <Outlet />
-                    {location.pathname === "/" && <footer className="flex justify-center w-full text-xs md:text-sm">
+                    {children}
+                    {pathname === "/" && <footer className="flex justify-center w-full text-xs md:text-sm">
                         <div className="px-5 pb-8">
-                            Copyright ©
+                            Copyright
                             {new Date().getFullYear()}
-                            {" "}Made with ❤️ by <a target="_blank" className="underline underline-offset-4" href="https://marouanefaris.dev/">Marouane Faris</a>
+                            {" "}Made with ❤️ by{" "}
+                            <a
+                                target="_blank"
+                                className="underline underline-offset-4"
+                                href="https://marouanefaris.dev/"
+                            >
+                                Marouane Faris
+                            </a>
                         </div>
                     </footer>
                     }
@@ -115,4 +126,4 @@ function Layout() {
     );
 }
 
-export default Layout;
+export default GlobalLayout;
