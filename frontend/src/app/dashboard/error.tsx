@@ -4,8 +4,8 @@ import Link from "next/link";
 
 const ErrorPage: React.FC = () => {
     return (
-        <div className='flex flex-col gap-8 justify-center items-center h-screen'>
-            <h1 className='text-4xl font-bold'>Oopsssss!</h1>
+        <div className="flex flex-col gap-8 justify-center items-center h-[calc(100vh-var(--header-height))]">
+            <h1 className="text-4xl font-bold">Oopsssss!</h1>
             <p>Failed to load resumes.</p>
             <Link href="/" className="bg-blue-500 text-white py-2 px-4 hidden lg:block rounded-lg shadow-md
                  hover:bg-blue-600 transition duration-200"

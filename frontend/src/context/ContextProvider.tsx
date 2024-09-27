@@ -1,8 +1,11 @@
+"use client";
+
 /* eslint-disable no-case-declarations */
+import { ClerkProvider } from "@clerk/nextjs";
 import { useImmerReducer } from "use-immer";
 import uniqid from "uniqid";
-import { actionType, defaultContext, resumeInfoType, ResumeContext, ResumeDispatchContext, contextStateType } from "./ResumeContext";
 import { useEffect } from "react";
+import { actionType, defaultContext, resumeInfoType, ResumeContext, ResumeDispatchContext, contextStateType } from "./ResumeContext";
 
 interface Props {
     children: React.ReactNode;
@@ -191,12 +194,14 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
     }, [state]);
 
     return (
-        <ResumeContext.Provider value={state}>
-            <ResumeDispatchContext.Provider value={dispatch}>
-                {children}
-            </ResumeDispatchContext.Provider>
-        </ResumeContext.Provider>
+        <ClerkProvider>
+            <ResumeContext.Provider value={state}>
+                <ResumeDispatchContext.Provider value={dispatch}>
+                    {children}
+                </ResumeDispatchContext.Provider>
+            </ResumeContext.Provider>
+        </ClerkProvider>
     );
-}
+};
 
 export default ContextProvider;

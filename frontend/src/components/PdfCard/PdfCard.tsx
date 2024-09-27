@@ -21,12 +21,12 @@ const PdfCard = ({ pdf }: { pdf: IPdf }) => {
                         customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
                         resume={resumeData} />
                 </div>
-                <p className="mt-2 text-gray-500">Last updated: {format(new Date(pdf.createdAt), "MMM d, yyyy hh:mm a")}</p>
-                <Link href={`/resume/${pdf.id}`} className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
-                    px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
-                    View/Edit
-                </Link>
             </Suspense>
+            <p className="mt-2 text-gray-500">Last updated: {format(new Date(pdf.createdAt), "MMM d, yyyy hh:mm a")}</p>
+            <Link href={`/resume/${pdf.id}`} className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
+                    px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
+                View/Edit
+            </Link>
         </div>
     )
 }

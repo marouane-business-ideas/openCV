@@ -130,7 +130,7 @@ const BulletListTextareaFallback = <T extends string>({
     return (
         <TextArea
             aria-label={ariaLabel}
-            aria-mutliLine="true"
+            aria-multiline="true"
             id={name}
             name={name}
             value={textareaValue}

@@ -41,6 +41,7 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
     const [scale, setScale] = useState(1);
 
     const resumeWidth = 790;
+
     useEffect(() => {
         const updateScale = () => {
             if (containerRef.current) {
@@ -104,12 +105,11 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
                                         `;
                                         document.head.appendChild(style);
 
-                                        return <Suspense fallback={<CustomIframeSpinner />}>
-                                            {resumeTemplate === "professional" ?
+                                        return resumeTemplate === "professional" ?
+                                            <Suspense fallback={<CustomIframeSpinner />}>
                                                 <ProfessionalTemplate resume={resume} />
-                                                :
-                                                <ClassicalTemplate resume={resume} />}
-                                        </Suspense>
+                                            </Suspense>
+                                            : <ClassicalTemplate resume={resume} />
                                     }
                                 }
                             }

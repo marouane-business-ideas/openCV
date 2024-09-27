@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript",
+    "prettier"
+  ],
+  "rules": {
+    "quotes": [
+      1,
+      "double"
+    ],
+    "jsx-quotes": [
+      1,
+      "prefer-double"
+    ],
+    "semi": [
+      1,
+      "always"
+    ]
+  }
+}

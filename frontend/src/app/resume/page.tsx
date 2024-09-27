@@ -1,6 +1,9 @@
 "use client";
-import Form from "../../features/Form/Form"
-import PdfViewer from "../../features/PdfViewer/PdfViewer";
+import dynamic from "next/dynamic";
+
+// Prevent SSR for components that rely on localStorage
+const Form = dynamic(() => import("../../features/Form/Form"), { ssr: false });
+const PdfViewer = dynamic(() => import("../../features/PdfViewer/PdfViewer"), { ssr: false });;
 
 const ResumeBuilder = () => {
     return (
