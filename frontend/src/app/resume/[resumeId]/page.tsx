@@ -29,7 +29,6 @@ const ResumeBuilder = () => {
     },
         {
             onErrorRetry: (error) => {
-                // Never retry on 404.
                 if (error.status === 404) return;
             }
         }
@@ -48,7 +47,7 @@ const ResumeBuilder = () => {
         if (error.status === 404) {
             return (
                 <div className="flex justify-center flex-col items-center h-[calc(100vh-var(--header-height))]">
-                    <p className="text-xl text-black">The resume you are looking for does not exist.</p>
+                    <p className="text-2xl text-black">The resume you are looking for does not exist</p>
                     <Link href="/" className="mt-5 bg-blue-500 text-white py-2 px-4 lg:block rounded-lg shadow-md
                      hover:bg-blue-600 transition duration-200">
                         Return to the Home page
