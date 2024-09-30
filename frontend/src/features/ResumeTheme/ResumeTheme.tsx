@@ -11,8 +11,8 @@ const Theme = ({ edited }: { edited: boolean }) => {
 
     const handleThemeClick = (themeColor: string) => {
         if (dispatch)
-            dispatch({ type: `SET_THEME_COLOR${edited ? "_EDITED" : ""}`, payload: themeColor })
-    }
+            dispatch({ type: `SET_THEME_COLOR${edited ? "_EDITED" : ""}`, payload: themeColor });
+    };
     return (
         <Card>
             <div className=" flex flex-col  gap-2 pb-12">
@@ -63,7 +63,7 @@ const Theme = ({ edited }: { edited: boolean }) => {
                     </div>
                 </div>
             </div>
-        </Card>)
+        </Card>);
 };
 
 export default Theme;

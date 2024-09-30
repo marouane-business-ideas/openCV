@@ -17,13 +17,13 @@ const Languages = ({ edited }: { edited: boolean }) => {
 
     const handleLanguageChange = (language: string, index: number) => {
         if (dispatch)
-            dispatch({ type: `SET_LANGUAGE${edited ? "_EDITED" : ""}`, payload: { language, index } })
-    }
+            dispatch({ type: `SET_LANGUAGE${edited ? "_EDITED" : ""}`, payload: { language, index } });
+    };
 
     const handleLanguageProficiencyLevelChange = (level: string, index: number) => {
         if (dispatch)
-            dispatch({ type: `SET_LANGUAGE_PROFICIENCY_LEVEL${edited ? "_EDITED" : ""}`, payload: { level, index } })
-    }
+            dispatch({ type: `SET_LANGUAGE_PROFICIENCY_LEVEL${edited ? "_EDITED" : ""}`, payload: { level, index } });
+    };
 
     const handleDeleteLanguage = (index: number) => {
         if (dispatch)
@@ -78,7 +78,7 @@ const Languages = ({ edited }: { edited: boolean }) => {
                         { "hover:bg-gray-400": languages[languages.length - 1]?.language }
                     )}>+ Add Language</button>
             </div>
-        </Card >)
+        </Card >);
 };
 
-export default Languages
+export default Languages;

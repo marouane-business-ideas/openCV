@@ -19,8 +19,8 @@ const PersonalLinks = ({ edited }: { edited: boolean }) => {
 
     const handleLinkChange = (key: LinkKeyType, value: string, index: number) => {
         if (dispatch)
-            dispatch({ type: `SET_LINK${edited ? "_EDITED" : ""}`, payload: { [key]: value, index } })
-    }
+            dispatch({ type: `SET_LINK${edited ? "_EDITED" : ""}`, payload: { [key]: value, index } });
+    };
 
     const handleDeleteLink = (index: number) => {
         if (dispatch)

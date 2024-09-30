@@ -11,8 +11,8 @@ const Skills = ({ edited }: { edited: boolean }) => {
 
     const handleInputChange = (skills: string[]) => {
         if (dispatch)
-            dispatch({ type: `SET_SKILLS${edited ? "_EDITED" : ""}`, payload: { skills: skills } })
-    }
+            dispatch({ type: `SET_SKILLS${edited ? "_EDITED" : ""}`, payload: { skills: skills } });
+    };
     return (
         <Card>
             <div className=" flex flex-col  gap-2 pb-12">
@@ -22,7 +22,7 @@ const Skills = ({ edited }: { edited: boolean }) => {
                     <BulletListTextarea ariaLabel="Skills list" onChange={handleInputChange} name="skills" value={skills} placeholder="Add a skill" />
                 </div>
             </div>
-        </Card>)
+        </Card>);
 };
 
-export default Skills
+export default Skills;

@@ -95,25 +95,25 @@ const SectionTitle = ({ children, customStyle }: { children: React.ReactNode, cu
     return (
         <div style={{ ...Styles.SectionTitle, ...customStyle }} >{children}</div>
     );
-}
+};
 
 const SectionTextRow = ({ children, customStyle }: { children: string, customStyle?: React.CSSProperties }) => {
     return (
         <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(children) }} style={{ ...Styles.SectionTextRow, ...customStyle }} />
     );
-}
+};
 
 const SectionTextColumn = ({ children }: { children: React.ReactNode }) => {
     return (
         <div style={Styles.SectionTextColumn} >{children}</div>
     );
-}
+};
 
 const ExperienceDate = ({ children }: { children: string }) => {
     return (
         <div style={{ ...Styles.experienceDate }}>{children}</div>
     );
-}
+};
 
 
 const ResumeModel = (props: {
@@ -377,4 +377,4 @@ const ResumeModel = (props: {
     );
 };
 
-export default ResumeModel
+export default ResumeModel;

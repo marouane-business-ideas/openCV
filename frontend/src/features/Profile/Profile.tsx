@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import Card from "../../components/Card/Card"
+import Card from "../../components/Card/Card";
 import { resumeInfoType, ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
 import TextArea from "../../components/TextArea/TextArea";
 
@@ -11,8 +11,8 @@ const Profile = ({ edited }: { edited: boolean }) => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: keyof resumeInfoType["personalInfo"]) => {
         if (dispatch)
-            dispatch({ type: `SET_PERSONAL_INFO${edited ? "_EDITED" : ""}`, payload: { [property]: e.target.value } })
-    }
+            dispatch({ type: `SET_PERSONAL_INFO${edited ? "_EDITED" : ""}`, payload: { [property]: e.target.value } });
+    };
 
     return (
         <Card>
@@ -58,7 +58,7 @@ const Profile = ({ edited }: { edited: boolean }) => {
                 </div>
             </div>
         </Card>
-    )
-}
+    );
+};
 
-export default Profile
+export default Profile;

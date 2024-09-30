@@ -10,8 +10,8 @@ const ResumeTemplate = ({ edited }: { edited: boolean }) => {
 
     const handleTemplateClick = (template: templateType) => {
         if (dispatch)
-            dispatch({ type: `SET_TEMPLATE${edited ? "_EDITED" : ""}`, payload: template })
-    }
+            dispatch({ type: `SET_TEMPLATE${edited ? "_EDITED" : ""}`, payload: template });
+    };
     return (
         <Card>
             <div className="flex flex-col gap-2 pb-12">

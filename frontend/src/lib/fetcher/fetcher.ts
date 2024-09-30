@@ -16,7 +16,7 @@ const fetcher = (url: string, options?: RequestInit) => {
         .then(async res => {
             if (!res.ok) {
                 const info = await res.json();
-                const error = new FetchError('An error occurred while fetching the data.', info, res.status);
+                const error = new FetchError("An error occurred while fetching the data.", info, res.status);
                 throw error;
             }
 

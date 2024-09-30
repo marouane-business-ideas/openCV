@@ -104,25 +104,25 @@ const SectionTitle = ({ children }: { children: string }) => {
     return (
         <div style={{ ...Styles.SectionTitle }} >{children}</div>
     );
-}
+};
 
 const SectionText = ({ children }: { children: string }) => {
     return (
         <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(children) }} style={Styles.SectionText} />
     );
-}
+};
 
 const ExperienceDate = ({ children }: { children: string }) => {
     return (
         <div style={{ ...Styles.experienceDate }}>{children}</div>
     );
-}
+};
 
 const ExperienceTopSection = ({ children }: { children: JSX.Element[] }) => {
     return (
         <div style={Styles.experienceTopSection}>{children}</div>
     );
-}
+};
 
 
 const Preview = (props: {
@@ -252,4 +252,4 @@ const Preview = (props: {
     );
 };
 
-export default Preview
+export default Preview;

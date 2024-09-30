@@ -12,6 +12,6 @@ const ResumeBuilder = () => {
             <PdfViewer edited={false} />
         </div>
     );
-}
+};
 
 export default ResumeBuilder;

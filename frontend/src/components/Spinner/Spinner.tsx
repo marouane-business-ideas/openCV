@@ -6,6 +6,6 @@ const Spinner: React.FC<{ className?: string }> = ({ className = "w-14 h-14" }) 
             <div className={`animate-spin rounded-full border-b-2 border-blue-500 ${className}`}></div>
         </div>
     );
-}
+};
 
 export default Spinner;

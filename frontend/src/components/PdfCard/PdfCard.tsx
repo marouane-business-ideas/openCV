@@ -28,7 +28,7 @@ const PdfCard = ({ pdf }: { pdf: IPdf }) => {
                 View/Edit
             </Link>
         </div>
-    )
-}
+    );
+};
 
 export default PdfCard;

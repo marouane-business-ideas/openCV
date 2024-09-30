@@ -1,11 +1,11 @@
-import Profile from "../Profile/Profile"
-import WorkExperience from "../WorkExperience/WorkExperience"
-import Education from "../Education/Education"
-import Skills from "../Skills/Skills"
-import Languages from "../Languages/Languages"
-import PersonnalLinks from "../PersonnalLinks/PersonnalLinks"
-import Theme from "../ResumeTheme/ResumeTheme"
-import ResumeTemplate from "../ResumeTemplate/ResumeTemplate"
+import Profile from "../Profile/Profile";
+import WorkExperience from "../WorkExperience/WorkExperience";
+import Education from "../Education/Education";
+import Skills from "../Skills/Skills";
+import Languages from "../Languages/Languages";
+import PersonnalLinks from "../PersonnalLinks/PersonnalLinks";
+import Theme from "../ResumeTheme/ResumeTheme";
+import ResumeTemplate from "../ResumeTemplate/ResumeTemplate";
 
 const Form = ({ edited }: { edited: boolean }) => {
     return (
@@ -20,7 +20,7 @@ const Form = ({ edited }: { edited: boolean }) => {
             <PersonnalLinks edited={edited} />
             <Theme edited={edited} />
         </div>
-    )
-}
+    );
+};
 
-export default Form
+export default Form;

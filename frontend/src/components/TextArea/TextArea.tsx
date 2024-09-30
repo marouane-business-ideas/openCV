@@ -15,7 +15,7 @@ const TextArea = ({ id, name, placeholder, onChange, value }: TextAreaProps) => 
             ref={textAreaRef}
             onChange={onChange}
             className="text border p-1 rounded-md focus:outline-none border-gray-300"
-            id={id} name={name} placeholder={placeholder} value={value} />)
-}
+            id={id} name={name} placeholder={placeholder} value={value} />);
+};
 
 export default TextArea;

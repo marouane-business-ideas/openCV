@@ -15,9 +15,9 @@ function Description({ html, onChange, index }: DescriptionProps) {
     }
 
     return (
-        <Editor className='list-disc' name='description' value={html} onChange={handleChange} />
+        <Editor className="list-disc" name="description" value={html} onChange={handleChange} />
     );
 }
 
 
-export default Description
+export default Description;

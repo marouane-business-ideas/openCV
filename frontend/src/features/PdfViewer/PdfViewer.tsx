@@ -1,5 +1,5 @@
 import { useContext, useRef, useState, useEffect, lazy, Suspense } from "react";
-import Frame, { FrameContextConsumer } from "react-frame-component"
+import Frame, { FrameContextConsumer } from "react-frame-component";
 import { ResumeContext, resumeInfoType } from "../../context/ResumeContext";
 import DownloadPdf from "../../components/DownloadPdf/DownloadPdf";
 import ClassicalTemplate from "../../components/ResumeModels/ClassicalTemplate";
@@ -62,10 +62,10 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
 
     return (
         <div className="w-full lg:w-5/6 2xl:w-1/2 h-1/2 2xl:h-full flex justify-center p-5 2xl:pt-5 2xl:pb-5 shadow-xl shadow-blue-500/60">
-            <div className='h-full w-full flex flex-col gap-5 items-center' >
+            <div className="h-full w-full flex flex-col gap-5 items-center" >
                 <div ref={containerRef} id="pdf-viewer-iframe-container" className="flex justify-center h-full w-full overflow-y-scroll relative
                     @container/Iframe-container" >
-                    <Frame id="pdf-viewer-iframe" title="pdf-viewer-iframe" className='bg-white h-full w-full'
+                    <Frame id="pdf-viewer-iframe" title="pdf-viewer-iframe" className="bg-white h-full w-full"
                         style={{
                             minHeight: `${containerRef?.current?.offsetWidth as number < resumeWidth ? 700 : ""}px`,
                             width: `${containerRef?.current?.offsetWidth as number < resumeWidth ? resumeWidth : ""}px`,
@@ -109,7 +109,7 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
                                             <Suspense fallback={<CustomIframeSpinner />}>
                                                 <ProfessionalTemplate resume={resume} />
                                             </Suspense>
-                                            : <ClassicalTemplate resume={resume} />
+                                            : <ClassicalTemplate resume={resume} />;
                                     }
                                 }
                             }
@@ -121,7 +121,7 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
             </div>
         </div >
 
-    )
-}
+    );
+};
 
-export default PdfViewer
+export default PdfViewer;
