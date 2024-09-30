@@ -94,6 +94,6 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
             {downloadError && <p className="text-sm text-red-500">{downloadError}</p>}
         </>
     );
-}
+};
 
 export default DownloadPdf;
