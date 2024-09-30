@@ -1,51 +1,25 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 
 import SkeletonLoader from "../components/Skeleton";
 import PdfCard from "../components/PdfCard/PdfCard";
 import { IPdf } from "../Types/CommonTypes";
+import useSWR from "swr";
+import fetcher from "../lib/fetcher/fetcher";
 
 
 function Dashboard() {
     const { user, isSignedIn } = useUser();
     const { getToken } = useAuth();
-    const [pdfs, setPdfs] = useState<IPdf[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (!isSignedIn) {
-            setIsLoading(false);
-            return;
-        }
-
-        (async () => {
-            setIsLoading(true);
-            const token = await getToken();
-
-            fetch(`/api/users/${user.id}/pdfs`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    setPdfs(data);
-                    setIsLoading(false);
-                })
-                .catch(error => {
-                    console.error("Error fetching PDFs:", error);
-                    setError("Failed to load your resumes. Please try again later.");
-                    setIsLoading(false);
-                });
-        })()
-    }, [getToken, isSignedIn, user?.id]);
+    const { data, error, isLoading } = useSWR(isSignedIn ? `/api/users/${user.id}/pdfs` : null, async (url) => {
+        const token = await getToken();
+        return fetcher(url, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            }
+        });
+    });
 
     return (
         <>
@@ -57,14 +31,14 @@ function Dashboard() {
                     Create New Resume
                 </Link>
             </header>
-            {error ? <p className="text-sm text-center text-red-500">{error}</p> :
+            {error ? <p className="text-sm text-center text-red-500">An error occurred while fetching the PDFs :(</p> :
                 <div className="dashboard-grid flex flex-wrap justify-center xl:justify-normal">
                     {isLoading ? (
                         Array(3).fill(0).map((_, index) => (
                             <SkeletonLoader key={index} />
                         ))
-                    ) : pdfs.length > 0 ? (
-                        pdfs.map((pdf: IPdf) => (
+                    ) : data.length > 0 ? (
+                        data.map((pdf: IPdf) => (
                             <PdfCard key={pdf.id} pdf={pdf} />
                         ))
                     ) : (
