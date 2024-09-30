@@ -10,7 +10,7 @@
     "build:frontend": "npm run build --prefix frontend",
     "build:backend": "npm run build --prefix backend",
     "dev": "npm run build:backend && concurrently \"npm:dev:backend\" \"npm:start:frontend\"",
-    "preview": "npm run build && concurrently \"npm:start:backend\" \"npm run preview --prefix frontend\""
+    "preview": "npm run build && concurrently \"npm:start:backend\" \"npm run start --prefix frontend\""
   },
   "keywords": [],
   "author": "Marouane Faris",
