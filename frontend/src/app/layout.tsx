@@ -8,7 +8,9 @@ import "./global.css";
 
 export const metadata: Metadata = {
     title: "OnlineResume",
-    description: "Create beautiful resumes online",
+    description: "Create beautiful PDF resumes online",
+    keywords: ["resume", "pdf", "online", "creator", "builder", "generator"],
+    creator: "Marouane Faris",
 };
 
 const inter = Inter({ subsets: ["latin"] });
