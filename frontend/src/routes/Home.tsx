@@ -1,4 +1,7 @@
 import { Link } from "react-router-dom";
+import ProfessionalTemplate from "../components/ResumeModels/ProfessionalTemplate";
+import ClassicalTemplate from "../components/ResumeModels/ClassicalTemplate";
+import { getResumeDummyData } from "../context/ResumeContext";
 
 const Home: React.FC = () => {
     return (
@@ -35,6 +38,23 @@ const Home: React.FC = () => {
                         <span className="font-semibold">Coming Soon:</span> New resume templates!
                         <span className="ml-2 animate-pulse inline-block">🎉</span>
                     </p>
+                </div>
+            </section>
+            <section className="flex flex-col items-center md:flex-row md:justify-center mt-16">
+                <div className="flex flex-col items-center bg-white m-8 shadow-gray-200 shadow-xl relative overflow-hidden"
+                    style={{ minWidth: "320px", maxWidth: "320px", minHeight: "450px", maxHeight: "450px" }} >
+                    <div className="flex relative overflow-hidden">
+                        <ProfessionalTemplate customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
+                            resume={getResumeDummyData()} />
+                    </div>
+                </div>
+                <div className="flex flex-col items-center bg-white m-8 shadow-gray-200 shadow-xl relative overflow-hidden"
+                    style={{ minWidth: "320px", maxWidth: "320px", minHeight: "450px", maxHeight: "450px" }} >
+                    <div className="flex relative overflow-hidden">
+                        <ClassicalTemplate customThemeColor="#7A6C55"
+                            customStyle={{ minWidth: "840px", transform: "scale(0.37)", transformOrigin: "top" }}
+                            resume={getResumeDummyData("classic")} />
+                    </div>
                 </div>
             </section>
         </div>

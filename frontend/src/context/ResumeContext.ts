@@ -6,6 +6,74 @@ export type templateType = "classic" | "professional";
 
 const savedState = localStorage.getItem("resumeState");
 
+export const getResumeDummyData = (resumeTemplate: templateType = "professional"): resumeInfoType => ({
+    resumeTemplate,
+    personalInfo: {
+        name: "John Doe",
+        title: "Software Developer",
+        email: "john.doe@example.com",
+        phoneNumber: "+1 (555) 123-4567",
+        location: "New York, NY",
+        summary: "Experienced software developer with a passion for creating efficient and scalable applications."
+    },
+    workExperience: [{
+        company: "Tech Solutions Inc.",
+        jobTitle: "Senior Developer",
+        date: "2018 - Present",
+        description: "Led a team of 5 developers in creating innovative web applications using React and Node.js.",
+        location: "New York, NY",
+        id: uniqid(),
+    },
+    {
+        company: "StartUp Innovations",
+        jobTitle: "Junior Developer",
+        date: "2015 - 2018",
+        description: "Developed and maintained various features for the company's main product using Angular and Python.",
+        location: "San Francisco, CA",
+        id: uniqid(),
+    },
+    {
+        company: "Global Tech Corp.",
+        jobTitle: "Lead Software Engineer",
+        date: "2019 - Present",
+        description: "Oversaw multiple projects and mentored junior developers.",
+        location: "New York, NY",
+        id: uniqid(),
+    },
+    {
+        company: "Tech Innovations Inc.",
+        jobTitle: "Senior Software Engineer",
+        date: "2016 - 2019",
+        description: "Developed and maintained multiple features for the company's main product using React and Node.js.",
+        location: "San Francisco, CA",
+        id: uniqid(),
+    }],
+    education: [{
+        schoolName: "Harvard University",
+        degree: "Master of Science in Computer Science",
+        date: "2016 - 2018",
+        description: "Focused on machine learning and data science.",
+        id: uniqid(),
+    },
+    {
+        schoolName: "University of Technology",
+        degree: "Bachelor of Science in Computer Science",
+        date: "2011 - 2015",
+        description: "Graduated with honors. Specialized in software engineering and artificial intelligence.",
+        id: uniqid(),
+    }],
+    skills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "Git", "AWS", "Docker"],
+    languages: [
+        { language: "English", level: "native", id: uniqid() },
+        { language: "Spanish", level: "intermediate", id: uniqid() }
+    ],
+    links: [
+        { linkName: "https://github.com/johndoe", linkUrl: "https://github.com/johndoe", id: uniqid() },
+        { linkName: "https://linkedin.com/in/johndoe", linkUrl: "https://linkedin.com/in/johndoe", id: uniqid() }
+    ],
+    themeColor: "#191919"
+});
+
 
 export const defaultContext = savedState ? JSON.parse(savedState) : {
     onGoingResume: {
@@ -33,12 +101,35 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             description: "Developed and maintained various features for the company's main product using Angular and Python.",
             location: "San Francisco, CA",
             id: uniqid(),
+        },
+        {
+            company: "Global Tech Corp.",
+            jobTitle: "Lead Software Engineer",
+            date: "2019 - Present",
+            description: "Oversaw multiple projects and mentored junior developers.",
+            location: "New York, NY",
+            id: uniqid(),
+        },
+        {
+            company: "Tech Innovations Inc.",
+            jobTitle: "Senior Software Engineer",
+            date: "2016 - 2019",
+            description: "Developed and maintained multiple features for the company's main product using React and Node.js.",
+            location: "San Francisco, CA",
+            id: uniqid(),
         }],
         education: [{
             schoolName: "University of Technology",
             degree: "Bachelor of Science in Computer Science",
             date: "2011 - 2015",
             description: "Graduated with honors. Specialized in software engineering and artificial intelligence.",
+            id: uniqid(),
+        },
+        {
+            schoolName: "Harvard University",
+            degree: "Master of Science in Computer Science",
+            date: "2016 - 2018",
+            description: "Focused on machine learning and data science.",
             id: uniqid(),
         }],
         skills: ["JavaScript", "TypeScript", "React", "Node.js", "Python", "Git", "AWS", "Docker"],

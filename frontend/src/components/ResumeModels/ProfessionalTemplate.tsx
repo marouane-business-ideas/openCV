@@ -120,8 +120,10 @@ const ResumeModel = (props: {
     resume: resumeInfoType,
     customStyle?: React.CSSProperties,
     customClassName?: string,
+    customThemeColor?: string,
 }) => {
-    const { personalInfo, workExperience, education, skills, languages, links, themeColor } = props.resume;
+    const { personalInfo, workExperience, education, skills, languages, links, themeColor: tempThemeColor } = props.resume;
+    const themeColor = props.customThemeColor ?? tempThemeColor;
     return (
         <>
             <div className={props.customClassName} style={{ ...Styles.pageContainer, ...props.customStyle, color: themeColor }}>
