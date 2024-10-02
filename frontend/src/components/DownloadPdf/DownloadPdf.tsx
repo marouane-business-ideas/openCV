@@ -12,6 +12,8 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
     const { user, isSignedIn } = useUser();
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadError, setDownloadError] = useState<string | null>(null);
+    const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
+
     const { getToken } = useAuth();
 
     const handleError = (error: unknown) => {
@@ -19,12 +21,12 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
         if (error instanceof DownloadError && error.code === "LIMIT_REACHED") {
             setDownloadError("You reached the limit of PDFs you can generate on the free plan");
         } else {
-            setDownloadError("An error occurred while downloading the PDF. Please try again.");
+            setDownloadError("An error occurred while saving the PDF. Please try again.");
         }
         setIsDownloading(false);
     };
 
-    const downloadPdf = async (url: string, method: "PUT" | "POST") => {
+    const saveResumeData = async (url: string, method: "PUT" | "POST") => {
         const token = await getToken();
         const response = await fetch(url, {
             method,
@@ -43,29 +45,28 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
             throw new DownloadError("Network response was not ok", "NETWORK_ERROR");
         }
 
-        return response.blob();
+        return;
     };
 
     const handleDownload = async () => {
         if (!isSignedIn) return;
         setDownloadError(null);
+        setDownloadSuccess(null);
         setIsDownloading(true);
 
         try {
             const url = isEditing
                 ? `/api/users/${user.id}/pdfs/${resumeId}`
                 : `/api/users/${user.id}/pdfs`;
+
             const method = isEditing ? "PUT" : "POST";
 
-            const blob = await downloadPdf(url, method);
+            await saveResumeData(url, method);
 
-            const downloadUrl = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = downloadUrl;
-            a.download = "CV.pdf";
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
+            const iframe = document.getElementById("pdf-viewer-iframe") as HTMLIFrameElement | null;
+            iframe?.contentWindow?.print();
+
+            setDownloadSuccess("Your resume data was safely saved on our servers");
             setIsDownloading(false);
         } catch (error) {
             handleError(error);
@@ -92,6 +93,7 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
             {!isSignedIn && <p className="md:text-sm text-xs text-gray-500">Sign in to download your resume as a PDF</p>}
             {isDownloading && <ArrowPathIcon className="animate-spin size-7 text-blue-400" aria-hidden="true" />}
             {downloadError && <p className="text-sm text-red-500">{downloadError}</p>}
+            {downloadSuccess && <p className="text-sm text-green-800">{downloadSuccess}</p>}
         </>
     );
 }

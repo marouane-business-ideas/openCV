@@ -1,17 +1,12 @@
 import express from "express";
-import { Cluster } from "puppeteer-cluster";
 import dotenv from "dotenv"
 import bodyParser from "body-parser";
-import React from "react";
-import ReactDOMServer from "react-dom/server";
 import helmet from "helmet";
 import { Webhook } from "svix";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import process from "process";
 
 import { getUserDownloadCount, getUserMaxPdfs, incrementUserDownloadCount, initDb } from "./db.js";
-import ClassicalTemplate from "./ResumeModels/ClassicalTemplate.js";
-import ProfessionalTemplate from "./ResumeModels/ProfessionalTemplate.js";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 
@@ -41,27 +36,6 @@ let cluster;
 initDb().then(async (database) => {
     db = database;
     console.log("Database initialized successfully");
-
-    // Initialize the Puppeteer cluster
-    cluster = await Cluster.launch({
-        concurrency: Cluster.CONCURRENCY_PAGE,
-        maxConcurrency: 20,
-        retryLimit: 1,
-        retryDelay: 1000,
-        puppeteerOptions: {
-            headless: true,
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--disable-software-rasterizer",
-                "--disable-extensions",
-            ],
-        },
-    });
-
-    console.log("Puppeteer Cluster initialized");
 
     // Start the server after the DB and cluster are ready
     app.listen(PORT, "0.0.0.0", () => {
@@ -157,16 +131,6 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
         const userMaxPdfs = await getUserMaxPdfs(db, userId);
         if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
 
-        const Preview = template === "professional" ? ProfessionalTemplate : ClassicalTemplate;
-
-        const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
-
-        const pdfBuffer = await cluster.execute(async ({ page }) => {
-            await page.setContent(htmlContent);
-            const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
-            return buffer;
-        });
-
         const filename = `CV_${Date.now()}.pdf`;
 
         // Insert metadata into SQLite database
@@ -175,13 +139,9 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
         );
 
         await incrementUserDownloadCount(db, userId);
-        console.log("PDF generated successfully");
+        console.log("Resume data saved successfully");
 
-        res.status(200).set({
-            "Content-Type": "application/pdf",
-            "Content-Length": pdfBuffer.length,
-            "Content-Disposition": `attachment; filename="${filename}"`
-        }).end(pdfBuffer);
+        res.status(200).json({ status: "Success", message: "The resume data was successfully persisted in the DB" });
 
     } catch (err) {
         console.error(err.message);
@@ -229,31 +189,15 @@ app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
         const userMaxPdfs = await getUserMaxPdfs(db, userId);
         if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
 
-        const Preview = template === "professional" ? ProfessionalTemplate : ClassicalTemplate;
-
-        const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
-
-        // Generate the PDF
-        const pdfBuffer = await cluster.execute(async ({ page }) => {
-            await page.setContent(htmlContent);
-            const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
-            return buffer;
-        });
-
         await db.run("UPDATE pdf_metadata SET content = ?, template = ? WHERE id = ? AND userId = ?",
             [JSON.stringify(resume), template, pdfId, userId]
         );
 
 
         await incrementUserDownloadCount(db, userId);
-        console.log("PDF generated successfully");
+        console.log("The edited resume data successfully persisted in DB");
 
-        res.status(200)
-            .set({
-                "Content-Type": "application/pdf",
-                "Content-Length": pdfBuffer.length,
-                "Content-Disposition": "attachment; filename=\"CV.pdf\""
-            }).end(pdfBuffer);
+        res.status(200).json({ status: "Success", message: "The edited resume data was successfully persisted in the DB" });
 
     } catch (err) {
         console.error(err);
