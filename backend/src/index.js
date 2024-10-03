@@ -1,5 +1,4 @@
 import express from "express";
-import { Cluster } from "puppeteer-cluster";
 import dotenv from "dotenv"
 import bodyParser from "body-parser";
 import React from "react";
@@ -8,6 +7,7 @@ import helmet from "helmet";
 import { Webhook } from "svix";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import process from "process";
+import playwright from "playwright-core";
 
 import { getUserDownloadCount, getUserMaxPdfs, incrementUserDownloadCount, initDb } from "./db.js";
 import ClassicalTemplate from "./ResumeModels/ClassicalTemplate.js";
@@ -35,40 +35,18 @@ app.use((req, res, next) => {
 
 
 let db;
-let cluster;
 
-// Initialize the database and Puppeteer cluster at server start
+// Initialize the database
 initDb().then(async (database) => {
     db = database;
     console.log("Database initialized successfully");
 
-    // Initialize the Puppeteer cluster
-    cluster = await Cluster.launch({
-        concurrency: Cluster.CONCURRENCY_PAGE,
-        maxConcurrency: 20,
-        retryLimit: 1,
-        retryDelay: 1000,
-        puppeteerOptions: {
-            headless: true,
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--disable-software-rasterizer",
-                "--disable-extensions",
-            ],
-        },
-    });
-
-    console.log("Puppeteer Cluster initialized");
-
-    // Start the server after the DB and cluster are ready
+    // Start the server after the DB is ready
     app.listen(PORT, "0.0.0.0", () => {
         console.log(`Server is listening on port ${PORT}`);
     });
 }).catch(err => {
-    console.error("Failed to initialize the database or Puppeteer Cluster:", err);
+    console.error("Failed to initialize the database", err);
     process.exit(1);
 });
 
@@ -89,6 +67,7 @@ app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), async (re
 
     const { type, data } = JSON.parse(payload);
     console.log("*** Received webhook event:", type);
+
 
     if (type === "user.created") {
         const { id, first_name, last_name, email_addresses } = data;
@@ -161,11 +140,14 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        const pdfBuffer = await cluster.execute(async ({ page }) => {
-            await page.setContent(htmlContent);
-            const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
-            return buffer;
-        });
+        const browser = await playwright.chromium.connect("ws://192.168.1.68:3000/chromium/playwright");
+        const context = await browser.newContext();
+        const page = await context.newPage();
+
+        await page.setContent(htmlContent);
+        const pdfBuffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
+
+        await browser.close();
 
         const filename = `CV_${Date.now()}.pdf`;
 
@@ -184,7 +166,7 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
         }).end(pdfBuffer);
 
     } catch (err) {
-        console.error(err.message);
+        console.error(err);
         if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
             return res.status(403).json({ status: "error", message: "You reached the limit of pdfs you can generate on the free plan" });
         }
@@ -233,12 +215,14 @@ app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        // Generate the PDF
-        const pdfBuffer = await cluster.execute(async ({ page }) => {
-            await page.setContent(htmlContent);
-            const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
-            return buffer;
-        });
+        const browser = await playwright.chromium.connect("ws://192.168.1.68:3000/chromium/playwright");
+        const context = await browser.newContext();
+        const page = await context.newPage();
+
+        await page.setContent(htmlContent);
+        const pdfBuffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
+
+        await browser.close();
 
         await db.run("UPDATE pdf_metadata SET content = ?, template = ? WHERE id = ? AND userId = ?",
             [JSON.stringify(resume), template, pdfId, userId]
@@ -262,15 +246,4 @@ app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
         }
         res.status(500).json({ status: "error", message: "Failed to generate PDF" });
     }
-});
-
-// Cleanup browser on server shutdown
-process.on("SIGTERM", async () => {
-    if (cluster) {
-        await cluster.idle();
-        await cluster.close();
-        console.log("Puppeteer Cluster closed gracefully on server shutdown.");
-    }
-
-    process.exit(0);
 });
