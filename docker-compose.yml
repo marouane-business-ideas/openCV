@@ -1,0 +1,28 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile  # The location of your Dockerfile for the Node.js app
+    container_name: resume_app
+    # volumes:
+    #   - .:/app
+    ports:
+      - "80:80"  # Expose the port for Nginx
+    # depends_on:
+    #   - browserless  # Make sure this starts after the browserless service
+    networks:
+      - app_network
+
+  browserless:
+    image: ghcr.io/browserless/chromium
+    container_name: browserless
+    environment:
+      - CONCURRENT=10
+    ports:
+      - "3000:3000"  # Expose Playwright service on port 3000
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge  # Use the default bridge network
