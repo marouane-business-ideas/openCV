@@ -2,14 +2,13 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./Dockerfile  # The location of your Dockerfile for the Node.js app
+      dockerfile: ./backend/Dockerfile
     container_name: resume_app
-    # volumes:
-    #   - .:/app
+    volumes:
+      - .:/app
+      - ./database:/app/backend/database
     ports:
-      - "80:80"  # Expose the port for Nginx
-    # depends_on:
-    #   - browserless  # Make sure this starts after the browserless service
+      - "1337:1337"  # Expose the port for Nginx
     networks:
       - app_network
 

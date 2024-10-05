@@ -13,9 +13,6 @@ FROM node:22.6.0
 # Install project dependencies
   RUN npm install
 
-# Install frontend and backend dependencies
-RUN npm run install:all
-
 # Clean up unnecessary files (optional)
 RUN npm cache clean --force
 
@@ -23,7 +20,7 @@ RUN npm cache clean --force
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80 for Nginx
-EXPOSE 80
+EXPOSE 1337
 
 # Start Nginx and your Node.js aprun preview
-CMD nginx -g 'daemon off;' & npm run preview
+CMD nginx -g 'daemon off;' & npm run build & npm run start

@@ -7,12 +7,14 @@ import { IPdf } from "../Types/CommonTypes";
 import useSWR from "swr";
 import fetcher from "../lib/fetcher/fetcher";
 
+const BACKEND = import.meta.env.VITE_BACKEND_IP_ADDRESS;
+
 
 function Dashboard() {
     const { user, isSignedIn } = useUser();
     const { getToken } = useAuth();
 
-    const { data, error, isLoading } = useSWR(isSignedIn ? `/api/users/${user.id}/pdfs` : null, async (url) => {
+    const { data, error, isLoading } = useSWR(isSignedIn ? `${BACKEND}/api/users/${user.id}/pdfs` : null, async (url) => {
         const token = await getToken();
         return fetcher(url, {
             headers: {

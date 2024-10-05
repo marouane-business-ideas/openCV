@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import DownloadError from "../../utils/DownloadError";
 
+const BACKEND = import.meta.env.VITE_BACKEND_IP_ADDRESS;
+
 
 const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfoType; isEditing: boolean, resumeTemplate: templateType }) => {
     const { resumeId } = useParams();
@@ -53,8 +55,8 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
 
         try {
             const url = isEditing
-                ? `/api/users/${user.id}/pdfs/${resumeId}`
-                : `/api/users/${user.id}/pdfs`;
+                ? `${BACKEND}/api/users/${user.id}/pdfs/${resumeId}`
+                : `${BACKEND}/api/users/${user.id}/pdfs`;
             const method = isEditing ? "PUT" : "POST";
 
             const blob = await downloadPdf(url, method);

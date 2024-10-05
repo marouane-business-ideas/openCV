@@ -140,7 +140,7 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        const browser = await playwright.chromium.connect(`ws://browserless:3000/chromium/playwright`);
+        const browser = await playwright.chromium.connect("ws://browserless:3000/chromium/playwright");
         const context = await browser.newContext();
         const page = await context.newPage();
 
@@ -215,7 +215,7 @@ app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
 
         const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
-        const browser = await playwright.chromium.connect(`ws://browserless:3000/chromium/playwright`);
+        const browser = await playwright.chromium.connect("ws://browserless:3000/chromium/playwright");
         const context = await browser.newContext();
         const page = await context.newPage();
 

@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import Spinner from "../components/Spinner/Spinner";
 
+const BACKEND = import.meta.env.VITE_BACKEND_IP_ADDRESS;
+
 
 const ResumeBuilder = () => {
     const { resumeId } = useParams();
@@ -29,7 +31,7 @@ const ResumeBuilder = () => {
                 const token = await getToken();
 
                 if (resumeId && !Number.isNaN(+resumeId)) {
-                    const response = await fetch(`/api/users/${user?.id}/pdfs/${resumeId}`, {
+                    const response = await fetch(`${BACKEND}/api/users/${user?.id}/pdfs/${resumeId}`, {
                         headers: {
                             "Authorization": `Bearer ${token}`,
                         }

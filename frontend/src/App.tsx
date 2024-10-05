@@ -47,9 +47,6 @@ if (!PUBLISHABLE_KEY) {
 }
 
 
-
-
-
 const App = () => {
 
   return (
