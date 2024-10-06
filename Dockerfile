@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install curl gnupg -y \
   && apt-get update \
   && apt-get install google-chrome-stable -y --no-install-recommends
 
+
+# Install Certbot for Let's Encrypt SSL
+RUN apt-get install -y certbot python3-certbot-nginx
+
 # Install Nginx
   RUN apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
 
@@ -38,6 +42,11 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80 for Nginx
 EXPOSE 80
+
+# Expose port 443 for Https
+EXPOSE 443
+
+
 
 # Start Nginx and your Node.js aprun preview
 CMD nginx -g 'daemon off;' & npm run preview
