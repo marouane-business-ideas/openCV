@@ -10,7 +10,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
         display: "flex",
         flexDirection: "column",
         gap: "15px",
-        padding: "0px 70px",
+        padding: "0px 60px",
     },
     personnalInfoContainer: {
         padding: "10px",
@@ -27,7 +27,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
         fontWeight: 900,
     },
     personnalTitle: {
-        fontSize: "12px",
+        fontSize: "14px",
         textTransform: "uppercase",
         letterSpacing: "0.10em",
         fontWeight: 500,
@@ -38,7 +38,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
         justifyContent: "center",
         alignItems: "center",
         gap: "8px",
-        fontSize: "12px",
+        fontSize: "14px",
         letterSpacing: "0.4px",
     },
     resumeContentContainer: {
@@ -79,7 +79,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
     SectionTextColumn: {
         display: "flex",
         flexDirection: "column",
-        fontSize: "12px",
+        fontSize: "14px",
         letterSpacing: "0.175px",
         gap: "5px",
         alignItems: "center",
@@ -317,7 +317,7 @@ const ResumeModel = (props: {
                                                 left: "-5px",
                                                 top: "18px"
                                             }} />
-                                            <div>{job.company} • {job.jobTitle} • {job.location}</div>
+                                            <div style={{ fontStyle: "italic" }}>{job.company} • {job.jobTitle} • {job.location}</div>
                                         </div>
                                         <ExperienceDate>{job.date}</ExperienceDate>
                                         <div style={{ marginTop: "10px", fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
@@ -353,7 +353,7 @@ const ResumeModel = (props: {
                                     }}>
                                     </div>
                                     <div>
-                                        <div style={{ display: "flex", flexDirection: "row", gap: "5px", fontSize: "12px", paddingTop: "15px", fontWeight: 900 }}>
+                                        <div style={{ display: "flex", flexDirection: "row", gap: "5px", fontSize: "14px", paddingTop: "15px", fontWeight: 900 }}>
                                             <div style={{
                                                 width: "4px",
                                                 height: "4px",
@@ -364,7 +364,7 @@ const ResumeModel = (props: {
                                                 left: "-5px",
                                                 top: "18px"
                                             }} />
-                                            <div>{education.degree} • {education.schoolName}</div>
+                                            <div style={{ fontStyle: "italic" }}>{education.degree} • {education.schoolName}</div>
                                         </div>
                                         <ExperienceDate>{education.date}</ExperienceDate>
                                         <div style={{ marginTop: "10px", fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(education.description) }} />

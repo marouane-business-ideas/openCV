@@ -9,7 +9,7 @@ const Home: React.FC = () => {
             <section className="mx-auto max-w-screen-lg">
                 <h1 className="text-center lg:text-5xl text-3xl font-bold tracking-tight">Build amazing resumes in minutes</h1>
                 <h2 className="mx-auto mt-5 max-w-screen-md text-center lg:text-xl text-lg">
-                    Land your dream job with our amazing resume templates.
+                    Land your dream job with our carefully crafted resume templates.
                 </h2>
             </section>
             <section className="mt-20">
