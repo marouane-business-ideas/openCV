@@ -16,7 +16,7 @@ import ProfessionalTemplate from "./ResumeModels/ProfessionalTemplate.js";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 
-const stripe = new Stripe(process.env.STRIPE_PUBLISHABLE_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const stripeWebhookSigningSecret = process.env.STRIPE_WEBHOOK_SIGNING_SECRET;
 
 
@@ -199,28 +199,33 @@ app.post("/api/users/:userId/create-checkout-session", async (req, res) => {
     const { userId } = req.params;
     const { clerck_user_email } = req.body;
 
-    const session = await stripe.checkout.sessions.create({
-        customer_email: clerck_user_email,
-        line_items: [
-            {
-                price: "price_1Q7i9XLBctMrIlgGRI4AdDRz",
-                quantity: 1,
-            },
-        ],
-        mode: "subscription",
-        success_url: "http://localhost:5173/resume",
-        cancel_url: "http://localhost:5173/dashboard/account",
-        automatic_tax: { enabled: true },
-        currency: "eur",
-        subscription_data: {
-            metadata: {
-                clerck_user_id: userId,
-                clerck_user_email
+    try {
+        const session = await stripe.checkout.sessions.create({
+            customer_email: clerck_user_email,
+            line_items: [
+                {
+                    price: process.env.ANNUAL_PREMIUM_PLAN_STRIPE_PRICE_ID,
+                    quantity: 1,
+                },
+            ],
+            mode: "subscription",
+            success_url: "https://onlineresume.dev/resume",
+            cancel_url: "https://onlineresume.dev/dashboard/account",
+            automatic_tax: { enabled: true },
+            currency: "eur",
+            subscription_data: {
+                metadata: {
+                    clerck_user_id: userId,
+                    clerck_user_email
+                }
             }
-        }
-    });
+        });
 
-    res.redirect(303, session.url);
+        res.redirect(303, session.url);
+    } catch (error) {
+        console.error("Checkout session error", error);
+        res.sendStatus(500);
+    }
 });
 
 app.get("/api/users/:userId/account-type", async (req, res) => {

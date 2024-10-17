@@ -10,7 +10,7 @@ const useGetUserAccountType = () => {
     const { user, isSignedIn } = useUser();
 
     const { data, isLoading, error } = useSWR<{ userAccountType: AccountType_Type }>(isSignedIn ?
-        `http://localhost:1337/api/users/${user.id}/account-type` :
+        `/api/users/${user.id}/account-type` :
         null,
         fetcher
     );

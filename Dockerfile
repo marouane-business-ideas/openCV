@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install curl gnupg -y \
   RUN apt-get install -y nginx
 
 # Install vim and sqlite3 to help with debugging inside the container
-  RUN apt-get install vim sqlite3 && rm -rf /var/lib/apt/lists/*
+  RUN apt-get install vim -y sqlite3 && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
   WORKDIR /app
