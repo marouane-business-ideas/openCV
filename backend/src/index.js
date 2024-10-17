@@ -8,16 +8,21 @@ import helmet from "helmet";
 import { Webhook } from "svix";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import process from "process";
+import Stripe from "stripe";
 
-import { getUserDownloadCount, getUserMaxPdfs, incrementUserDownloadCount, initDb } from "./db.js";
+import { getUserAccountType, getUserDownloadCount, getUserMaxPdfs, incrementUserDownloadCount, initDb } from "./db.js";
 import ClassicalTemplate from "./ResumeModels/ClassicalTemplate.js";
 import ProfessionalTemplate from "./ResumeModels/ProfessionalTemplate.js";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 
+const stripe = new Stripe(process.env.STRIPE_PUBLISHABLE_KEY);
+const stripeWebhookSigningSecret = process.env.STRIPE_WEBHOOK_SIGNING_SECRET;
+
+
 const app = express();
 const PORT = process.env.PORT || 1337;
-const secret = process.env.CLERK_WEBHOOK_SECRET;
+const CLERK_WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
 // Use Helmet for security headers
 app.use(helmet());
@@ -72,19 +77,62 @@ initDb().then(async (database) => {
     process.exit(1);
 });
 
+// This route needs to be called before calling app.use(bodyParser.json());
+app.post("/api/webhook/stripe", bodyParser.raw({ type: "application/json" }), async (req, res) => {
+    let event = req.body;
+
+    if (stripeWebhookSigningSecret) {
+        // Get the signature sent by Stripe
+        const signature = req.headers["stripe-signature"];
+        try {
+            event = stripe.webhooks.constructEvent(
+                req.body,
+                signature,
+                stripeWebhookSigningSecret
+            );
+        } catch (err) {
+            console.log("⚠️  Webhook signature verification failed.", err.message);
+            return res.sendStatus(400);
+        }
+    }
+
+    if (event.type === "payment_intent.succeeded") {
+        // Immediately return a 200 response to acknowledge receipt of the event, otherwise stripe is going to retry sending again and again ...
+        res.status(200).send()
+
+        try {
+            const paymentIntent = event.data.object;
+
+            const session = await stripe.checkout.sessions.list({ payment_intent: paymentIntent.id })
+            const subscription = await stripe.subscriptions.retrieve(session.data[0].subscription);
+
+            await db.run(`
+                UPDATE users
+                 SET accountType = "premium"
+                WHERE id = ? OR email = ?`,
+                [subscription.metadata.clerck_user_id, subscription.metadata.clerck_user_email]
+            );
+        } catch (error) {
+            console.error("Error handling stripe payment", error);
+        }
+
+    } else {
+        console.log(`Unhandled event type ${event.type}.`);
+    }
+});
 
 // This route needs to be called before calling app.use(bodyParser.json());
-app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
+app.post("/api/webhook/clerk", bodyParser.raw({ type: "application/json" }), async (req, res) => {
     const payload = req.body;
     const headers = req.headers;
 
-    const wh = new Webhook(secret);
+    const wh = new Webhook(CLERK_WEBHOOK_SECRET);
 
     try {
         wh.verify(payload, headers);
     } catch (err) {
         console.error("Invalid signature:", err);
-        return res.status(401).send("Invalid signature");
+        return res.sendStatus(401);
     }
 
     const { type, data } = JSON.parse(payload);
@@ -104,7 +152,7 @@ app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), async (re
             return res.status(201).send("User registered");
         } catch (err) {
             console.error("Error registering user:", err);
-            return res.status(500).send("Internal Server Error");
+            return res.sendStatus(500);
         }
     } else if (type === "user.deleted") {
         const { id } = data;
@@ -112,10 +160,10 @@ app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), async (re
         try {
             await db.run("DELETE FROM users WHERE id = ?", [id]);
             console.log("User deleted from database:", id);
-            return res.status(200).send("User deleted");
+            return res.sendStatus(204);
         } catch (err) {
             console.error("Error deleting user:", err);
-            return res.status(500).send("Internal Server Error");
+            return res.sendStatus(500);
         }
     } else {
         return res.status(400).send("Unhandled event type");
@@ -124,8 +172,9 @@ app.post("/api/webhook", bodyParser.raw({ type: "application/json" }), async (re
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 
-const authMw = (req, res, next) => {
+const authUsersRouteMw = (req, res, next) => {
     const authenticatedUserId = req.auth.userId;
     const { userId } = req.params;
     if (authenticatedUserId !== userId) {
@@ -135,8 +184,6 @@ const authMw = (req, res, next) => {
 }
 
 app.use("/api/users/:userId/*", (req, res, next) => {
-    next();
-}, (req, res, next) => {
     ClerkExpressRequireAuth()(req, res, (err) => {
         if (err) {
             console.error("Authentication failed:", err);
@@ -144,8 +191,49 @@ app.use("/api/users/:userId/*", (req, res, next) => {
         }
         next();
     });
-}, authMw);
+}, authUsersRouteMw);
 
+
+// Stripe routes
+app.post("/api/users/:userId/create-checkout-session", async (req, res) => {
+    const { userId } = req.params;
+    const { clerck_user_email } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+        customer_email: clerck_user_email,
+        line_items: [
+            {
+                price: "price_1Q7i9XLBctMrIlgGRI4AdDRz",
+                quantity: 1,
+            },
+        ],
+        mode: "subscription",
+        success_url: "http://localhost:5173/resume",
+        cancel_url: "http://localhost:5173/dashboard/account",
+        automatic_tax: { enabled: true },
+        currency: "eur",
+        subscription_data: {
+            metadata: {
+                clerck_user_id: userId,
+                clerck_user_email
+            }
+        }
+    });
+
+    res.redirect(303, session.url);
+});
+
+app.get("/api/users/:userId/account-type", async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const userAccountType = await getUserAccountType(db, userId);
+        res.status(200).json({ userAccountType })
+    } catch (error) {
+        res.sendStatus(500);
+    }
+
+})
 
 /**  PDF routes */
 app.post("/api/users/:userId/pdfs", async (req, res) => {
@@ -153,9 +241,15 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
     const { resume, template } = req.body;
 
     try {
-        const userPdfCount = await getUserDownloadCount(db, userId);
-        const userMaxPdfs = await getUserMaxPdfs(db, userId);
-        if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
+        const [userAccountType, userPdfCount, userMaxPdfs] = await Promise.all([
+            await getUserAccountType(db, userId),
+            await getUserDownloadCount(db, userId),
+            await getUserMaxPdfs(db, userId)
+        ]);
+
+        if (userAccountType === "free") {
+            if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
+        }
 
         const Preview = template === "professional" ? ProfessionalTemplate : ClassicalTemplate;
 
@@ -186,9 +280,9 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
     } catch (err) {
         console.error(err.message);
         if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
-            return res.status(403).json({ status: "error", message: "You reached the limit of pdfs you can generate on the free plan" });
+            return res.status(403).json({ status: "Forbidden", message: "You reached the limit of pdfs you can generate on the free plan" });
         }
-        res.status(500).json({ status: "error", message: "An error occurred while generating the PDF" });
+        res.status(500).json({ status: "Internal Server Error", message: "An error occurred while generating the PDF" });
     }
 
 });
@@ -201,7 +295,7 @@ app.get("/api/users/:userId/pdfs", async (req, res) => {
         res.status(200).json(rows);
     } catch (err) {
         console.error("Error retrieving PDFs:", err);
-        res.status(500).json({ status: "error", message: "Failed to retrieve PDFs" });
+        res.status(500).json({ status: "Internal Server Error", message: "Failed to retrieve PDFs" });
     }
 });
 
@@ -212,11 +306,11 @@ app.get("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
         if (row) {
             res.status(200).json(row);
         } else {
-            res.status(404).json({ status: "error", message: "PDF not found" });
+            res.status(404).json({ status: "Not Found ", message: "PDF not found" });
         }
     } catch (err) {
         console.error(err);
-        res.status(500).json({ status: "error", message: "Failed to retrieve PDF" });
+        res.status(500).json({ status: "Internal Server Error", message: "Failed to retrieve PDF" });
     }
 });
 
@@ -258,9 +352,9 @@ app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
     } catch (err) {
         console.error(err);
         if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
-            return res.status(403).json({ status: "error", message: "You reached the limit of pdfs you can generate on the free plan" });
+            return res.status(403).json({ status: "Forbidden", message: "You reached the limit of pdfs you can generate on the free plan" });
         }
-        res.status(500).json({ status: "error", message: "Failed to generate PDF" });
+        res.status(500).json({ status: "Internal Server Error", message: "Failed to generate PDF" });
     }
 });
 

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { ArrowDownTrayIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
-import { resumeInfoType, templateType } from "../../context/ResumeContext";
+import { resumeInfoType, TemplateType } from "../../context/ResumeContext";
 import classNames from "classnames";
 import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import DownloadError from "../../utils/DownloadError";
 
 
-const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfoType; isEditing: boolean, resumeTemplate: templateType }) => {
+const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfoType; isEditing: boolean, resumeTemplate: TemplateType }) => {
     const { resumeId } = useParams();
     const { user, isSignedIn } = useUser();
     const [isDownloading, setIsDownloading] = useState(false);
@@ -94,6 +94,6 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
             {downloadError && <p className="text-sm text-red-500">{downloadError}</p>}
         </>
     );
-}
+};
 
 export default DownloadPdf;

@@ -1,16 +1,19 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
+import useSWR from "swr";
 
-import SkeletonLoader from "../components/Skeleton";
+import SkeletonLoader from "../components/SkeletonLoader";
 import PdfCard from "../components/PdfCard/PdfCard";
 import { IPdf } from "../Types/CommonTypes";
-import useSWR from "swr";
 import fetcher from "../lib/fetcher/fetcher";
+import { ResumeContext } from "../context/ResumeContext";
 
 
 function Dashboard() {
     const { user, isSignedIn } = useUser();
     const { getToken } = useAuth();
+    const { accountType } = useContext(ResumeContext);
 
     const { data, error, isLoading } = useSWR(isSignedIn ? `/api/users/${user.id}/pdfs` : null, async (url) => {
         const token = await getToken();
@@ -37,7 +40,7 @@ function Dashboard() {
                         Array(3).fill(0).map((_, index) => (
                             <SkeletonLoader key={index} />
                         ))
-                    ) : data.length > 0 ? (
+                    ) : data?.length > 0 ? (
                         data.map((pdf: IPdf) => (
                             <PdfCard key={pdf.id} pdf={pdf} />
                         ))
@@ -57,7 +60,7 @@ function Dashboard() {
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     {user && <p className="text-xl font-semibold">{user.fullName}</p>}
                     {user && <p className="mt-2 text-gray-500">Email: {user.emailAddresses[0].emailAddress}</p>}
-                    <p className="mt-2 text-gray-500">Subscription: Free plan</p>
+                    <p className="mt-2 text-gray-500">Subscription: {accountType.type === "free" ? "Free plan" : "Premium plan"}</p>
                     <Link to="/dashboard/account" className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
                          px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
                         Edit Account

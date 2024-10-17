@@ -2,11 +2,18 @@ import { createContext, Dispatch } from "react";
 import uniqid from "uniqid";
 
 export type LanguageLevelType = "native" | "fluent" | "intermediate" | "beginner" | "";
-export type templateType = "classic" | "professional";
+export type TemplateType = "classic" | "professional";
+export type AccountType_Type = "free" | "premium" | undefined;
+
+interface IAccountType {
+    type: AccountType_Type;
+    isLoading: boolean;
+    error: any;
+}
 
 const savedState = localStorage.getItem("resumeState");
 
-export const getResumeDummyData = (resumeTemplate: templateType = "professional"): resumeInfoType => ({
+export const getResumeDummyData = (resumeTemplate: TemplateType = "professional"): resumeInfoType => ({
     resumeTemplate,
     personalInfo: {
         name: "John Doe",
@@ -76,6 +83,7 @@ export const getResumeDummyData = (resumeTemplate: templateType = "professional"
 
 
 export const defaultContext = savedState ? JSON.parse(savedState) : {
+    accountType: { type: "free", isLoading: false, error: null },
     onGoingResume: {
         resumeTemplate: "classic",
         personalInfo: {
@@ -176,7 +184,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
 };
 
 export type resumeInfoType = {
-    resumeTemplate: templateType;
+    resumeTemplate: TemplateType;
     personalInfo: {
         name: string;
         title: string;
@@ -215,9 +223,11 @@ export type resumeInfoType = {
 };
 
 export type contextStateType = {
+    accountType: IAccountType;
     onGoingResume: resumeInfoType;
     resumeBeingEdited: resumeInfoType;
 };
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type actionType = { type: string, payload?: any };
 

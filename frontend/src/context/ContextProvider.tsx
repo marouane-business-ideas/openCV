@@ -11,6 +11,9 @@ interface Props {
 const ContextProvider: React.FC<Props> = ({ children }) => {
     const [state, dispatch] = useImmerReducer((draft: contextStateType, action: actionType) => {
         switch (action.type) {
+            case "SET_ACCOUNT_TYPE":
+                draft.accountType = action.payload;
+                break;
             case "SET_EDITED_RESUME":
                 draft.resumeBeingEdited = action.payload;
                 break;
@@ -200,6 +203,6 @@ const ContextProvider: React.FC<Props> = ({ children }) => {
             </ResumeDispatchContext.Provider>
         </ResumeContext.Provider>
     );
-}
+};
 
 export default ContextProvider;

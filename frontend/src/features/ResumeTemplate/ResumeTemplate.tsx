@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import Card from "../../components/Card/Card";
-import { ResumeContext, ResumeDispatchContext, resumeInfoType, templateType } from "../../context/ResumeContext";
+import { ResumeContext, ResumeDispatchContext, resumeInfoType, TemplateType } from "../../context/ResumeContext";
 
 const ResumeTemplate = ({ edited }: { edited: boolean }) => {
     const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
@@ -8,7 +8,7 @@ const ResumeTemplate = ({ edited }: { edited: boolean }) => {
 
     const resumeTemplate = edited ? (resumeBeingEdited as resumeInfoType).resumeTemplate : onGoingResume.resumeTemplate;
 
-    const handleTemplateClick = (template: templateType) => {
+    const handleTemplateClick = (template: TemplateType) => {
         if (dispatch)
             dispatch({ type: `SET_TEMPLATE${edited ? "_EDITED" : ""}`, payload: template })
     }

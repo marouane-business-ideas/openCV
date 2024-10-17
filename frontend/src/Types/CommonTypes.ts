@@ -1,9 +1,9 @@
-import { templateType } from "../context/ResumeContext";
+import { TemplateType } from "../context/ResumeContext";
 
 export interface IPdf {
     content: string;
     createdAt: string;
     filename: string;
     id: number;
-    template: templateType;
+    template: TemplateType;
 }

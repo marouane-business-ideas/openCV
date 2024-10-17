@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { ResumeDispatchContext } from "../context/ResumeContext";
-import Form from "../features/Form/Form"
+import Form from "../features/Form/Form";
 import PdfViewer from "../features/PdfViewer/PdfViewer";
 import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
@@ -80,6 +80,6 @@ const ResumeBuilder = () => {
             <PdfViewer edited={edited} />
         </div>
     );
-}
+};
 
 export default ResumeBuilder;

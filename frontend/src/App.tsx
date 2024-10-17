@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ClerkProvider } from "@clerk/clerk-react"
+import { ClerkProvider } from "@clerk/clerk-react";
 
 import Home from "./routes/Home";
-import SignInPage from "./routes/SignIn"
-import SignUpPage from "./routes/SignUp"
+import SignInPage from "./routes/SignIn";
+import SignUpPage from "./routes/SignUp";
 
 import RootLayout from "./routes/layouts/RootLayout";
 import ResumeBuilder from "./routes/ResumeBuilder";
@@ -13,6 +13,7 @@ import DashboardLayout from "./routes/layouts/DashboardLayout";
 import AccountPage from "./routes/Account";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import SSOCallBack from "./routes/SSOCallback";
+import ContextProvider from "./context/ContextProvider";
 
 
 const router = createBrowserRouter([
@@ -40,10 +41,10 @@ const router = createBrowserRouter([
 ]);
 
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key")
+  throw new Error("Missing Publishable Key");
 }
 
 
@@ -57,9 +58,11 @@ const App = () => {
       publishableKey={PUBLISHABLE_KEY}
       afterSignOutUrl="/"
     >
-      <RouterProvider router={router} />
+      <ContextProvider>
+        <RouterProvider router={router} />
+      </ContextProvider>
     </ClerkProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

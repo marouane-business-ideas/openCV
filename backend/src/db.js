@@ -71,3 +71,13 @@ export async function getUserMaxPdfs(db, userId) {
     `, [userId]);
     return result ? result.maxPdfs : 5;
 }
+
+export async function getUserAccountType(db, userId) {
+    const result = await db.get(`
+        SELECT accountType
+        FROM users
+        WHERE id = ?
+    `, [userId]);
+
+    return result ? result.accountType : "free";
+}

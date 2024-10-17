@@ -16,5 +16,6 @@ module.exports = {
     ],
     'max-len': ['warn', { code: 150 }],
     'quotes': ['warn', 'double'],
+    'semi': ['warn', 'always']
   },
 }
