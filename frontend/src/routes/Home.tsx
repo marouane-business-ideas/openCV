@@ -43,15 +43,15 @@ const Home: React.FC = () => {
             <section className="flex flex-col items-center md:flex-row md:justify-center mt-16">
                 <div className="flex flex-col items-center bg-white m-8 shadow-gray-200 shadow-xl relative overflow-hidden"
                     style={{ minWidth: "320px", maxWidth: "320px", minHeight: "450px", maxHeight: "450px" }} >
-                    <div className="flex relative overflow-hidden">
-                        <ProfessionalTemplate customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
+                    <div aria-description="Professional resume template" className="flex relative overflow-hidden">
+                        <ProfessionalTemplate inert customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
                             resume={getResumeDummyData()} />
                     </div>
                 </div>
                 <div className="flex flex-col items-center bg-white m-8 shadow-gray-200 shadow-xl relative overflow-hidden"
                     style={{ minWidth: "320px", maxWidth: "320px", minHeight: "450px", maxHeight: "450px" }} >
-                    <div className="flex relative overflow-hidden">
-                        <ClassicalTemplate customThemeColor="#7A6C55"
+                    <div aria-description="Classical resume template" className="flex relative overflow-hidden">
+                        <ClassicalTemplate inert customThemeColor="#7A6C55"
                             customStyle={{ minWidth: "840px", transform: "scale(0.37)", transformOrigin: "top" }}
                             resume={getResumeDummyData("classic")} />
                     </div>
