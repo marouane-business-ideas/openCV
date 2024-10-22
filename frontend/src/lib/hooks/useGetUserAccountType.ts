@@ -1,20 +1,28 @@
 import { useContext, useEffect } from "react";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import useSWR from "swr";
 
-import { AccountType_Type, ResumeDispatchContext } from "../../context/ResumeContext";
+import { ResumeDispatchContext } from "../../context/ResumeContext";
 import fetcher from "../fetcher/fetcher";
 
 const useGetUserAccountType = () => {
     const dispatch = useContext(ResumeDispatchContext);
     const { user, isSignedIn } = useUser();
+    const { getToken } = useAuth();
 
-    const { data, isLoading, error } = useSWR<{ userAccountType: AccountType_Type }>(isSignedIn ?
+
+    const { data, isLoading, error } = useSWR(isSignedIn ?
         `/api/users/${user.id}/account-type` :
         null,
-        fetcher
+        async (url) => {
+            const token = await getToken();
+            return fetcher(url, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                }
+            });
+        }
     );
-
 
     useEffect(() => {
         if (dispatch)

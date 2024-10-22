@@ -5,7 +5,7 @@ function DashboardLayout() {
 
     return (
         <div className="h-[calc(100vh-4rem)] flex flex-col md:flex-row">
-            <div className="w-full md:w-64 bg-white shadow-md">
+            <div className="w-full md:w-64 shadow-md bg-gradient-to-b from-blue-50 to-white">
                 <div className="md:p-6 p-2">
                     <nav className="md:hidden">
                         <Link to="/dashboard" className={`inline-block py-2 px-4 rounded transition duration-200
