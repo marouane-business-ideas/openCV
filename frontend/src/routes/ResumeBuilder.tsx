@@ -75,7 +75,7 @@ const ResumeBuilder = () => {
     }
 
     return (
-        <div className="flex flex-col 2xl:flex-row relative overflow-y-hidden items-center w-full h-screen 2xl:h-[calc(100vh-var(--header-height))]">
+        <div className="flex flex-col lg:flex-row relative overflow-y-hidden items-center w-full h-screen lg:h-[calc(100vh-var(--header-height))]">
             <Form edited={edited} />
             <PdfViewer edited={edited} />
         </div>
