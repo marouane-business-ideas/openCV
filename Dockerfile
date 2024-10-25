@@ -2,7 +2,7 @@
 FROM node:22.6.0
 
 # We don't need the standalone Chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 # Install Google Chrome Stable and fonts
 # Note: this installs the necessary libs to make the browser work with Puppeteer.
@@ -18,6 +18,9 @@ RUN apt-get update && apt-get install curl gnupg -y \
 
 # Install Nginx
   RUN apt-get install -y nginx
+
+  # Install supervisor
+  RUN apt-get install -y supervisor
 
 # Install vim and sqlite3 to help with debugging inside the container
   RUN apt-get install vim -y sqlite3 && rm -rf /var/lib/apt/lists/*
@@ -49,7 +52,5 @@ EXPOSE 80
 # Expose port 443 for Https
 EXPOSE 443
 
-
-
-# Start Nginx and your Node.js aprun preview
-CMD nginx -g 'daemon off;' & npm run preview
+# Start Nginx and npm run preview
+CMD ["supervisord", "-c", "./supervisord.conf"]
