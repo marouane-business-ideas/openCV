@@ -130,7 +130,7 @@ function Layout() {
                             <div className="px-5 pb-8 mt-8">
                                 Copyright ©
                                 {new Date().getFullYear()}
-                                {" "}Made with ❤️ by <a target="_blank" className="underline underline-offset-4" href="https:/www.marouanefaris.dev/">
+                                {" "}Made with ❤️ by <a target="_blank" className="underline underline-offset-4" href="https://www.marouanefaris.dev/">
                                     Marouane Faris
                                 </a>
                             </div>
