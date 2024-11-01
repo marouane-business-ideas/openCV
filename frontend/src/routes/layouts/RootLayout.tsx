@@ -31,12 +31,12 @@ function Layout() {
         setIsMenuOpen(false);
     }, [location]);
 
-    // I want to prevent Premium users for seeing the landing page (it is adapted for logged out and free plan users, not premium users)
+    // I want to prevent Premium users for seeing the landing page (As of now, it is suited to logged out and free plan users, not premium users)
     useEffect(() => {
-        if (isSignedIn && window.location.pathname === "/" && accountType.type === "premium") {
+        if (isSignedIn && location.pathname === "/" && accountType.type === "premium") {
             navigate("/resume");
         }
-    }, [isSignedIn, accountType, navigate]);
+    }, [isSignedIn, accountType, navigate, location]);
 
     return (
         <div className="h-full">
