@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
         return <Navigate to="/sign-in" />;
     }
 
-    return <>{children}</>
+    return <>{children}</>;
 
 };
 
