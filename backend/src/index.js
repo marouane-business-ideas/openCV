@@ -2,8 +2,6 @@ import express from "express";
 import { Cluster } from "puppeteer-cluster";
 import dotenv from "dotenv"
 import bodyParser from "body-parser";
-import React from "react";
-import ReactDOMServer from "react-dom/server";
 import helmet from "helmet";
 import { Webhook } from "svix";
 import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
@@ -11,8 +9,6 @@ import process from "process";
 import Stripe from "stripe";
 
 import { getUserAccountType, getUserDownloadCount, getUserMaxPdfs, incrementUserDownloadCount, initDb } from "./db.js";
-import ClassicalTemplate from "./ResumeModels/ClassicalTemplate.js";
-import ProfessionalTemplate from "./ResumeModels/ProfessionalTemplate.js";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
 
@@ -243,7 +239,7 @@ app.get("/api/users/:userId/account-type", async (req, res) => {
 /**  PDF routes */
 app.post("/api/users/:userId/pdfs", async (req, res) => {
     const { userId } = req.params;
-    const { resume, template } = req.body;
+    const { resumeHtml, resumeData, template } = req.body;
 
     try {
         const [userAccountType, userPdfCount, userMaxPdfs] = await Promise.all([
@@ -256,12 +252,8 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
             if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
         }
 
-        const Preview = template === "professional" ? ProfessionalTemplate : ClassicalTemplate;
-
-        const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
-
         const pdfBuffer = await cluster.execute(async ({ page }) => {
-            await page.setContent(htmlContent);
+            await page.setContent(resumeHtml);
             const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
             return buffer;
         });
@@ -269,8 +261,8 @@ app.post("/api/users/:userId/pdfs", async (req, res) => {
         const filename = `CV_${Date.now()}.pdf`;
 
         // Insert metadata into SQLite database
-        await db.run("INSERT INTO pdf_metadata (filename, content, userId, template) VALUES (?, ?, ?, ?)",
-            [filename, JSON.stringify(resume), userId, template]
+        await db.run("INSERT INTO pdf_metadata (filename, jsonContent, htmlContent, userId, template) VALUES (?, ?, ?, ?, ?)",
+            [filename, JSON.stringify(resumeData), resumeHtml, userId, template]
         );
 
         await incrementUserDownloadCount(db, userId);
@@ -296,7 +288,7 @@ app.get("/api/users/:userId/pdfs", async (req, res) => {
     const userId = req.params.userId;
     try {
         // eslint-disable-next-line max-len
-        const rows = await db.all("SELECT content, datetime(createdAt, \"localtime\") as createdAt, id, template FROM pdf_metadata WHERE userId = ?", [userId]);
+        const rows = await db.all("SELECT jsonContent, datetime(createdAt, \"localtime\") as createdAt, id, template FROM pdf_metadata WHERE userId = ?", [userId]);
         res.status(200).json(rows);
     } catch (err) {
         console.error("Error retrieving PDFs:", err);
@@ -321,26 +313,24 @@ app.get("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
 
 app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
     const { userId, pdfId } = req.params;
-    const { resume, template } = req.body;
+    const { resumeHtml, resumeData, template } = req.body;
 
     try {
         const userPdfCount = await getUserDownloadCount(db, userId);
         const userMaxPdfs = await getUserMaxPdfs(db, userId);
+
         if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
 
-        const Preview = template === "professional" ? ProfessionalTemplate : ClassicalTemplate;
-
-        const htmlContent = ReactDOMServer.renderToStaticMarkup(React.createElement(Preview, { resume: resume }));
 
         // Generate the PDF
         const pdfBuffer = await cluster.execute(async ({ page }) => {
-            await page.setContent(htmlContent);
+            await page.setContent(resumeHtml);
             const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
             return buffer;
         });
 
-        await db.run("UPDATE pdf_metadata SET content = ?, template = ? WHERE id = ? AND userId = ?",
-            [JSON.stringify(resume), template, pdfId, userId]
+        await db.run("UPDATE pdf_metadata SET jsonContent = ?, htmlContent = ?, template = ? WHERE id = ? AND userId = ?",
+            [JSON.stringify(resumeData), resumeHtml, template, pdfId, userId]
         );
 
 

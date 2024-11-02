@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useAuth, useUser } from "@clerk/clerk-react";
+
 import { ResumeDispatchContext } from "../context/ResumeContext";
 import Form from "../features/Form/Form";
 import PdfViewer from "../features/PdfViewer/PdfViewer";
-import { useParams } from "react-router-dom";
-import { useAuth, useUser } from "@clerk/clerk-react";
 import Spinner from "../components/Spinner/Spinner";
 
 
@@ -40,7 +41,7 @@ const ResumeBuilder = () => {
                     }
 
                     const data = await response.json();
-                    const parsedData = JSON.parse(data.content);
+                    const parsedData = JSON.parse(data.jsonContent);
                     setEdited(true);
                     if (dispatch) {
                         dispatch({ type: "SET_EDITED_RESUME", payload: parsedData });

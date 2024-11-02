@@ -26,7 +26,8 @@ export async function initDb() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             userId TEXT NOT NULL,
             filename TEXT NOT NULL,
-            content TEXT NOT NULL,
+            jsonContent TEXT NOT NULL,
+            htmlContent TEXT NOT NULL,
             template TEXT NOT NULL CHECK (template IN ('classic', 'professional')),
             createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE

@@ -1,7 +1,8 @@
 import { TemplateType } from "../context/ResumeContext";
 
 export interface IPdf {
-    content: string;
+    jsonContent: string;
+    htmlContent: string;
     createdAt: string;
     filename: string;
     id: number;

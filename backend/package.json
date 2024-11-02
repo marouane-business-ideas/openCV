@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "dev": "NODE_ENV=development node dist/index.js",
-    "start": "NODE_ENV=production node dist/index.js",
-    "build": "cp -vR ../frontend/src/components/ResumeModels src && babel src --extensions \".js,.tsx\" --out-dir dist"
+    "dev": "NODE_ENV=development nodemon src/index.js",
+    "start": "NODE_ENV=production node src/index.js"
   },
+  "type": "module",
   "dependencies": {
     "@clerk/clerk-sdk-node": "^5.0.32",
     "body-parser": "^1.20.2",
@@ -14,19 +14,13 @@
     "isomorphic-dompurify": "^2.14.0",
     "puppeteer": "^23.3.0",
     "puppeteer-cluster": "^0.24.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "stripe": "^17.1.0",
     "svix": "^1.31.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.8",
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.3",
-    "@babel/preset-react": "^7.24.7",
-    "@babel/preset-typescript": "^7.24.7",
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "nodemon": "^3.1.7"
   }
 }

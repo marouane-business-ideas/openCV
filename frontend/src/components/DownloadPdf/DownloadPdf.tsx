@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { ArrowDownTrayIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
-import { resumeInfoType, TemplateType } from "../../context/ResumeContext";
+import { createElement, useState } from "react";
+import ReactDOMServer from "react-dom/server";
 import classNames from "classnames";
 import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
-import DownloadError from "../../utils/DownloadError";
+import { ArrowDownTrayIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 
+import { resumeInfoType, TemplateType } from "../../context/ResumeContext";
+import DownloadError from "../../utils/DownloadError";
+import ClassicalTemplate from "../../components/ResumeModels/ClassicalTemplate";
+import ProfessionalTemplate from "../../components/ResumeModels/ProfessionalTemplate";
 
 const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfoType; isEditing: boolean, resumeTemplate: TemplateType }) => {
     const { resumeId } = useParams();
@@ -26,13 +29,17 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
 
     const downloadPdf = async (url: string, method: "PUT" | "POST") => {
         const token = await getToken();
+
+        const Preview = resumeTemplate === "professional" ? ProfessionalTemplate : ClassicalTemplate;
+        const htmlContent = ReactDOMServer.renderToStaticMarkup(createElement(Preview, { resume }));
+
         const response = await fetch(url, {
             method,
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             },
-            body: JSON.stringify({ resume, template: resumeTemplate }),
+            body: JSON.stringify({ resumeHtml: htmlContent, resumeData: resume, template: resumeTemplate }),
         });
 
         if (!response.ok) {
