@@ -3,6 +3,7 @@ import React from "react";
 import DOMPurify from "isomorphic-dompurify";
 
 import type { resumeInfoType } from "../../context/ResumeContext";
+import Schemify from "../../utils/schemify";
 
 const Styles: { [key: string]: React.CSSProperties } = {
     pageContainer: {
@@ -198,7 +199,7 @@ const ResumeModel = (props: {
                                 <div key={link.id}
                                     style={{ lineBreak: "anywhere" }}
                                 >
-                                    <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={link.linkUrl} >{link.linkName}</a>
+                                    <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >{link.linkName}</a>
                                 </div>))
                             }
                         </SectionTextColumn>
