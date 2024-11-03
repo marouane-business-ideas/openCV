@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ClerkProvider } from "@clerk/clerk-react";
+import { AuthenticateWithRedirectCallback, ClerkProvider } from "@clerk/clerk-react";
 
 import Home from "./routes/Home";
 import SignInPage from "./routes/SignIn";
@@ -12,7 +12,6 @@ import Dashboard from "./routes/Dashboard";
 import DashboardLayout from "./routes/layouts/DashboardLayout";
 import AccountPage from "./routes/Account";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import SSOCallBack from "./routes/SSOCallback";
 import SubscribePage from "./routes/Subscribe";
 import ContextProvider from "./context/ContextProvider";
 
@@ -27,7 +26,7 @@ const router = createBrowserRouter([
       { path: "resume", element: <ResumeBuilder /> },
       { path: "resume/:resumeId", element: <ProtectedRoute><ResumeBuilder /></ProtectedRoute> },
       { path: "sign-in", element: <SignInPage /> },
-      { path: "sign-in/sso-callback", element: <SSOCallBack /> },
+      { path: "sign-in/sso-callback", element: <AuthenticateWithRedirectCallback signInUrl="/sign-in" signUpUrl="/sign-up" /> },
       { path: "sign-up/*", element: <SignUpPage /> },
       {
         path: "/dashboard",
