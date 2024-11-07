@@ -1,24 +1,27 @@
-import express from "express";
-import { Cluster } from "puppeteer-cluster";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import helmet from "helmet";
-import { Webhook } from "svix";
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 import process from "process";
 import Stripe from "stripe";
 
-import { getUserAccountType, getUserDownloadCount, getUserMaxPdfs, incrementUserDownloadCount, initDb } from "./db.js";
+import initApp from "./app.js";
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` })
+import pdfRouter from "./routers/pdf.js";
+import clerkAuthRouter from "./routers/clerkAuth.js";
+import stripeRouter from "./routers/stripe.js";
+import webhooksRouter from "./routers/webhooks.js";
+import accountTypeRouter from "./routers/accountType.js";
+
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const stripeWebhookSigningSecret = process.env.STRIPE_WEBHOOK_SIGNING_SECRET;
 
-
-const app = express();
-const PORT = process.env.PORT || 1337;
 const CLERK_WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+
+
+// Top level await to wait for the DB and Puppeteer to initialize first before moving forward
+const { app, cluster, db } = await initApp();
 
 // Use Helmet for security headers
 app.use(helmet());
@@ -28,330 +31,32 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);
     res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
     res.setHeader("Access-Control-Allow-Headers", ["Content-Type", "Authorization"]);
+
     if (req.method === "OPTIONS") {
         return res.status(204).end();
     }
+
     next();
 });
 
-
-let db;
-let cluster;
-
-// Initialize the database and Puppeteer cluster at server start
-initDb().then(async (database) => {
-    db = database;
-    console.log("Database initialized successfully");
-
-    // Initialize the Puppeteer cluster
-    cluster = await Cluster.launch({
-        concurrency: Cluster.CONCURRENCY_PAGE,
-        maxConcurrency: 20,
-        retryLimit: 1,
-        retryDelay: 1000,
-        puppeteerOptions: {
-            headless: true,
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--disable-software-rasterizer",
-                "--disable-extensions",
-            ],
-        },
-    });
-
-    console.log("Puppeteer Cluster initialized");
-
-    // Start the server after the DB and cluster are ready
-    app.listen(PORT, "0.0.0.0", () => {
-        console.log(`Server is listening on port ${PORT}`);
-    });
-}).catch(err => {
-    console.error("Failed to initialize the database or Puppeteer Cluster:", err);
-    process.exit(1);
-});
-
-// This route needs to be called before calling app.use(bodyParser.json());
-app.post("/api/webhook/stripe", bodyParser.raw({ type: "application/json" }), async (req, res) => {
-    let event = req.body;
-
-    if (stripeWebhookSigningSecret) {
-        // Get the signature sent by Stripe
-        const signature = req.headers["stripe-signature"];
-        try {
-            event = stripe.webhooks.constructEvent(
-                req.body,
-                signature,
-                stripeWebhookSigningSecret
-            );
-        } catch (err) {
-            console.log("⚠️  Webhook signature verification failed.", err.message);
-            return res.sendStatus(400);
-        }
-    }
-
-    if (event.type === "payment_intent.succeeded") {
-        // Immediately return a 200 response to acknowledge receipt of the event, otherwise stripe is going to retry sending again and again ...
-        res.status(200).send()
-
-        try {
-            const paymentIntent = event.data.object;
-
-            const session = await stripe.checkout.sessions.list({ payment_intent: paymentIntent.id })
-            const subscription = await stripe.subscriptions.retrieve(session.data[0].subscription);
-
-            await db.run(`
-                UPDATE users
-                 SET accountType = "premium"
-                WHERE id = ? OR email = ?`,
-                [subscription.metadata.clerck_user_id, subscription.metadata.clerck_user_email]
-            );
-        } catch (error) {
-            console.error("Error handling stripe payment", error);
-        }
-
-    } else {
-        console.log(`Unhandled event type ${event.type}.`);
-    }
-});
-
-// This route needs to be called before calling app.use(bodyParser.json());
-app.post("/api/webhook/clerk", bodyParser.raw({ type: "application/json" }), async (req, res) => {
-    const payload = req.body;
-    const headers = req.headers;
-
-    const wh = new Webhook(CLERK_WEBHOOK_SECRET);
-
-    try {
-        wh.verify(payload, headers);
-    } catch (err) {
-        console.error("Invalid signature:", err);
-        return res.sendStatus(401);
-    }
-
-    const { type, data } = JSON.parse(payload);
-    console.log("*** Received webhook event:", type);
-
-    if (type === "user.created") {
-        const { id, first_name, last_name, email_addresses } = data;
-
-        try {
-            await db.run(`
-                INSERT INTO users (id, fullName, email, accountType)
-                VALUES (?, ?, ?, ?)`,
-                [id, first_name + " " + last_name, email_addresses[0].email_address, "free"]
-            );
-
-            console.log("User registered in database:", first_name + " " + last_name);
-            return res.status(201).send("User registered");
-        } catch (err) {
-            console.error("Error registering user:", err);
-            return res.sendStatus(500);
-        }
-    } else if (type === "user.deleted") {
-        const { id } = data;
-
-        try {
-            await db.run("DELETE FROM users WHERE id = ?", [id]);
-            console.log("User deleted from database:", id);
-            return res.sendStatus(204);
-        } catch (err) {
-            console.error("Error deleting user:", err);
-            return res.sendStatus(500);
-        }
-    } else {
-        return res.status(400).send("Unhandled event type");
-    }
-});
+// This middleware needs to be called before calling app.use(bodyParser.json());
+app.use("/api/webhook", webhooksRouter(stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db));
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
-const authUsersRouteMw = (req, res, next) => {
-    const authenticatedUserId = req.auth.userId;
-    const { userId } = req.params;
-    if (authenticatedUserId !== userId) {
-        return res.status(403).send("Unauthorized!");
-    }
-    next();
-}
-
-app.use("/api/users/:userId/*", (req, res, next) => {
-    ClerkExpressRequireAuth()(req, res, (err) => {
-        if (err) {
-            console.error("Authentication failed:", err);
-            return res.status(401).json({ error: "Unauthenticated" });
-        }
-        next();
-    });
-}, authUsersRouteMw);
-
+// Required authentification and authorization for request on this route
+app.use("/api/users", clerkAuthRouter);
 
 // Stripe routes
-app.post("/api/users/:userId/create-checkout-session", async (req, res) => {
-    const { userId } = req.params;
-    const { clerck_user_email } = req.body;
+app.use("/api/users", stripeRouter(stripe));
 
-    try {
-        const session = await stripe.checkout.sessions.create({
-            customer_email: clerck_user_email,
-            line_items: [
-                {
-                    price: process.env.ANNUAL_PREMIUM_PLAN_STRIPE_PRICE_ID,
-                    quantity: 1,
-                },
-            ],
-            mode: "subscription",
-            success_url: "https://onlineresume.dev/resume",
-            cancel_url: "https://onlineresume.dev/dashboard/account",
-            automatic_tax: { enabled: true },
-            currency: "eur",
-            subscription_data: {
-                metadata: {
-                    clerck_user_id: userId,
-                    clerck_user_email
-                }
-            }
-        });
-
-        res.redirect(303, session.url);
-    } catch (error) {
-        console.error("Checkout session error", error);
-        res.sendStatus(500);
-    }
-});
-
-app.get("/api/users/:userId/account-type", async (req, res) => {
-    const { userId } = req.params;
-
-    try {
-        const userAccountType = await getUserAccountType(db, userId);
-        res.status(200).json({ userAccountType })
-    } catch (error) {
-        res.sendStatus(500);
-    }
-
-})
+// Check account type (free or premium) route
+app.use("/api/users", accountTypeRouter(db));
 
 /**  PDF routes */
-app.post("/api/users/:userId/pdfs", async (req, res) => {
-    const { userId } = req.params;
-    const { resumeHtml, resumeData, template } = req.body;
-
-    try {
-        const [userAccountType, userPdfCount, userMaxPdfs] = await Promise.all([
-            await getUserAccountType(db, userId),
-            await getUserDownloadCount(db, userId),
-            await getUserMaxPdfs(db, userId)
-        ]);
-
-        if (userAccountType === "free") {
-            if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
-        }
-
-        const pdfBuffer = await cluster.execute(async ({ page }) => {
-            await page.setContent(resumeHtml);
-            const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
-            return buffer;
-        });
-
-        const filename = `CV_${Date.now()}.pdf`;
-
-        // Insert metadata into SQLite database
-        await db.run("INSERT INTO pdf_metadata (filename, jsonContent, htmlContent, userId, template) VALUES (?, ?, ?, ?, ?)",
-            [filename, JSON.stringify(resumeData), resumeHtml, userId, template]
-        );
-
-        await incrementUserDownloadCount(db, userId);
-        console.log("PDF generated successfully");
-
-        res.status(200).set({
-            "Content-Type": "application/pdf",
-            "Content-Length": pdfBuffer.length,
-            "Content-Disposition": `attachment; filename="${filename}"`
-        }).end(pdfBuffer);
-
-    } catch (err) {
-        console.error(err.message);
-        if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
-            return res.status(403).json({ status: "Forbidden", message: "You reached the limit of pdfs you can generate on the free plan" });
-        }
-        res.status(500).json({ status: "Internal Server Error", message: "An error occurred while generating the PDF" });
-    }
-
-});
-
-app.get("/api/users/:userId/pdfs", async (req, res) => {
-    const userId = req.params.userId;
-    try {
-        // eslint-disable-next-line max-len
-        const rows = await db.all("SELECT jsonContent, datetime(createdAt, \"localtime\") as createdAt, id, template FROM pdf_metadata WHERE userId = ?", [userId]);
-        res.status(200).json(rows);
-    } catch (err) {
-        console.error("Error retrieving PDFs:", err);
-        res.status(500).json({ status: "Internal Server Error", message: "Failed to retrieve PDFs" });
-    }
-});
-
-app.get("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
-    const { userId, pdfId } = req.params;
-    try {
-        const row = await db.get("SELECT * FROM pdf_metadata WHERE id = ? AND userId = ?", [pdfId, userId]);
-        if (row) {
-            res.status(200).json(row);
-        } else {
-            res.status(404).json({ status: "Not Found ", message: "PDF not found" });
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ status: "Internal Server Error", message: "Failed to retrieve PDF" });
-    }
-});
-
-app.put("/api/users/:userId/pdfs/:pdfId", async (req, res) => {
-    const { userId, pdfId } = req.params;
-    const { resumeHtml, resumeData, template } = req.body;
-
-    try {
-        const userPdfCount = await getUserDownloadCount(db, userId);
-        const userMaxPdfs = await getUserMaxPdfs(db, userId);
-
-        if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
-
-
-        // Generate the PDF
-        const pdfBuffer = await cluster.execute(async ({ page }) => {
-            await page.setContent(resumeHtml);
-            const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
-            return buffer;
-        });
-
-        await db.run("UPDATE pdf_metadata SET jsonContent = ?, htmlContent = ?, template = ? WHERE id = ? AND userId = ?",
-            [JSON.stringify(resumeData), resumeHtml, template, pdfId, userId]
-        );
-
-
-        await incrementUserDownloadCount(db, userId);
-        console.log("PDF generated successfully");
-
-        res.status(200)
-            .set({
-                "Content-Type": "application/pdf",
-                "Content-Length": pdfBuffer.length,
-                "Content-Disposition": "attachment; filename=\"CV.pdf\""
-            }).end(pdfBuffer);
-
-    } catch (err) {
-        console.error(err);
-        if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
-            return res.status(403).json({ status: "Forbidden", message: "You reached the limit of pdfs you can generate on the free plan" });
-        }
-        res.status(500).json({ status: "Internal Server Error", message: "Failed to generate PDF" });
-    }
-});
+app.use("/api/users", pdfRouter(db, cluster));
 
 // Cleanup browser on server shutdown
 process.on("SIGTERM", async () => {
