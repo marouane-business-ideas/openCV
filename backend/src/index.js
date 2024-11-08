@@ -11,6 +11,7 @@ import clerkAuthRouter from "./routers/clerkAuth.js";
 import stripeRouter from "./routers/stripe.js";
 import webhooksRouter from "./routers/webhooks.js";
 import accountTypeRouter from "./routers/accountType.js";
+import contactFormRouter from "./routers/contactForm.js";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
@@ -18,6 +19,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const stripeWebhookSigningSecret = process.env.STRIPE_WEBHOOK_SIGNING_SECRET;
 
 const CLERK_WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
 
 
 // Top level await to wait for the DB and Puppeteer to initialize first before moving forward
@@ -57,6 +60,9 @@ app.use("/api/users", accountTypeRouter(db));
 
 /**  PDF routes */
 app.use("/api/users", pdfRouter(db, cluster));
+
+// Contact form
+app.use("/api/users", contactFormRouter(GMAIL_APP_PASSWORD));
 
 // Cleanup browser on server shutdown
 process.on("SIGTERM", async () => {

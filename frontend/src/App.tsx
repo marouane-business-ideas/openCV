@@ -13,6 +13,7 @@ import DashboardLayout from "./routes/layouts/DashboardLayout";
 import AccountPage from "./routes/Account";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import SubscribePage from "./routes/Subscribe";
+import ContactPage from "./routes/ContactPage";
 import ContextProvider from "./context/ContextProvider";
 
 
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: "contact", element: <ProtectedRoute><ContactPage /></ProtectedRoute> },
   { path: "subscribe", element: <ProtectedRoute><SubscribePage /></ProtectedRoute> },
 ]);
 

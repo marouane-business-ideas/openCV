@@ -119,10 +119,15 @@ function Layout() {
                     <footer className="flex justify-center w-full text-xs md:text-sm">
                         <div className="flex flex-col items-center">
                             <div className="flex items-center space-x-4">
-                                <a href="mailto:support@onlineresume.dev">
-                                    <EnvelopeIcon className="size-6" />
-
-                                </a>
+                                {isSignedIn ?
+                                    <Link to="/contact">
+                                        <EnvelopeIcon className="size-6" />
+                                    </Link>
+                                    :
+                                    <a href="mailto:support@onlineresume.dev">
+                                        <EnvelopeIcon className="size-6" />
+                                    </a>
+                                }
                                 <a href="https://www.linkedin.com/in/marouane-faris-1514b970/" target="_blank" rel="noopener noreferrer">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"
                                         aria-label="https://www.linkedin.com/company/node-js"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5
