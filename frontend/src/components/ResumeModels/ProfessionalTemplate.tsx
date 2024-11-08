@@ -86,7 +86,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
         alignItems: "center",
     },
     experienceDate: {
-        fontSize: "12px",
+        fontSize: "14px",
         letterSpacing: "0.175px",
         fontStyle: "italic",
     }
@@ -307,7 +307,7 @@ const ResumeModel = (props: {
                                 }}>
                                 </div>
                                 <div>
-                                    <div style={{ display: "flex", flexDirection: "row", gap: "5px", fontSize: "14px", paddingTop: "15px", fontWeight: 900 }}>
+                                    <div style={{ display: "flex", flexDirection: "row", gap: "5px", fontSize: "14px", paddingTop: `${index === 0 ? "15" : "30"}px`, fontWeight: 900 }}>
                                         <div style={{
                                             width: "4px",
                                             height: "4px",
@@ -316,9 +316,12 @@ const ResumeModel = (props: {
                                             position: "absolute",
                                             backgroundColor: "white",
                                             left: "-5px",
-                                            top: "18px"
+                                            top: `${index === 0 ? "18" : "36"}px`
                                         }} />
-                                        <div style={{ fontStyle: "italic" }}>{job.company} • {job.jobTitle} • {job.location}</div>
+                                        <div style={{ fontSize: "16px" }}>{job.company}</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontStyle: "italic", marginTop: "5px" }}>{job.jobTitle} • {job.location}</div>
                                     </div>
                                     <ExperienceDate>{job.date}</ExperienceDate>
                                     <div style={{ marginTop: "10px", fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
@@ -333,7 +336,6 @@ const ResumeModel = (props: {
                                 <path d="M13.06 15.473a48.45 48.45 0 0 1 7.666-3.282c.134 1.414.22 2.843.255 4.284a.75.75 0 0 1-.46.711 47.87 47.87 0 0 0-8.105 4.342.75.75 0 0 1-.832 0 47.87 47.87 0 0 0-8.104-4.342.75.75 0 0 1-.461-.71c.035-1.442.121-2.87.255-4.286.921.304 1.83.634 2.726.99v1.27a1.5 1.5 0 0 0-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.66a6.727 6.727 0 0 0 .551-1.607 1.5 1.5 0 0 0 .14-2.67v-.645a48.549 48.549 0 0 1 3.44 1.667 2.25 2.25 0 0 0 2.12 0Z" />
                                 <path d="M4.462 19.462c.42-.419.753-.89 1-1.395.453.214.902.435 1.347.662a6.742 6.742 0 0 1-1.286 1.794.75.75 0 0 1-1.06-1.06Z" />
                             </svg>
-
                             EDUCATION
                         </SectionTitle>
                         {education.map((education, index) => (
