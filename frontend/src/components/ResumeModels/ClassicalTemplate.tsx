@@ -53,6 +53,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
         flexDirection: "column",
         justifyContent: "flex-start",
         gap: "15px",
+        paddingTop: "10px"
     },
     link: {
         color: "black",
