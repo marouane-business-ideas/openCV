@@ -3,10 +3,10 @@
  # This script can only "re-deploy". It won't work for a first time deployment
  # It will also not work if there's more than one running container on the VPS
 
- # Exist script in case of error in a command
+ # Exit script in case of error in a command
  set -e 
   
- rm -rf node_modules frontend/node_modules backend/node_modules frontend/dist backend/dist backend/database/database.db backend/src/ResumeModels
+ rm -rf node_modules frontend/node_modules backend/node_modules frontend/dist backend/dist backend/database/database.db
  
  docker build --platform linux/amd64 -t onlineresume:latest .
 

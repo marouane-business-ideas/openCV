@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 import { resumeInfoType } from "../../context/ResumeContext";
 import { IPdf } from "../../Types/CommonTypes";
 import ClassicalTemplate from "../ResumeModels/ClassicalTemplate";
 import ProfessionalTemplate from "../ResumeModels/ProfessionalTemplate";
 
 const PdfCard = ({ pdf }: { pdf: IPdf }) => {
+    const { t } = useTranslation();
     const resume = JSON.parse(pdf.jsonContent) as resumeInfoType;
     const ResumeTemplate = pdf.template === "professional" ? ProfessionalTemplate : ClassicalTemplate;
     return (
@@ -19,7 +21,7 @@ const PdfCard = ({ pdf }: { pdf: IPdf }) => {
             <p className="mt-2 text-gray-500">Last updated: {format(new Date(pdf.createdAt), "MMM d, yyyy hh:mm a")}</p>
             <Link to={`/resume/${pdf.id}`} className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
                     px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
-                View/Edit
+                {t("dashboard.view_edit")}
             </Link>
         </div>
     );

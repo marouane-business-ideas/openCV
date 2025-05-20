@@ -1,18 +1,21 @@
 import { useUser } from "@clerk/clerk-react";
+import { useTranslation } from "react-i18next";
 
 import CheckMark from "../components/CheckMark/CheckMark";
 
 const Subscribe = () => {
     const { user } = useUser();
+    const { t } = useTranslation();
+
     return (
         <div className="w-full bg-gradient-to-b from-blue-50 to-white">
             <div className="w-full max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                        Upgrade to Premium
+                        {t("subscribe.title")}
                     </h1>
                     <p className="mt-4 text-lg text-gray-500">
-                        Stop worrying about downloads limit
+                        {t("subscribe.secondary_title")}
                     </p>
                 </div>
 
@@ -22,23 +25,23 @@ const Subscribe = () => {
                         <div className="p-8">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-bold text-gray-900">Premium Plan</h2>
-                                    <p className="mt-2 text-gray-500">Everything you need to succeed</p>
+                                    <h2 className="text-2xl font-bold text-gray-900"> {t("subscribe.premium_plan")}</h2>
+                                    <p className="mt-2 text-gray-500">{t("subscribe.tertiary_title")}</p>
                                 </div>
                             </div>
                             <div className="mt-8">
                                 <p className="flex items-baseline">
                                     <span className="text-5xl font-bold tracking-tight text-gray-900">$6</span>
-                                    <span className="ml-2 text-gray-500">/year *</span>
+                                    <span className="ml-2 text-gray-500">/{t("subscribe.year")} *</span>
                                 </p>
                             </div>
 
                             <ul className="mt-8 space-y-4">
                                 {[
-                                    "Unlimited access to all features",
-                                    "Priority customer support",
-                                    "Exclusive access to all new resume templates",
-                                    "Exclusive access to all upcoming new features  (Download in .docx format, AI resume analysis, ...)",
+                                    t("common.pricing_card.premium_plan.feature_1"),
+                                    t("common.pricing_card.premium_plan.feature_2"),
+                                    t("common.pricing_card.premium_plan.feature_3"),
+                                    t("common.pricing_card.premium_plan.feature_4"),
                                 ].map((feature) => (
                                     <li key={feature} className="flex items-center space-x-3">
                                         <CheckMark />
@@ -58,12 +61,12 @@ const Subscribe = () => {
                                          shadow-lg hover:shadow-xl transition-all duration-300"
                                         type="submit"
                                     >
-                                        Upgrade
+                                        {t("subscribe.cta_button")}
                                     </button>
                                 </form>
                             </div>
                             <p className="mt-4 text-sm text-center text-gray-500">
-                                * Price available for first 100 subscribers only !
+                                * {t("subscribe.footnote")}
                             </p>
                         </div>
                     </div>

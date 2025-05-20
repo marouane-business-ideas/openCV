@@ -1,5 +1,6 @@
 import React from "react";
 import DOMPurify from "isomorphic-dompurify";
+import { useTranslation } from "react-i18next";
 
 import type { resumeInfoType } from "../../context/ResumeContext";
 import Schemify from "../../utils/schemify";
@@ -134,8 +135,10 @@ const Preview = (props: {
     customThemeColor?: string,
     inert?: boolean;
 }) => {
+    const { t } = useTranslation();
     const { personalInfo, workExperience, education, skills, languages, links, themeColor: tempThemeColor } = props.resume;
     const themeColor = props.customThemeColor ?? tempThemeColor;
+
     return (
         // eslint-disable-next-line max-len
         <div {...{ inert: props.inert ? "" : undefined }} className={props.customClassName} style={{ ...Styles.pageContainer, ...props.customStyle, color: themeColor }}>
@@ -178,11 +181,11 @@ const Preview = (props: {
             </div>
             <div style={Styles.resumeContentContainer}>
                 <div style={Styles.sectionRow}>
-                    <SectionTitle>PROFILE</SectionTitle>
+                    <SectionTitle>{t("resume.profile")}</SectionTitle>
                     <SectionText>{personalInfo.summary}</SectionText>
                 </div>
                 <div style={Styles.sectionRow}>
-                    <SectionTitle>EXPERIENCE</SectionTitle>
+                    <SectionTitle>{t("resume.work_experience_classic")}</SectionTitle>
                 </div>
                 {workExperience.map((job, index) => (
                     <div key={`${index}-${job.date}-${job.company}`} style={{
@@ -202,7 +205,7 @@ const Preview = (props: {
                     </div>
                 ))}
                 <div style={Styles.sectionRow}>
-                    <SectionTitle>EDUCATION</SectionTitle>
+                    <SectionTitle>{t("resume.education")}</SectionTitle>
                 </div>
                 {education.map((school, index) => (
                     <div key={`${index}-${school.date}-${school.schoolName}`} style={{
@@ -220,7 +223,7 @@ const Preview = (props: {
                     </div>
                 ))}
                 <div style={Styles.sectionRow}>
-                    <SectionTitle>SKILLS</SectionTitle>
+                    <SectionTitle>{t("resume.skills")}</SectionTitle>
                     <div style={{ fontWeight: "900" }}>
                         {skills.map((skill, index) => (
                             <span key={`${skill}-${index}`}>
@@ -229,7 +232,7 @@ const Preview = (props: {
                     </div>
                 </div>
                 <div style={Styles.sectionRow}>
-                    <SectionTitle>LANGUAGES</SectionTitle>
+                    <SectionTitle>{t("resume.languages")}</SectionTitle>
                     <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap" }}>
                         {languages.map((language, index) => (
                             <div key={language.id} style={{ display: "flex", gap: "3px" }}>
@@ -241,7 +244,7 @@ const Preview = (props: {
                     </div>
                 </div>
                 <div style={Styles.sectionRow}>
-                    <SectionTitle>PERSONAL LINKS</SectionTitle>
+                    <SectionTitle>{t("resume.links")}</SectionTitle>
                     <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap" }}>
                         {links.map((link, index) => (
                             <div key={link.id} style={{ display: "flex", gap: "3px" }}>

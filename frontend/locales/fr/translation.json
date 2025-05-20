@@ -1,0 +1,166 @@
+{
+    "common": {
+      "errors": {
+        "unkown_download_error": "Une erreur est survenue lors du téléchargement du PDF. Veuillez réessayer.",
+        "limit_reached_download_error": "Vous avez atteint la limite de téléchargements de CVs autorisés sur le plan gratuit"
+      },
+      "buttons": {
+        "get_started": "Créer mon CV",
+        "login": "Se connecter",
+        "sign_out": "Se déconnecter",
+        "create_account": "Créer un compte",
+        "dashboard": "Mon compte",
+        "download_resume": "Télécharger le CV",
+        "sign_in_to_download": "Connectez-vous pour télécharger votre CV au format PDF"
+      },
+      "pricing_card": {
+        "year": "an",
+        "free_plan": {
+          "title": "Plan gratuit",
+          "secondary_title": "Pour bien démarrer",
+          "billing_period": "an",
+          "feature_1": "5 téléchargements offerts",
+          "feature_2": "Aucune information de carte de crédit requise !",
+          "feature_3": "Pas de frais cachés !"
+        },
+        "premium_plan": {
+          "title": "Plan premium",
+          "secondary_title": "Téléchargements de CVs illimités",
+          "billing_period": "an",
+          "feature_1": "Accès illimité à toutes les fonctionnalités",
+          "feature_2": "Support client prioritaire",
+          "feature_3": "Accès exlusif aux futurs modèles de CV",
+          "feature_4": "Accès exlusif aux futurs nouvelles fonctionnalités (Téléchargements sous format .docx, analyse avec l'IA, ...)",
+          "much_more": "Et bien plus encore...",
+          "footnote": "Prix valable pour les 100 premiers abonnés seulement !"
+        }
+      }
+    },
+    "home": {
+      "title": "Votre CV en quelques minutes !",
+      "secondary_title": "Obtenez le poste de vos rêves avec nos modèles de CV conçus avec soin.",
+      "free":"gratuit",
+      "premium":"premium",
+      "plan_highlight": "Le meilleur du plan {{plan}}",
+      "free_plan_highlight": "Plan gratuit",
+      "free_plan_secondary_highlight": "Téléchargez jusqu'à <span>5 CVs</span> gratuitement !",
+      "premium_plan_highlight": "Plan premium",
+      "premium_plan_secondary_highlight": "<span>Téléchargements illimitées</span> de CVs",
+      "coming_soon": "<span>Bientôt disponible :</span> Nouveaux modèles de CV !",
+      "footer_message": "Réalisé avec ❤️ par"
+    },
+    
+        "form": {
+          "template": {
+            "select_template": "Sélectionner un modèle",
+            "classic": "Classique",
+            "professional": "Professionnel"
+          },
+          "profile": {
+            "profile": "Profil",
+            "name": "Nom",
+            "title": "Titre",
+            "summary": "Description",
+            "email": "Email",
+            "phone_number": "Numéro de téléphone",
+            "location": "Lieu"
+          },
+          "work_experience": {
+            "work_experience": "Expérience professionnelle",
+            "company": "Entreprise",
+            "job_title": "Poste",
+            "date": "Date",
+            "location": "Lieu",
+            "description": "Description",
+            "add_job": "Ajouter un poste"
+          },
+          "education": {
+            "education": "Diplômes et formations",
+            "school": "Nom de l'école / institution",
+            "date": "Date",
+            "degree": "Nom du Diplôme / formation",
+            "description": "Description",
+            "add_school": "Ajouter une école"
+          },
+          "skills": {
+            "skills": "Compétences",
+            "skills_list": "Liste des compétences",
+            "add_skill_placeholder": "Ajouter une compétence"
+          },
+          "languages": {
+            "languages": "Langues",
+            "language": "Langue",
+            "proficiency_level": "Niveau de compétence",
+            "levels": {
+              "native": "Langue maternelle",
+              "fluent": "Bilingue",
+              "intermediate": "Intermédiaire",
+              "beginner": "Débutant"
+            },
+            "add_language": "Ajouter une langue"
+          },
+          "links": {
+            "links": "Liens personnels",
+            "name": "Nom",
+            "url": "URL du lien",
+            "add_link": "Ajouter un lien"
+          },
+          "theme": {
+            "theme": "Thème",
+            "select_theme_color": "Sélectionnez une couleur pour votre CV"
+          }
+        },
+    "resume": {
+    "profile": "PROFIL",
+    "details": "DÉTAILS",
+    "work_experience_classic": "EXPÉRIENCES",
+    "work_experience_professional": "EXPÉRIENCE PROFESSIONNELLE",
+    "education": "DIPLÔMES ET FORMATIONS",
+    "links": "LIENS",
+    "languages": "LANGUES",
+    "skills": "COMPÉTENCES"
+  },
+    "dashboard": {
+      "title": "Vos CVs",
+      "create_new_resume": "Créer un nouveau CV",
+      "error_fetching_pdfs": "Une erreur est survenue lors de la récupération des PDF :(",
+      "no_resumes_found_error": "Aucun CV trouvé.",
+      "create_first_resume": "Créez votre premier CV !",
+      "account_information": "Informations du compte",
+      "edit_account": "Modifier le compte",
+      "subscription": "Abonnement",
+      "free_subscription": "gratuit",
+      "premium_subscription": "premium",
+      "resume_previews": "Aperçus de CV",
+      "account": "Compte",
+      "contact_support": "Contacter le support",
+      "view_edit": "Voir/Modifier"
+    }  ,
+    "account": {
+      "title": "Votre Compte",
+      "current_plan": "Votre abonnement",
+      "upgrade_button": "Passer à l'abonnement Premium",
+      "free_account_type": "Gratuit",
+      "premium_account_type": "Premium"
+    },
+    "contact": {
+      "title": "Contactez-nous",
+      "name": "Nom et prénom",
+      "message": "Message",
+      "send": "Envoyer",
+      "success_message": "Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.",
+      "error_message": "Oups ! Une erreur est survenue lors de l'envoi de votre message. Veuillez réessayer.",
+      "go_to_home": "Retourner à la page d'accueil"
+    },
+    "subscribe": {
+      "title": "Passer à l'abonnement Premium",
+      "secondary_title": "Ne vous inquiétez plus des limites de téléchargement !",
+      "premium_plan": "Abonnement Premium",
+      "tertiary_title": "Tout ce dont vous avez besoin pour réussir",
+      "year": "an",
+      "cta_button": "Passer Premium",
+      "footnote": "Prix valable pour les 100 premiers abonnés seulement !"
+    }
+    
+  }
+  

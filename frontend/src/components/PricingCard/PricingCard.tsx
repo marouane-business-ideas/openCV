@@ -1,4 +1,5 @@
 import CheckMark from "../CheckMark/CheckMark";
+import { useTranslation } from "react-i18next";
 
 interface IPricingCardProps {
     name: string;
@@ -10,6 +11,8 @@ interface IPricingCardProps {
 }
 
 const PricingCard = ({ name, title, price, featuresList, link, footNote }: IPricingCardProps) => {
+    const { t } = useTranslation();
+
     return (
         <div className="rounded-2xl shadow-xl border-2 
          hover:border-blue-500/40 transition-all duration-300">
@@ -23,7 +26,7 @@ const PricingCard = ({ name, title, price, featuresList, link, footNote }: IPric
                 <div className="mt-8">
                     <p className="flex items-baseline">
                         <span className="text-5xl font-bold tracking-tight text-gray-900">${price}</span>
-                        <span className="ml-2 text-gray-500">/year {footNote ? "*" : null}</span>
+                        <span className="ml-2 text-gray-500">/{t("common.pricing_card.year")} {footNote ? "*" : null}</span>
                     </p>
                 </div>
 
@@ -40,7 +43,7 @@ const PricingCard = ({ name, title, price, featuresList, link, footNote }: IPric
                     <a href={link}
                         className="mx-auto text-center block w-5/6 bg-blue-500 hover:bg-blue-600 text-white py-2 text-lg font-semibold
                      rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-                        Get started
+                        {t("common.buttons.get_started")}
                     </a>
                 </div>
                 <p aria-hidden={!footNote} className={`mt-4 text-sm text-center text-gray-500 ${footNote ? "opacity-100" : "opacity-0"}`}>

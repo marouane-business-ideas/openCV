@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { useParams } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { ArrowDownTrayIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 
 import { resumeInfoType, TemplateType } from "../../context/ResumeContext";
 import DownloadError from "../../utils/DownloadError";
@@ -16,13 +17,14 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadError, setDownloadError] = useState<string | null>(null);
     const { getToken } = useAuth();
+    const { t } = useTranslation();
 
     const handleError = (error: unknown) => {
         console.error("Error downloading the PDF:", error);
         if (error instanceof DownloadError && error.code === "LIMIT_REACHED") {
-            setDownloadError("You reached the limit of PDFs you can generate on the free plan");
+            setDownloadError(t("common.errors.limit_reached_download_error"));
         } else {
-            setDownloadError("An error occurred while downloading the PDF. Please try again.");
+            setDownloadError(t("common.errors.unkown_download_error"));
         }
         setIsDownloading(false);
     };
@@ -94,9 +96,9 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
                 )}
             >
                 <ArrowDownTrayIcon className="size-5" aria-hidden="true" />
-                <span className="whitespace-nowrap text-xl">Download Resume</span>
+                <span className="whitespace-nowrap text-xl">{t("common.buttons.download_resume")}</span>
             </button>
-            {!isSignedIn && <p className="md:text-sm text-xs text-gray-500">Sign in to download your resume as a PDF</p>}
+            {!isSignedIn && <p className="md:text-sm text-xs text-gray-500">{t("common.buttons.sign_in_to_download")}</p>}
             {isDownloading && <ArrowPathIcon className="animate-spin size-7 text-blue-400" aria-hidden="true" />}
             {downloadError && <p className="text-sm text-red-500">{downloadError}</p>}
         </>
