@@ -102,7 +102,7 @@
       "links": "Personnal Links",
       "name": "Name",
       "url": "Link URL",
-      "add_links": "Add Link"
+      "add_link": "Add Link"
     },
     "theme": {
       "theme": "Theme",
@@ -112,7 +112,8 @@
   "resume": {
     "profile": "PROFILE",
     "details": "DETAILS",
-    "work_experience": "WORK EXPERIENCE",
+    "work_experience_classic": "EXPERIENCE",
+    "work_experience_professional": "WORK EXPERIENCE",
     "education": "EDUCATION",
     "links": "LINKS",
     "languages": "LANGUAGES",
