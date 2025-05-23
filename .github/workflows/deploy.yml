@@ -1,0 +1,45 @@
+# .github/workflows/deploy.yml
+name: Deploy OnlineResume to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Build Docker image
+        run: |
+          docker build --platform linux/amd64 -t onlineresume:latest .
+
+      - name: Save and transfer Docker image to VPS
+        run: |
+          docker save onlineresume:latest | gzip | ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_HOST }} '
+            sudo docker stop $(sudo docker ps -q) || true
+            sudo docker rm $(sudo docker ps -a -q) || true
+            sudo docker image rm onlineresume:latest --force || true
+            gunzip | sudo docker load
+          '
+
+      - name: Remove local Docker image
+        run: docker image rm onlineresume:latest
+
+      - name: Run Docker container on VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_HOST }} '
+            sudo docker run -d -p 80:80 -p 443:443 \
+              -v ./database:/app/backend/database \
+              -v ./httpsEncryption:/etc/letsencrypt \
+              onlineresume:latest
+          '
