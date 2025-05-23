@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 
 
 const ContactPage: React.FC = () => {
@@ -10,6 +11,7 @@ const ContactPage: React.FC = () => {
     const [isPending, setIsPending] = useState<boolean>(false);
     const { user, isSignedIn } = useUser();
     const { getToken } = useAuth();
+    const { t } = useTranslation();
 
 
     const submitForm = async (name: FormDataEntryValue | null, formMessage: FormDataEntryValue | null) => {
@@ -61,17 +63,19 @@ const ContactPage: React.FC = () => {
             {isSuccess ?
                 <div className="flex flex-col gap-8">
                     <span className="lg:text-base text-sm text-center">
-                        Your message was successfully submitted. We will get back to you very soon. Have a good day &#128578;
+                        {t("contact.success_message")}
                     </span>
                     <Link className="mx-auto block px-5 py-3 hover:bg-blue-600 bg-blue-500 text-white font-bold rounded-lg" to="/">
-                        Go to home page
+                        {t("contact.go_to_home")}
                     </Link>
                 </div>
                 : <div className="lg:w-6/12 w-4/5">
-                    <h1 className="text-3xl font-bold mb-4 text-center">Contact Us:</h1>
+                    <h1 className="text-3xl font-bold mb-4 text-center">{t("contact.title")}:</h1>
                     <form onSubmit={handleSubmit} className="flex flex-col justify-center bg-white shadow-md rounded-2xl px-8 pt-6 pb-8 mb-4">
                         <div className="mb-4">
-                            <label htmlFor="userName" className="block text-gray-700 text-sm font-bold mb-2">Name:</label>
+                            <label htmlFor="userName" className="block text-gray-700 text-sm font-bold mb-2">
+                                {t("contact.name")}:
+                            </label>
                             <input
                                 id="userName"
                                 type="text"
@@ -82,7 +86,7 @@ const ContactPage: React.FC = () => {
                             />
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="formMessage" className="block text-gray-700 text-sm font-bold mb-2">Message:</label>
+                            <label htmlFor="formMessage" className="block text-gray-700 text-sm font-bold mb-2">{t("contact.message")}:</label>
                             <textarea
                                 id="formMessage"
                                 name="formMessage"
@@ -95,10 +99,10 @@ const ContactPage: React.FC = () => {
                         <div className="w-full flex flex-col items-center">
                             <button type="submit" className="text-white w-full font-bold py-2 px-4 rounded-2xl
                       focus:outline-none focus:shadow-outline bg-blue-500 hover:bg-blue-600">
-                                Send
+                                {t("contact.send")}
                             </button>
                             {isError && !isPending && <p className="text-sm mt-5 text-center text-red-500">
-                                Oups! Something went wrong submitting your form. Please try again
+                                {t("contact.error_message")}
                             </p>
                             }
                             {isPending && <ArrowPathIcon className="animate-spin size-7 mt-5 text-blue-400" aria-hidden="true" />}

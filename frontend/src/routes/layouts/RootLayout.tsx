@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/clerk-react";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 
 import useGetUserAccountType from "../../lib/hooks/useGetUserAccountType";
 import { ResumeContext } from "../../context/ResumeContext";
@@ -14,6 +15,7 @@ function Layout() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const { accountType } = useContext(ResumeContext);
+    const { t } = useTranslation();
 
     useGetUserAccountType();
 
@@ -57,25 +59,29 @@ function Layout() {
                                 <Link
                                     className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-400
                                          hover:shadow-lg hover:scale-105"
-                                    to="/dashboard">Dashboard</Link>
+                                    to="/dashboard">{t("common.buttons.dashboard")}</Link>
                             )}
                             <button
                                 onClick={() => signOut({ redirectUrl: "/" })}
                                 className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
                                      hover:shadow-lg hover:scale-105"
                             >
-                                Sign out
+                                {t("common.buttons.sign_out")}
                             </button>
                         </SignedIn>
                         <SignedOut>
                             <Link
                                 className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
                                          hover:shadow-lg hover:scale-105"
-                                to="/sign-in?redirect_url=/resume">Login</Link>
+                                to="/sign-in?redirect_url=/resume">
+                                {t("common.buttons.login")}
+                            </Link>
                             <Link
                                 className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
                                          hover:shadow-lg hover:scale-105"
-                                to="/sign-up?redirect_url=/resume">Create an account</Link>
+                                to="/sign-up?redirect_url=/resume">
+                                {t("common.buttons.create_account")}
+                            </Link>
                         </SignedOut>
                     </nav>
                 </div>
@@ -140,7 +146,7 @@ function Layout() {
                             <div className="px-5 pb-8 mt-8">
                                 Copyright ©
                                 {new Date().getFullYear()}
-                                {" "}Made with ❤️ by <a target="_blank" className="underline underline-offset-4"
+                                {" "}{t("home.footer_message")} <a target="_blank" className="underline underline-offset-4"
                                     href="https://www.marouanefaris.dev/">
                                     Marouane Faris
                                 </a>

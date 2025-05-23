@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import classNames from "classnames";
+import { useTranslation } from "react-i18next";
 import Card from "../../components/Card/Card";
 import { ResumeContext, ResumeDispatchContext, resumeInfoType } from "../../context/ResumeContext";
 import { TrashIcon } from "@heroicons/react/24/solid";
@@ -9,6 +10,7 @@ type LinkKeyType = Exclude<keyof resumeInfoType["links"][0], "id">;
 const PersonalLinks = ({ edited }: { edited: boolean }) => {
     const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+    const { t } = useTranslation();
 
     const links = edited ? (resumeBeingEdited as resumeInfoType).links : onGoingResume.links;
 
@@ -19,8 +21,8 @@ const PersonalLinks = ({ edited }: { edited: boolean }) => {
 
     const handleLinkChange = (key: LinkKeyType, value: string, index: number) => {
         if (dispatch)
-            dispatch({ type: `SET_LINK${edited ? "_EDITED" : ""}`, payload: { [key]: value, index } })
-    }
+            dispatch({ type: `SET_LINK${edited ? "_EDITED" : ""}`, payload: { [key]: value, index } });
+    };
 
     const handleDeleteLink = (index: number) => {
         if (dispatch)
@@ -30,11 +32,15 @@ const PersonalLinks = ({ edited }: { edited: boolean }) => {
     return (
         <Card>
             <div className="flex flex-col gap-2 pb-12">
-                <h2 className="text-lg font-bold text-gray-900 mb-2">Personal Links</h2>
+                <h2 className="text-lg font-bold text-gray-900 mb-2">
+                    {t("form.links.links")}
+                </h2>
                 {links.map((link, index) => (
                     <div key={link.id} className="flex w-full gap-10">
                         <div className="flex flex-col gap-2 w-2/5">
-                            <label className="text-base font-medium text-gray-700" htmlFor={`link-name-${index}`}>Name</label>
+                            <label className="text-base font-medium text-gray-700" htmlFor={`link-name-${index}`}>
+                                {t("form.links.name")}
+                            </label>
                             <input
                                 onChange={(e) => handleLinkChange("linkName", e.target.value, index)}
                                 className="border p-1 rounded-md focus:outline-none border-gray-300"
@@ -47,7 +53,9 @@ const PersonalLinks = ({ edited }: { edited: boolean }) => {
                         </div>
                         <div className="flex flex-col gap-2 w-2/5">
                             <div className="flex justify-between">
-                                <label className="text-base font-medium text-gray-700" htmlFor={`link-url-${index}`}>Link URL</label>
+                                <label className="text-base font-medium text-gray-700" htmlFor={`link-url-${index}`}>
+                                    {t("form.links.url")}
+                                </label>
                                 {links.length > 1 && (
                                     <button onClick={() => handleDeleteLink(index)} aria-label="Delete link">
                                         <TrashIcon className="size-4 text-gray-400" />
@@ -78,7 +86,7 @@ const PersonalLinks = ({ edited }: { edited: boolean }) => {
                         { "hover:bg-gray-400": links[links.length - 1]?.linkName },
                     )}
                 >
-                    + Add Link
+                    + {t("form.links.add_link")}
                 </button>
             </div>
         </Card>

@@ -1,24 +1,30 @@
 import { useContext } from "react";
 import { CheckIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
 import Card from "../../components/Card/Card";
 import { ResumeContext, ResumeDispatchContext, resumeInfoType } from "../../context/ResumeContext";
 
 const Theme = ({ edited }: { edited: boolean }) => {
     const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
     const dispatch = useContext(ResumeDispatchContext);
+    const { t } = useTranslation();
 
     const themeColor = edited ? (resumeBeingEdited as resumeInfoType).themeColor : onGoingResume.themeColor;
 
     const handleThemeClick = (themeColor: string) => {
         if (dispatch)
-            dispatch({ type: `SET_THEME_COLOR${edited ? "_EDITED" : ""}`, payload: themeColor })
-    }
+            dispatch({ type: `SET_THEME_COLOR${edited ? "_EDITED" : ""}`, payload: themeColor });
+    };
     return (
         <Card>
             <div className=" flex flex-col  gap-2 pb-12">
-                <h2 className="text-lg font-bold text-gray-900 mb-2">THEME</h2>
+                <h2 className="text-lg font-bold text-gray-900 mb-2">
+                    {t("form.theme.theme")}
+                </h2>
                 <div className="flex flex-col gap-2">
-                    <label className="text-base font-medium text-gray-700" htmlFor="skills">Select a color theme for the resume:</label>
+                    <label className="text-base font-medium text-gray-700" htmlFor="skills">
+                        {t("form.theme.select_theme_color")}:
+                    </label>
                     <div className="flex gap-5 items-center flex-wrap">
                         <button onClick={() => handleThemeClick("#0ea5e9")} className={"w-10 h-10 flex items-center justify-center"}
                             style={{ backgroundColor: "#0ea5e9" }}>
@@ -63,7 +69,7 @@ const Theme = ({ edited }: { edited: boolean }) => {
                     </div>
                 </div>
             </div>
-        </Card>)
+        </Card>);
 };
 
 export default Theme;

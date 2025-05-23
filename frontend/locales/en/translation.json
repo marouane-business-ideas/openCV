@@ -1,0 +1,163 @@
+{
+  "common": {
+    "errors": {
+      "unkown_download_error": "An error occurred while downloading the PDF. Please try again.",
+      "limit_reached_download_error": "You reached the limit of PDFs you can generate on the free plan"
+    },
+    "buttons": {
+      "get_started": "Get started",
+      "login": "login",
+      "sign_out": "Sign out",
+      "create_account": "Create an account",
+      "dashboard": "Dashboard",
+      "download_resume": "Download Resume",
+      "sign_in_to_download": "Sign in to download your resume as a PDF"
+    },
+    "pricing_card": {
+      "year": "year",
+      "free_plan": {
+        "title": "Free plan",
+        "secondary_title": "Gets you up and running",
+        "billing_period": "year",
+        "feature_1": "5 resume downloads",
+        "feature_2": "No credit card info required !",
+        "feature_3": "No hidden fees !"
+      },
+      "premium_plan": {
+        "title": "Premium plan",
+        "secondary_title": "Unlimited resume downloads",
+        "billing_period": "year",
+        "feature_1": "Unlimited access to all features",
+        "feature_2": "Priority customer support",
+        "feature_3": "Exclusive access to all new resume templates",
+        "feature_4": "Exclusive access to all upcoming new features (Download in .docx format, AI resume analysis, ...)",
+        "much_more": "Much more ...",
+        "footnote": "Price available for first 100 subscribers only !"
+      }
+    }
+  },
+  "home": {
+  "title": "Build amazing resumes in minutes",
+  "secondary_title": "Land your dream job with our carefully crafted resume templates.",
+  "free":"free",
+  "premium":"premium",
+  "plan_highlight": "Free Plan Highlight",
+  "free_plan_secondary_highlight": "Download up to <span>5 resumes</span> for free!",
+  "premium_plan_highlight": "Premium Plan Highlight",
+  "premium_plan_secondary_highlight": "<span>Unlimited </span>resume downloads",
+  "coming_soon": "<span>Coming Soon:</span> New resume templates!",
+  "footer_message": "Made with ❤️ by"
+  
+  },
+  "form": {
+    "template": {
+      "select_template": "Select a Template",
+      "classic": "Classic",
+      "professional": "Professional"
+    },
+    "profile": {
+      "profile": "Profile",
+      "name": "Name",
+      "title": "Title",
+      "summary": "Summary",
+      "email": "Email",
+      "phone_number": "Phone Number",
+      "location": "Location"
+    },
+    "work_experience": {
+      "work_experience": "Work Experience",
+      "company": "Company",
+      "job_title": "Job Title",
+      "date": "Date",
+      "location": "Location",
+      "description": "Description",
+      "add_job": "Add Job"
+    },
+    "education": {
+      "education": "Education",
+      "school": "School",
+      "date": "Date",
+      "degree": "Degree",
+      "description": "Description",
+      "add_school": "Add School"
+    },
+    "skills": {
+      "skills": "Skills",
+      "skills_list": "Skills list",
+      "add_skill_placeholder": "Add a skill"
+    },
+    "languages": {
+      "languages": "languages",
+      "language": "Language",
+      "proficiency_level": "Proficiency level",
+      "levels": {
+         "native": "Native",
+         "fluent": "Fluent",
+         "intermediate": "Intermediate",
+         "beginner": "Beginner"
+      },
+      "add_language": "Add Language"
+    },
+    "links": {
+      "links": "Personnal Links",
+      "name": "Name",
+      "url": "Link URL",
+      "add_links": "Add Link"
+    },
+    "theme": {
+      "theme": "Theme",
+      "select_theme_color": "Select a color theme for the resume"
+    }
+  },
+  "resume": {
+    "profile": "PROFILE",
+    "details": "DETAILS",
+    "work_experience": "WORK EXPERIENCE",
+    "education": "EDUCATION",
+    "links": "LINKS",
+    "languages": "LANGUAGES",
+    "skills": "SKILLS"
+  },
+  "dashboard": {
+    "title": "Your Resumes",
+    "create_new_resume": "Create New Resume",
+    "error_fetching_pdfs": "An error occurred while fetching the PDFs :(",
+    "no_resumes_found_error": "No resumes found. ",
+    "create_first_resume": "Create your first resume!",
+    "account_information": "Account Information",
+    "edit_account": "Edit Account",
+    "subscription": {
+      "free": "Free plan",
+      "premium": "Premium plan"
+    },
+    "resume_previews": "Resume Previews",
+    "account": "Account",
+    "contact_support": "Contact support",
+    "view_edit": "View/Edit"
+  },
+  "account": {
+    "title": "Account Page",
+    "current_plan": "Your Current Plan",
+    "upgrade_button": "Upgrade to Premium",
+    "free_account_type": "Free",
+    "premium_account_type": "Premium"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "name": "Name",
+    "message": "Message",
+    "send": "Send",
+    "success_message": "Your message was successfully submitted. We will get back to you very soon. Have a good day &#128578;",
+    "error_message": "Oups! Something went wrong submitting your form. Please try again",
+    "go_to_home": "Got to home page"
+  },
+  "subscribe": {
+    "title": "Upgrade to Premium",
+    "secondary_title": "Stop worrying about downloads limit!",
+    "premium_plan": "Premium Plan",
+    "tertiary_title": "Everything you need to succeed",
+    "year": "year",
+    "cta": "Upgrade",
+    "footnote": "Price available for first 100 subscribers only!"
+  }
+}
