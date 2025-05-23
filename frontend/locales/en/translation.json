@@ -126,10 +126,9 @@
     "create_first_resume": "Create your first resume!",
     "account_information": "Account Information",
     "edit_account": "Edit Account",
-    "subscription": {
-      "free": "Free plan",
-      "premium": "Premium plan"
-    },
+    "subscription": "Subscription",
+    "free_subscription": "Free",
+    "premium_subscription": "Premium",
     "resume_previews": "Resume Previews",
     "account": "Account",
     "contact_support": "Contact support",
