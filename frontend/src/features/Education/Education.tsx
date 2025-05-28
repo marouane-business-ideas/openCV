@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
+import classNames from "classnames";
 
 import { resumeInfoType, ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
 import Card from "../../components/Card/Card";
 import Description from "../../components/Description/Description";
 import { ContentEditableEvent } from "react-simple-wysiwyg";
 import MoveArrows from "../../components/MoveArrows/MoveArrows";
-import classNames from "classnames";
 
 const Education = ({ edited }: { edited: boolean }) => {
     const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);

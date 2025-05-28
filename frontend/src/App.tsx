@@ -16,6 +16,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import SubscribePage from "./routes/Subscribe";
 import ContactPage from "./routes/ContactPage";
 import ContextProvider from "./context/ContextProvider";
+import PdfViewer from "./features/PdfViewer/PdfViewer";
 
 
 const router = createBrowserRouter([
@@ -26,7 +27,9 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "resume", element: <ResumeBuilder /> },
+      { path: "resume/preview", element: <PdfViewer edited={false} /> },
       { path: "resume/:resumeId", element: <ProtectedRoute><ResumeBuilder /></ProtectedRoute> },
+      { path: "resume/:resumeId/preview", element: <PdfViewer edited /> },
       { path: "sign-in", element: <SignInPage /> },
       { path: "sign-in/sso-callback", element: <AuthenticateWithRedirectCallback signInUrl="/sign-in" signUpUrl="/sign-up" /> },
       { path: "sign-up/*", element: <SignUpPage /> },
@@ -50,10 +53,6 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
-
-
-
-
 
 const App = () => {
   return (
