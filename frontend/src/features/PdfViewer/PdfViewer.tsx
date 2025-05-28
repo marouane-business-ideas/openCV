@@ -1,5 +1,7 @@
 import { useContext, useRef, useState, useEffect } from "react";
 import Frame from "react-frame-component";
+import { useLocation } from "react-router-dom";
+import classNames from "classnames";
 import { ResumeContext, resumeInfoType } from "../../context/ResumeContext";
 import DownloadPdf from "../../components/DownloadPdf/DownloadPdf";
 import ClassicalTemplate from "../../components/ResumeModels/ClassicalTemplate";
@@ -8,6 +10,7 @@ import ProfessionalTemplate from "../../components/ResumeModels/ProfessionalTemp
 
 const PdfViewer = ({ edited }: { edited: boolean }) => {
     const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
+    const location = useLocation();
 
     const resume = edited ? (resumeBeingEdited as resumeInfoType) : onGoingResume;
     const resumeTemplate = resume.resumeTemplate;
@@ -35,10 +38,20 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
     }, []);
 
     return (
-        <div className="w-full lg:w-1/2 h-1/2 lg:h-full flex justify-center p-5 lg:pt-5 lg:pb-5 shadow-xl shadow-blue-500/60">
+        <div className={classNames(
+            "w-full lg:w-1/2 h-1/2 lg:h-full flex justify-center p-5 lg:pt-5 lg:pb-5",
+            {
+                "shadow-xl shadow-blue-500/60": !location.pathname.includes("preview")
+            }
+        )}>
             <div className='h-full w-full flex flex-col gap-5 items-center' >
-                <div ref={containerRef} id="pdf-viewer-iframe-container" className="flex justify-center h-full w-full overflow-y-scroll relative
-                    @container/Iframe-container" >
+                <div ref={containerRef} id="pdf-viewer-iframe-container"
+                    className="flex justify-center h-full w-full overflow-y-scroll relative
+                    @container/Iframe-container"
+                    style={{
+                        height: location.pathname.includes("preview") ? "70vh" : ""
+                    }}
+                >
                     <Frame id="pdf-viewer-iframe" title="pdf-viewer-iframe" className='bg-white h-full w-full'
                         style={{
                             minHeight: "130vh",
@@ -56,7 +69,7 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
                 </div>
                 <DownloadPdf resume={resume} resumeTemplate={resumeTemplate} isEditing={edited} />
             </div>
-        </div >
+        </div>
 
     );
 };

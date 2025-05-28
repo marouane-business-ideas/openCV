@@ -17,7 +17,7 @@ const Theme = ({ edited }: { edited: boolean }) => {
     };
     return (
         <Card>
-            <div className=" flex flex-col  gap-2 pb-12">
+            <div className="flex flex-col gap-2 pb-12">
                 <h2 className="text-lg font-bold text-gray-900 mb-2">
                     {t("form.theme.theme")}
                 </h2>

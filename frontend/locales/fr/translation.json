@@ -108,6 +108,9 @@
           "theme": {
             "theme": "Thème",
             "select_theme_color": "Sélectionnez une couleur pour votre CV"
+          },
+          "preview": {
+            "preview_resume": "Voir résultat final"
           }
         },
     "resume": {

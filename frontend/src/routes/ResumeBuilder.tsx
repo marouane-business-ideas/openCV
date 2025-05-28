@@ -6,6 +6,7 @@ import { ResumeDispatchContext } from "../context/ResumeContext";
 import Form from "../features/Form/Form";
 import PdfViewer from "../features/PdfViewer/PdfViewer";
 import Spinner from "../components/Spinner/Spinner";
+import useIsSmallScreen from "../lib/hooks/useIsSmallScreen";
 
 
 const ResumeBuilder = () => {
@@ -16,6 +17,7 @@ const ResumeBuilder = () => {
     const dispatch = useContext(ResumeDispatchContext);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const isSmallScreen = useIsSmallScreen();
 
     useEffect(() => {
         if (!isSignedIn) {
@@ -78,7 +80,7 @@ const ResumeBuilder = () => {
     return (
         <div className="flex flex-col lg:flex-row relative overflow-y-hidden items-center w-full h-screen lg:h-[calc(100vh-var(--header-height))]">
             <Form edited={edited} />
-            <PdfViewer edited={edited} />
+            {!isSmallScreen && <PdfViewer edited={edited} />}
         </div>
     );
 };

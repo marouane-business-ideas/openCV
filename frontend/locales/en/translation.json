@@ -107,6 +107,9 @@
     "theme": {
       "theme": "Theme",
       "select_theme_color": "Select a color theme for the resume"
+    },
+     "preview": {
+      "preview_resume": "Preview Resume"
     }
   },
   "resume": {
