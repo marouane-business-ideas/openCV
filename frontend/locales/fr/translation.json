@@ -2,7 +2,7 @@
     "common": {
       "errors": {
         "unkown_download_error": "Une erreur est survenue lors du téléchargement du PDF. Veuillez réessayer.",
-        "limit_reached_download_error": "Vous avez atteint la limite de téléchargements de CVs autorisés sur le plan gratuit"
+        "limit_reached_download_error": "Vous avez atteint la limite des téléchargements de CVs autorisés sur le plan gratuit"
       },
       "buttons": {
         "get_started": "Créer mon CV",
