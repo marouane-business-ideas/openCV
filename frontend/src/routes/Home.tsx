@@ -7,6 +7,7 @@ import ProfessionalTemplate from "../components/ResumeModels/ProfessionalTemplat
 import ClassicalTemplate from "../components/ResumeModels/ClassicalTemplate";
 import { getResumeDummyData, ResumeContext } from "../context/ResumeContext";
 import PricingCard from "../components/PricingCard/PricingCard";
+import MiniResumePreview from "../components/MiniResumePreview/MiniResumePreview";
 
 const Home: React.FC = () => {
     const { isSignedIn } = useUser();
@@ -73,21 +74,15 @@ const Home: React.FC = () => {
                 </div>
             </section>
             <section className="flex flex-col items-center md:flex-row md:justify-center mt-16">
-                <div className="flex flex-col items-center bg-white m-8 shadow-gray-200 shadow-xl relative overflow-hidden"
-                    style={{ minWidth: "320px", maxWidth: "320px", minHeight: "450px", maxHeight: "450px" }} >
-                    <div aria-description="Professional resume template" className="flex relative overflow-hidden">
-                        <ProfessionalTemplate inert customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
-                            resume={getResumeDummyData()} />
-                    </div>
-                </div>
-                <div className="flex flex-col items-center bg-white m-8 shadow-gray-200 shadow-xl relative overflow-hidden"
-                    style={{ minWidth: "320px", maxWidth: "320px", minHeight: "450px", maxHeight: "450px" }} >
-                    <div aria-description="Classical resume template" className="flex relative overflow-hidden">
-                        <ClassicalTemplate inert customThemeColor="#7A6C55"
-                            customStyle={{ minWidth: "840px", transform: "scale(0.37)", transformOrigin: "top" }}
-                            resume={getResumeDummyData("classic")} />
-                    </div>
-                </div>
+                <MiniResumePreview>
+                    <ProfessionalTemplate inert customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
+                        resume={getResumeDummyData()} />
+                </MiniResumePreview>
+                <MiniResumePreview>
+                    <ClassicalTemplate inert customThemeColor="#7A6C55"
+                        customStyle={{ minWidth: "840px", transform: "scale(0.37)", transformOrigin: "top" }}
+                        resume={getResumeDummyData("classic")} />
+                </MiniResumePreview>
             </section>
             <section className="mt-28 flex flex-col items-center md:flex-row justify-center gap-8">
                 {isSignedIn === false && <PricingCard
