@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import useSWR from "swr";
 import { useTranslation } from "react-i18next";

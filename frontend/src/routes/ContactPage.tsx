@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "react-i18next";

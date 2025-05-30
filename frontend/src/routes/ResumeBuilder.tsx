@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useAuth, useUser } from "@clerk/clerk-react";
 
 import { ResumeDispatchContext } from "../context/ResumeContext";
