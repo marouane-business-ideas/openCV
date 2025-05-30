@@ -1,7 +1,7 @@
 import { createElement, useState } from "react";
 import ReactDOMServer from "react-dom/server";
 import classNames from "classnames";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { ArrowDownTrayIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "react-i18next";

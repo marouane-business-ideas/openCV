@@ -1,6 +1,6 @@
 import { useContext, useRef, useState, useEffect } from "react";
 import Frame from "react-frame-component";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import classNames from "classnames";
 import { ResumeContext, resumeInfoType } from "../../context/ResumeContext";
 import DownloadPdf from "../../components/DownloadPdf/DownloadPdf";

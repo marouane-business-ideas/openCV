@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { resumeInfoType } from "../../context/ResumeContext";

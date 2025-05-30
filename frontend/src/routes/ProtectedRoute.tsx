@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 import { useAuth } from "@clerk/clerk-react";
 import { ReactNode, useEffect, useState } from "react";
 import Spinner from "../components/Spinner/Spinner";
