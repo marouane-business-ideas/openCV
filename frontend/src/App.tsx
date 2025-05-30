@@ -45,7 +45,11 @@ const router = createBrowserRouter([
   },
   { path: "contact", element: <ProtectedRoute><ContactPage /></ProtectedRoute> },
   { path: "subscribe", element: <ProtectedRoute><SubscribePage /></ProtectedRoute> },
-]);
+], {
+  future: {
+    v7_relativeSplatPath: true,
+  },
+});
 
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
