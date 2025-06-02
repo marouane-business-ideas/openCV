@@ -75,11 +75,11 @@ const Home: React.FC = () => {
             </section>
             <section className="flex flex-col items-center md:flex-row md:justify-center mt-16">
                 <MiniResumePreview>
-                    <ProfessionalTemplate inert customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
+                    <ProfessionalTemplate customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
                         resume={getResumeDummyData()} />
                 </MiniResumePreview>
                 <MiniResumePreview>
-                    <ClassicalTemplate inert customThemeColor="#7A6C55"
+                    <ClassicalTemplate customThemeColor="#7A6C55"
                         customStyle={{ minWidth: "840px", transform: "scale(0.37)", transformOrigin: "top" }}
                         resume={getResumeDummyData("classic")} />
                 </MiniResumePreview>

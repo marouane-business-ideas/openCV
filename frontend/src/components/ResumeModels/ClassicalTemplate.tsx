@@ -1,9 +1,9 @@
-import React from "react";
+import React, { type JSX } from "react";
 import DOMPurify from "isomorphic-dompurify";
 import { useTranslation } from "react-i18next";
 
-import type { resumeInfoType } from "../../context/ResumeContext";
 import Schemify from "../../utils/schemify";
+import { ResumeTemplateProps } from "../../Types/CommonTypes";
 
 const firstColumnWidth = "160px";
 const rowGap = "30px";
@@ -127,21 +127,19 @@ const ExperienceTopSection = ({ children }: { children: JSX.Element[] }) => {
     );
 };
 
-
-const Preview = (props: {
-    resume: resumeInfoType,
-    customStyle?: React.CSSProperties,
-    customClassName?: string,
-    customThemeColor?: string,
-    inert?: boolean;
-}) => {
+const ClassicalTemplate = ({
+    resume,
+    customStyle,
+    customClassName,
+    customThemeColor,
+    inert = true
+}: ResumeTemplateProps) => {
     const { t } = useTranslation();
-    const { personalInfo, workExperience, education, skills, languages, links, themeColor: tempThemeColor } = props.resume;
-    const themeColor = props.customThemeColor ?? tempThemeColor;
+    const { personalInfo, workExperience, education, skills, languages, links, themeColor: tempThemeColor } = resume;
+    const themeColor = customThemeColor ?? tempThemeColor;
 
     return (
-        // eslint-disable-next-line max-len
-        <div {...{ inert: props.inert ? "" : undefined }} className={props.customClassName} style={{ ...Styles.pageContainer, ...props.customStyle, color: themeColor }}>
+        <div inert={inert} className={customClassName} style={{ ...Styles.pageContainer, ...customStyle, color: themeColor }}>
             <div style={Styles.personnalInfoContainer}>
                 <div style={{ ...Styles.personnalInfoName }}>{personalInfo.name}</div>
                 <div style={{ ...Styles.personnalTitle }}>{personalInfo.title}</div>
@@ -259,4 +257,4 @@ const Preview = (props: {
     );
 };
 
-export default Preview;
+export default ClassicalTemplate;
