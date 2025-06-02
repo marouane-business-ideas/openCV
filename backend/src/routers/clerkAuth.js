@@ -1,5 +1,4 @@
 import express from "express";
-import { ClerkExpressRequireAuth } from "@clerk/clerk-sdk-node";
 
 const clerkAuthRouter = express.Router();
 
@@ -13,14 +12,14 @@ const authUsersRouteMw = (req, res, next) => {
     next();
 };
 
-clerkAuthRouter.use("/:userId/*", (req, res, next) => {
-    ClerkExpressRequireAuth()(req, res, (err) => {
-        if (err) {
-            console.error("Authentication failed:", err);
-            return res.status(401).json({ error: "Unauthenticated" });
-        }
-        next();
-    });
-}, authUsersRouteMw);
+const legacyRequireAuth = (req, res, next) => {
+    if (!req.auth.userId) {
+        console.error("Authentication failed");
+        return res.status(401).json({ error: "Unauthenticated" });
+    }
+    next();
+};
+
+clerkAuthRouter.use("/:userId/*", legacyRequireAuth, authUsersRouteMw);
 
 export default clerkAuthRouter;

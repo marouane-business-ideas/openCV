@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import process from "process";
 import Stripe from "stripe";
+import { clerkMiddleware } from "@clerk/express";
 
 import initApp from "./app.js";
 
@@ -41,6 +42,8 @@ app.use((req, res, next) => {
 
     next();
 });
+
+app.use(clerkMiddleware());
 
 // This middleware needs to be called before calling app.use(bodyParser.json());
 app.use("/api/webhook", webhooksRouter(stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db));
