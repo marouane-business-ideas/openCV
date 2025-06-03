@@ -3,8 +3,8 @@ import React from "react";
 import DOMPurify from "isomorphic-dompurify";
 import { useTranslation } from "react-i18next";
 
-import type { resumeInfoType } from "../../context/ResumeContext";
 import Schemify from "../../utils/schemify";
+import { ResumeTemplateProps } from "../../Types/CommonTypes";
 
 const Styles: { [key: string]: React.CSSProperties } = {
     pageContainer: {
@@ -118,20 +118,20 @@ const ExperienceDate = ({ children }: { children: string }) => {
 };
 
 
-const ResumeModel = (props: {
-    resume: resumeInfoType,
-    customStyle?: React.CSSProperties,
-    customClassName?: string,
-    customThemeColor?: string,
-    inert?: boolean,
-}) => {
+const ProfessionalTemplate = ({
+    resume,
+    customStyle,
+    customClassName,
+    customThemeColor,
+    inert = true
+}: ResumeTemplateProps) => {
     const { t } = useTranslation();
 
-    const { personalInfo, workExperience, education, skills, languages, links, themeColor: tempThemeColor } = props.resume;
-    const themeColor = props.customThemeColor ?? tempThemeColor;
+    const { personalInfo, workExperience, education, skills, languages, links, themeColor: tempThemeColor } = resume;
+    const themeColor = customThemeColor ?? tempThemeColor;
 
     return (
-        <div {...{ inert: props.inert ? "" : undefined }} className={props.customClassName} style={{ ...Styles.pageContainer, ...props.customStyle, color: themeColor }}>
+        <div inert={inert} className={customClassName} style={{ ...Styles.pageContainer, ...customStyle, color: themeColor }}>
             <div style={Styles.personnalInfoContainer}>
                 <div style={{ ...Styles.personnalInfoName }}>{personalInfo.name}</div>
                 <div style={{ ...Styles.personnalTitle }}>
@@ -385,4 +385,4 @@ const ResumeModel = (props: {
     );
 };
 
-export default ResumeModel;
+export default ProfessionalTemplate;

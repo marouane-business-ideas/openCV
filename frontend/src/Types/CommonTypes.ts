@@ -1,4 +1,4 @@
-import { TemplateType } from "../context/ResumeContext";
+import { resumeInfoType, TemplateType } from "../context/ResumeContext";
 
 export interface IPdf {
     jsonContent: string;
@@ -7,4 +7,12 @@ export interface IPdf {
     filename: string;
     id: number;
     template: TemplateType;
+}
+
+export interface ResumeTemplateProps {
+    resume: resumeInfoType,
+    customStyle?: React.CSSProperties,
+    customClassName?: string,
+    customThemeColor?: string,
+    inert?: boolean,
 }

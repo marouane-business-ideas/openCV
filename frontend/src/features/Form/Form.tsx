@@ -50,7 +50,7 @@ const Form = ({ edited }: { edited: boolean }) => {
                     {
                         prewiewButtonHovered &&
                         <MiniResumePreview>
-                            <TemplateToUse inert customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
+                            <TemplateToUse customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
                                 resume={resume} />
                         </MiniResumePreview>
                     }
