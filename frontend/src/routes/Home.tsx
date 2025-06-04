@@ -18,11 +18,11 @@ const Home: React.FC = () => {
 
     return (
         <div className="h-full px-3 lg:py-36 py-20">
-            <section className="mx-auto max-w-screen-lg">
+            <section className="mx-auto max-w-(--breakpoint-lg)">
                 <h1 className="text-center lg:text-5xl text-3xl font-bold tracking-tight">
                     {t("home.title")}
                 </h1>
-                <h2 className="mx-auto mt-5 max-w-screen-md text-center lg:text-xl text-lg">
+                <h2 className="mx-auto mt-5 max-w-(--breakpoint-md) text-center lg:text-xl text-lg">
                     {t("home.secondary_title")}
                 </h2>
             </section>

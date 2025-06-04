@@ -86,7 +86,7 @@ const EducationItem = ({ education, index, handleSchoolChange, handleDeleteSchoo
                         {t("form.education.school")}
                     </label>
                     <input onChange={(e) => handleSchoolChange(e, "schoolName", index)}
-                        className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                        className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                         id={`school-${index}`} name="school" required placeholder="Escp Europe" value={education.schoolName} />
                 </div>
                 <div className="flex flex-col gap-2 w-2/5">
@@ -102,7 +102,7 @@ const EducationItem = ({ education, index, handleSchoolChange, handleDeleteSchoo
                         </div>
                     </div>
                     <input onChange={(e) => handleSchoolChange(e, "date", index)}
-                        className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                        className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                         id={`education-date-${index}`} name="date" required placeholder="August 2020" value={education.date} />
                 </div>
             </div>
@@ -112,7 +112,7 @@ const EducationItem = ({ education, index, handleSchoolChange, handleDeleteSchoo
                         {t("form.education.degree")}
                     </label>
                     <input onChange={(e) => handleSchoolChange(e, "degree", index)}
-                        className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                        className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                         id={`degree-${index}`} name="degree" required placeholder="Masters in Computer Science" value={education.degree} />
                 </div>
             </div>

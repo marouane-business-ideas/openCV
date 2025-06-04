@@ -43,7 +43,7 @@ const PersonalLinks = ({ edited }: { edited: boolean }) => {
                             </label>
                             <input
                                 onChange={(e) => handleLinkChange("linkName", e.target.value, index)}
-                                className="border p-1 rounded-md focus:outline-none border-gray-300"
+                                className="border p-1 rounded-md focus:outline-hidden border-gray-300"
                                 type="text"
                                 id={`link-name-${index}`}
                                 placeholder="Github"
@@ -64,7 +64,7 @@ const PersonalLinks = ({ edited }: { edited: boolean }) => {
                             </div>
                             <input
                                 onChange={(e) => handleLinkChange("linkUrl", e.target.value, index)}
-                                className="border p-1 rounded-md focus:outline-none border-gray-300"
+                                className="border p-1 rounded-md focus:outline-hidden border-gray-300"
                                 type="text"
                                 id={`link-url-${index}`}
                                 placeholder="https://github.com/wanderleisilva"
