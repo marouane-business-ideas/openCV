@@ -20,6 +20,6 @@ const legacyRequireAuth = (req, res, next) => {
     next();
 };
 
-clerkAuthRouter.use("/:userId/*", legacyRequireAuth, authUsersRouteMw);
+clerkAuthRouter.use("/:userId/*splat", legacyRequireAuth, authUsersRouteMw);
 
 export default clerkAuthRouter;
