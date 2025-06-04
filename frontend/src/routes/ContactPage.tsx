@@ -82,7 +82,7 @@ const ContactPage: React.FC = () => {
                                 name="name"
                                 required
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight
-                         focus:outline-none focus:shadow-outline"
+                         focus:outline-hidden focus:shadow-outline"
                             />
                         </div>
                         <div className="mb-4">
@@ -93,12 +93,12 @@ const ContactPage: React.FC = () => {
                                 required
                                 rows={4}
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight
-                         focus:outline-none focus:shadow-outline"
+                         focus:outline-hidden focus:shadow-outline"
                             />
                         </div>
                         <div className="w-full flex flex-col items-center">
                             <button type="submit" className="text-white w-full font-bold py-2 px-4 rounded-2xl
-                      focus:outline-none focus:shadow-outline bg-blue-500 hover:bg-blue-600">
+                      focus:outline-hidden focus:shadow-outline bg-blue-500 hover:bg-blue-600">
                                 {t("contact.send")}
                             </button>
                             {isError && !isPending && <p className="text-sm mt-5 text-center text-red-500">

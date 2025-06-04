@@ -47,12 +47,13 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
             <div className='h-full w-full flex flex-col gap-5 items-center' >
                 <div ref={containerRef} id="pdf-viewer-iframe-container"
                     className="flex justify-center h-full w-full overflow-y-scroll relative
-                    @container/Iframe-container"
+                    @container"
                     style={{
                         height: location.pathname.includes("preview") ? "70vh" : ""
                     }}
                 >
-                    <Frame id="pdf-viewer-iframe" title="pdf-viewer-iframe" className='bg-white h-full w-full'
+                    <Frame id="pdf-viewer-iframe" title="pdf-viewer-iframe" className={`bg-white h-full w-full @max-[804px]:absolute
+                     @max-[804px]:top-0 @max-[804px]:left-0`}
                         style={{
                             minHeight: "130vh",
                             width: `${containerRef?.current?.offsetWidth as number < resumeIntrinsicWidth ? resumeIntrinsicWidth : ""}px`,

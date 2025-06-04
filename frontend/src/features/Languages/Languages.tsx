@@ -46,7 +46,7 @@ const Languages = ({ edited }: { edited: boolean }) => {
                             </label>
                             <input onChange={(e) => handleLanguageChange(e.target.value, index)}
                                 aria-label="Language name"
-                                className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                                className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                                 id={`language-${index}`} placeholder="English" value={languages[index].language} />
                         </div>
                         <div className="flex flex-col gap-4">

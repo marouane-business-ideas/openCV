@@ -23,7 +23,7 @@ const Profile = ({ edited }: { edited: boolean }) => {
                 <div className="flex flex-col gap-2">
                     <label className="text-base font-medium text-gray-700" htmlFor="name">{t("form.profile.name")}</label>
                     <input onChange={(e) => handleInputChange(e, "name")}
-                        className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                        className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                         id="name" name="name" required placeholder="Name" value={personalInfo.name} />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -40,13 +40,13 @@ const Profile = ({ edited }: { edited: boolean }) => {
                     <div className="flex flex-col gap-2 w-3/5">
                         <label className="text-base font-medium text-gray-700" htmlFor="email">{t("form.profile.email")}</label>
                         <input onChange={(e) => handleInputChange(e, "email")}
-                            className="border p-1 rounded-md focus:outline-none border-gray-300" type="email"
+                            className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="email"
                             id="email" name="email" required placeholder="email@email.com" value={personalInfo.email} />
                     </div>
                     <div className="flex flex-col gap-2 w-2/5">
                         <label className="text-base font-medium text-gray-700" htmlFor="number">{t("form.profile.phone_number")}</label>
                         <input onChange={(e) => handleInputChange(e, "phoneNumber")}
-                            className="border p-1 rounded-md focus:outline-none border-gray-300" type="tel"
+                            className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="tel"
                             id="number" name="number" required placeholder="+33(0) 6 39 33 33 44" value={personalInfo.phoneNumber} />
                     </div>
                 </div>
@@ -54,7 +54,7 @@ const Profile = ({ edited }: { edited: boolean }) => {
                     <div className="flex flex-col gap-2 w-2/5">
                         <label className="text-base font-medium text-gray-700" htmlFor="location">{t("form.profile.location")}</label>
                         <input onChange={(e) => handleInputChange(e, "location")}
-                            className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                            className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                             id="location" name="location" required placeholder="Paris, France" value={personalInfo.location} />
                     </div>
                 </div>

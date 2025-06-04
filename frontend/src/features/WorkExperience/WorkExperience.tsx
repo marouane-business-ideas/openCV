@@ -92,27 +92,27 @@ const JobExperience = ({ job, index, handleWorkExperienceChange, handleDeletingW
                     </div>
                 </div>
                 <input onChange={(e) => handleWorkExperienceChange(e, "company", index)}
-                    className="border p-1 rounded-md focus:outline-none border-gray-300"
+                    className="border p-1 rounded-md focus:outline-hidden border-gray-300"
                     type="text" id={`company-${index}`} name="company" required placeholder="Google" value={job.company} />
             </div>
             <div className="flex gap-2 justify-between">
                 <div className="flex flex-col gap-2 w-3/5">
                     <label className="text-base font-medium text-gray-700" htmlFor={`jobTitle-${index}`}>{t("form.work_experience.job_title")}</label>
                     <input onChange={(e) => handleWorkExperienceChange(e, "jobTitle", index)}
-                        className="border p-1 rounded-md focus:outline-none border-gray-300" type="text"
+                        className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                         id={`jobTitle-${index}`} name="jobTitle" required placeholder="Software engineer" value={job.jobTitle} />
                 </div>
                 <div className="flex flex-col gap-2 w-2/5">
                     <label className="text-base font-medium text-gray-700" htmlFor={`workExperience-date-${index}`}>{t("form.work_experience.date")}</label>
                     <input onChange={(e) => handleWorkExperienceChange(e, "date", index)}
-                        className="border p-1 rounded-md focus:outline-none border-gray-300"
+                        className="border p-1 rounded-md focus:outline-hidden border-gray-300"
                         type="text" id={`workExperience-date-${index}`} name="date" required placeholder="August 2020 - Present" value={job.date} />
                 </div>
             </div>
             <div className="flex flex-col gap-2 w-2/5">
                 <label className="text-base font-medium text-gray-700" htmlFor={`location-${index}`}>{t("form.work_experience.location")}</label>
                 <input onChange={(e) => handleWorkExperienceChange(e, "location", index)}
-                    className="border p-1 rounded-md focus:outline-none border-gray-300"
+                    className="border p-1 rounded-md focus:outline-hidden border-gray-300"
                     type="text" id={`location-${index}`} name="location" required placeholder="Paris, France" value={job.location} />
             </div>
             <div className="flex flex-col gap-2">
