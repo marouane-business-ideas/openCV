@@ -1,4 +1,4 @@
-import { assert, test, describe } from "vitest"
+import { assert, test, describe } from "vitest";
 
 import schemify from "../src/utils/schemify";
 
@@ -41,4 +41,4 @@ describe("Schemify doesn't modify URLs that already have a protocol scheme", () 
     test("ftp://example.com => ftp://example.com", () => {
         assert.strictEqual(schemify("ftp://example.com", ""), "ftp://example.com");
     });
-})
+});
