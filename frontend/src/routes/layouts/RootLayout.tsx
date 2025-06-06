@@ -134,7 +134,7 @@ function Layout() {
                                         <EnvelopeIcon className="size-6" />
                                     </a>
                                 }
-                                <a href="https://www.linkedin.com/in/marouane-faris-1514b970/" target="_blank" rel="noopener noreferrer">
+                                <a href="https://www.linkedin.com/in/marouane-faris-%F0%9F%92%A1-1514b970/" target="_blank" rel="noopener noreferrer">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"
                                         aria-label="Linkedin profile"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5
                                       1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3
