@@ -97,23 +97,23 @@ function Layout() {
                         {location.pathname !== "/dashboard" && (
                             <Link
                                 className="block bg-white text-blue-500 px-4 py-2 rounded-md mb-2 text-center"
-                                to="/dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+                                to="/dashboard" onClick={() => setIsMenuOpen(false)}>{t("common.buttons.dashboard")}</Link>
                         )}
                         <button
                             onClick={() => { signOut({ redirectUrl: "/" }); setIsMenuOpen(false); }}
                             className="block w-full bg-white text-blue-500 px-4 py-2 rounded-md mb-2"
                         >
-                            Sign out
+                            {t("common.buttons.sign_out")}
                         </button>
                     </SignedIn>
                     <SignedOut>
                         <div className="flex flex-col items-center">
                             <Link
                                 className="block bg-white text-blue-500 px-4 py-2 rounded-md mb-2 w-full text-center"
-                                to="/sign-in" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                                to="/sign-in" onClick={() => setIsMenuOpen(false)}>{t("common.buttons.login")}</Link>
                             <Link
                                 className="block bg-white text-blue-500 px-4 py-2 rounded-md mb-2 w-full text-center"
-                                to="/sign-up" onClick={() => setIsMenuOpen(false)}>Create an account</Link>
+                                to="/sign-up" onClick={() => setIsMenuOpen(false)}>{t("common.buttons.create_account")}</Link>
                         </div>
                     </SignedOut>
                 </nav>
