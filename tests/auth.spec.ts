@@ -6,9 +6,10 @@ const TEST_USERS = {
     email: 'test@clerk.dev',
     password: '1234'
   },
-  // premium: {
-  //   email: 'premium@clerk.dev'
-  // }
+  premium: {
+    email: 'premium@clerk.dev',
+    password: '1234'
+  }
 };
 
 test.describe('Authentication Flow', () => {
@@ -39,5 +40,25 @@ test.describe('Authentication Flow', () => {
 
     // Verify user is authenticated (sign in button should be gone)
     await expect(page.getByText('Se connecter')).not.toBeVisible();
+  });
+
+  test('existing premium user can sign in and be redirected to /resume page', async ({ page }) => {
+    // Click on "Se connecter" (Sign In) button
+    await page.getByRole('link', { name: 'Se connecter' }).click();
+
+    // Wait for sign-in form to load
+    await expect(page.getByText('S\'identifier')).toBeVisible();
+
+    // Fill in email address
+    await page.getByPlaceholder('Adresse e-mail').fill(TEST_USERS.premium.email);
+
+    // Fill in password
+    await page.getByPlaceholder('Mot de passe').fill(TEST_USERS.premium.password);
+
+    // Click Continue button (the primary form button, not Google)
+    await page.getByRole('button', { name: 'Continuer', exact: true }).click();
+
+    // Wait for successful authentication and redirect to homepage
+    await expect(page).toHaveURL('/resume');
   });
 });
