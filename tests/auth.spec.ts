@@ -18,21 +18,12 @@ test.describe('Authentication Flow', () => {
     await page.goto('/');
   });
 
-  test('existing free user can sign in and be redirected to homepage', async ({ page }) => {
-    // Click on "Se connecter" (Sign In) button
-    // await page.getByTestId('navbar-login-testid').click();
+  test('free user can sign in and download resume in PDF format', async ({ page }) => {
+    // Sign in as free user
     await page.getByRole('link', { name: 'Se connecter' }).click();
-
-    // Wait for sign-in form to load
     await expect(page.getByText('S\'identifier')).toBeVisible();
-
-    // Fill in email address
     await page.getByPlaceholder('Adresse e-mail').fill(TEST_USERS.free.email);
-
-    // Fill in password
     await page.getByPlaceholder('Mot de passe').fill(TEST_USERS.free.password);
-
-    // Click Continue button (the primary form button, not Google)
     await page.getByRole('button', { name: 'Continuer', exact: true }).click();
 
     // Wait for successful authentication and redirect to homepage
@@ -40,25 +31,52 @@ test.describe('Authentication Flow', () => {
 
     // Verify user is authenticated (sign in button should be gone)
     await expect(page.getByText('Se connecter')).not.toBeVisible();
+
+    // Navigate to resume builder
+    await page.getByRole('link', { name: 'Créer mon CV', exact: true }).first().click();
+    await expect(page).toHaveURL('/resume');
+
+    // Wait for the PDF download button to be visible
+    await expect(page.getByRole('button', { name: 'Télécharger le CV' })).toBeVisible();
+
+    // Set up download promise before clicking
+    const downloadPromise = page.waitForEvent('download');
+
+    // Click the PDF download button
+    await page.getByRole('button', { name: 'Télécharger le CV' }).click();
+
+    // Wait for the download to complete
+    const download = await downloadPromise;
+
+    // Verify the download occurred and has the expected filename
+    expect(download.suggestedFilename()).toBe('CV.pdf');
   });
 
-  test('existing premium user can sign in and be redirected to /resume page', async ({ page }) => {
-    // Click on "Se connecter" (Sign In) button
+  test('premium user can sign in and download resume in PDF format', async ({ page }) => {
+    // Sign in as premium user
     await page.getByRole('link', { name: 'Se connecter' }).click();
-
-    // Wait for sign-in form to load
     await expect(page.getByText('S\'identifier')).toBeVisible();
-
-    // Fill in email address
     await page.getByPlaceholder('Adresse e-mail').fill(TEST_USERS.premium.email);
-
-    // Fill in password
     await page.getByPlaceholder('Mot de passe').fill(TEST_USERS.premium.password);
-
-    // Click Continue button (the primary form button, not Google)
     await page.getByRole('button', { name: 'Continuer', exact: true }).click();
 
-    // Wait for successful authentication and redirect to homepage
+    // Wait for successful authentication and redirect to resume page
     await expect(page).toHaveURL('/resume');
+
+    // Wait for the PDF download button to be visible
+    await expect(page.getByRole('button', { name: 'Télécharger le CV' })).toBeVisible();
+
+    // Set up download promise before clicking
+    const downloadPromise = page.waitForEvent('download');
+
+    // Click the PDF download button
+    await page.getByRole('button', { name: 'Télécharger le CV' }).click();
+
+    // Wait for the download to complete
+    const download = await downloadPromise;
+
+    // Verify the download occurred and has the expected filename
+    expect(download.suggestedFilename()).toBe('CV.pdf');
   });
+
 });
