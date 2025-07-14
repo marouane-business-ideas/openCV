@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Test data using Clerk's test mode
 const TEST_USERS = {
   free: {
     email: 'test@clerk.dev',
