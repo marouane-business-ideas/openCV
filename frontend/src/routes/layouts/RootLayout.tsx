@@ -71,6 +71,7 @@ function Layout() {
                         </SignedIn>
                         <SignedOut>
                             <Link
+                                data-testid="navbar-login-testid"
                                 className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
                                          hover:shadow-lg hover:scale-105"
                                 to="/sign-in?redirect_url=/resume">
