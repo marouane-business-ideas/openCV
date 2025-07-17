@@ -110,6 +110,7 @@ function Layout() {
                     <SignedOut>
                         <div className="flex flex-col items-center">
                             <Link
+                                data-testid="navbar-login-mobile-testid"
                                 className="block bg-white text-blue-500 px-4 py-2 rounded-md mb-2 w-full text-center"
                                 to="/sign-in" onClick={() => setIsMenuOpen(false)}>{t("common.buttons.login")}</Link>
                             <Link

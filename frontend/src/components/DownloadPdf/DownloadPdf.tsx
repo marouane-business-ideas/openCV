@@ -84,6 +84,7 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
     return (
         <>
             <button
+                data-testid="download-pdf-button"
                 disabled={!isSignedIn}
                 onClick={handleDownload}
                 title={isSignedIn ? "Download your resume as a PDF" : "Sign in to download your resume as a PDF"}

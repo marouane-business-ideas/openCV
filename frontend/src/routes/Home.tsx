@@ -27,7 +27,10 @@ const Home: React.FC = () => {
                 </h2>
             </section>
             <section className="mt-20">
-                <Link className="mx-auto w-fit block px-5 py-3 hover:bg-blue-600 bg-blue-500 text-white font-bold rounded-lg" to="/resume">
+                <Link 
+                    data-testid="home-get-started-button"
+                    className="mx-auto w-fit block px-5 py-3 hover:bg-blue-600 bg-blue-500 text-white font-bold rounded-lg" 
+                    to="/resume">
                     {t("common.buttons.get_started")}
                 </Link>
             </section>
