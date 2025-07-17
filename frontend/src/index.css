@@ -35,10 +35,12 @@
   :root {
     --header-height: 4rem;
     --tw-bg-opacity: 1;
+    overscroll-behavior-y: none;
   }
 
   body {
     font-family: "Inter Variable", sans-serif;
+    overscroll-behavior-y: none;
   }
 
   /** 
