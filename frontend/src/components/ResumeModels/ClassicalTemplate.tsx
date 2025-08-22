@@ -176,6 +176,12 @@ const ClassicalTemplate = ({
                 <a style={{ ...Styles.link, color: themeColor }} href={`mailto:${personalInfo.email}`}>
                     {personalInfo.email}
                 </a>
+                {personalInfo.nationality && (
+                    <>
+                        <div>•</div>
+                        <div>{t("form.profile.nationality")}: {personalInfo.nationality}</div>
+                    </>
+                )}
             </div>
             <div style={Styles.resumeContentContainer}>
                 <div style={Styles.sectionRow}>

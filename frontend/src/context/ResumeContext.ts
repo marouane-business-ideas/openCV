@@ -21,6 +21,7 @@ export const getResumeDummyData = (resumeTemplate: TemplateType = "professional"
         email: "john.doe@example.com",
         phoneNumber: "+1 (555) 123-4567",
         location: "New York, NY",
+        nationality: "American",
         summary: "Experienced software developer with a passion for creating efficient and scalable applications."
     },
     workExperience: [{
@@ -92,6 +93,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             email: "john.doe@example.com",
             phoneNumber: "+1 (555) 123-4567",
             location: "New York, NY",
+            nationality: "American",
             summary: "Experienced software developer with a passion for creating efficient and scalable applications."
         },
         workExperience: [{
@@ -159,6 +161,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             email: "",
             phoneNumber: "",
             location: "",
+            nationality: "",
             summary: ""
         },
         workExperience: [{
@@ -191,6 +194,7 @@ export type resumeInfoType = {
         email: string;
         phoneNumber: string;
         location: string;
+        nationality: string;
         summary: string;
     };
     workExperience: {

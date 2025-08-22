@@ -182,6 +182,7 @@ const ProfessionalTemplate = ({
                             <a style={{ ...Styles.link, lineBreak: "anywhere", color: themeColor, }} href={`mailto:${personalInfo.email}`}>
                                 {personalInfo.email}
                             </a>
+                            {personalInfo.nationality && <span style={{ lineBreak: "anywhere" }} >{t("form.profile.nationality")}: {personalInfo.nationality}</span>}
                         </SectionTextColumn>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>

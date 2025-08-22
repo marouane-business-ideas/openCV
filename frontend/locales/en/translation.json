@@ -62,7 +62,8 @@
       "summary": "Summary",
       "email": "Email",
       "phone_number": "Phone Number",
-      "location": "Location"
+      "location": "Location",
+      "nationality": "Nationality"
     },
     "work_experience": {
       "work_experience": "Work Experience",

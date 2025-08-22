@@ -63,7 +63,8 @@
             "summary": "Description",
             "email": "Email",
             "phone_number": "Numéro de téléphone",
-            "location": "Lieu"
+            "location": "Lieu",
+            "nationality": "Nationalité"
           },
           "work_experience": {
             "work_experience": "Expérience professionnelle",

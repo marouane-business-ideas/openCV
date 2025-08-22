@@ -57,6 +57,12 @@ const Profile = ({ edited }: { edited: boolean }) => {
                             className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                             id="location" name="location" required placeholder="Paris, France" value={personalInfo.location} />
                     </div>
+                    <div className="flex flex-col gap-2 w-3/5">
+                        <label className="text-base font-medium text-gray-700" htmlFor="nationality">{t("form.profile.nationality")}</label>
+                        <input onChange={(e) => handleInputChange(e, "nationality")}
+                            className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
+                            id="nationality" name="nationality" placeholder="American" value={personalInfo.nationality} />
+                    </div>
                 </div>
             </div>
         </Card>
