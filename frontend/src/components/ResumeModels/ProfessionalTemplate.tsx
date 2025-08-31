@@ -4,6 +4,7 @@ import DOMPurify from "isomorphic-dompurify";
 import { useTranslation } from "react-i18next";
 
 import Schemify from "../../utils/schemify";
+import { formatPhoneNumber } from "../../utils/formatPhone";
 import { ResumeTemplateProps } from "../../Types/CommonTypes";
 
 const Styles: { [key: string]: React.CSSProperties } = {
@@ -155,7 +156,7 @@ const ProfessionalTemplate = ({
                          0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25
                          0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
                             </svg>
-                            <div>{personalInfo.phoneNumber}</div>
+                            <div>{formatPhoneNumber(personalInfo.phoneNumber)}</div>
                         </div>
                     </div>
                 </div>
@@ -178,7 +179,7 @@ const ProfessionalTemplate = ({
                         </div>
                         <SectionTextColumn>
                             <span style={{ lineBreak: "anywhere" }} >{personalInfo.location}</span>
-                            <span style={{ lineBreak: "anywhere" }} >{personalInfo.phoneNumber}</span>
+                            <span style={{ lineBreak: "anywhere" }} >{formatPhoneNumber(personalInfo.phoneNumber)}</span>
                             <a style={{ ...Styles.link, lineBreak: "anywhere", color: themeColor, }} href={`mailto:${personalInfo.email}`}>
                                 {personalInfo.email}
                             </a>
@@ -302,6 +303,7 @@ const ProfessionalTemplate = ({
                                     borderLeft: `2px solid ${themeColor}`,
                                     marginLeft: "7px",
                                     position: "relative",
+                                    width: "100%",
                                 }}
                             >
                                 <div style={{
@@ -311,9 +313,9 @@ const ProfessionalTemplate = ({
                                     paddingLeft: "4px",
                                 }}>
                                 </div>
-                                <div>
-                                    <div style={{ display: "flex", flexDirection: "row", gap: "5px", fontSize: "14px", paddingTop: `${index === 0 ? "15" : "30"}px`, fontWeight: 900 }}>
-                                        <div style={{
+                                <div style={{ width: "100%" }}>
+                                    <div
+                                        style={{
                                             width: "4px",
                                             height: "4px",
                                             borderRadius: "50%",
@@ -321,15 +323,22 @@ const ProfessionalTemplate = ({
                                             position: "absolute",
                                             backgroundColor: "white",
                                             left: "-5px",
-                                            top: `${index === 0 ? "18" : "36"}px`
+                                            top: `${index === 0 ? "30" : "48"}px`,
                                         }} />
-                                        <div style={{ fontSize: "16px" }}>{job.company}</div>
+                                    <div style={{
+                                        backgroundColor: `${themeColor}08`,
+                                        border: `2px solid ${themeColor}`,
+                                        borderRadius: "8px",
+                                        padding: "12px",
+                                        marginTop: `${index === 0 ? "15" : "30"}px`,
+                                        marginBottom: "10px",
+                                        position: "relative"
+                                    }}>
+                                        <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "6px" }}>{job.company}</div>
+                                        <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "4px" }}>{job.jobTitle} • {job.location}</div>
+                                        <ExperienceDate>{job.date}</ExperienceDate>
                                     </div>
-                                    <div>
-                                        <div style={{ fontStyle: "italic", marginTop: "5px" }}>{job.jobTitle} • {job.location}</div>
-                                    </div>
-                                    <ExperienceDate>{job.date}</ExperienceDate>
-                                    <div style={{ marginTop: "10px", fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
+                                    <div style={{ fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
                                 </div>
                             </div>
                         ))}
@@ -351,6 +360,7 @@ const ProfessionalTemplate = ({
                                     borderLeft: `2px solid ${themeColor}`,
                                     marginLeft: "7px",
                                     position: "relative",
+                                    width: "100%",
                                 }}
                             >
                                 <div style={{
@@ -360,9 +370,9 @@ const ProfessionalTemplate = ({
                                     paddingLeft: "4px",
                                 }}>
                                 </div>
-                                <div>
-                                    <div style={{ display: "flex", flexDirection: "row", gap: "5px", fontSize: "14px", paddingTop: "15px", fontWeight: 900 }}>
-                                        <div style={{
+                                <div style={{ width: "100%" }}>
+                                    <div
+                                        style={{
                                             width: "4px",
                                             height: "4px",
                                             borderRadius: "50%",
@@ -370,12 +380,22 @@ const ProfessionalTemplate = ({
                                             position: "absolute",
                                             backgroundColor: "white",
                                             left: "-5px",
-                                            top: "18px"
+                                            top: `${index === 0 ? "30" : "33"}px`,
                                         }} />
-                                        <div style={{ fontStyle: "italic" }}>{education.degree} • {education.schoolName}</div>
+                                    <div style={{
+                                        backgroundColor: `${themeColor}08`,
+                                        border: `2px solid ${themeColor}`,
+                                        borderRadius: "8px",
+                                        padding: "12px",
+                                        marginTop: "15px",
+                                        marginBottom: "10px",
+                                        position: "relative"
+                                    }}>
+                                        <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "6px" }}>{education.schoolName}</div>
+                                        <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "4px" }}>{education.degree}</div>
+                                        <ExperienceDate>{education.date}</ExperienceDate>
                                     </div>
-                                    <ExperienceDate>{education.date}</ExperienceDate>
-                                    <div style={{ marginTop: "10px", fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(education.description) }} />
+                                    <div style={{ fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(education.description) }} />
                                 </div>
                             </div>
                         ))}

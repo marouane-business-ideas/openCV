@@ -12,6 +12,15 @@ const Profile = ({ edited }: { edited: boolean }) => {
     const personalInfo = edited ? (resumeBeingEdited as resumeInfoType).personalInfo : onGoingResume.personalInfo;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, property: keyof resumeInfoType["personalInfo"]) => {
+        // Validate phone number input: only allow digits and + at the beginning
+        if (property === "phoneNumber") {
+            const isValid = /^\+?\d*$/.test(e.target.value);
+            if (!isValid) {
+                // Prevent invalid characters from being entered
+                return;
+            }
+        }
+        
         if (dispatch)
             dispatch({ type: `SET_PERSONAL_INFO${edited ? "_EDITED" : ""}`, payload: { [property]: e.target.value } });
     };
