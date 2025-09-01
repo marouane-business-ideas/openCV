@@ -101,7 +101,6 @@ const Styles: { [key: string]: React.CSSProperties } = {
         alignItems: "flex-start",
         fontSize: "15px",
         letterSpacing: "0.175px",
-        width: "100%",
     }
 };
 
@@ -200,22 +199,13 @@ const ClassicalTemplate = ({
                     }}>
                         <ExperienceDate>{job.date}</ExperienceDate>
                         <ExperienceTopSection>
-                            <div style={{
-                                backgroundColor: `${themeColor}08`,
-                                border: `2px solid ${themeColor}`,
-                                borderRadius: "8px",
-                                padding: "12px",
-                                marginBottom: "10px",
-                                width: "100%",
-                            }}>
-                                <div style={{ display: "flex", flexDirection: "row", gap: "5px", marginBottom: "6px" }}>
-                                    <div style={{ fontWeight: 900, color: themeColor }}>{job.company}</div>
-                                    <div style={{ color: themeColor }}>•</div>
-                                    <div style={{ fontWeight: 900, color: themeColor }}>{job.location}</div>
-                                </div>
-                                <div style={{ fontStyle: "italic", fontSize: "16px", fontWeight: 700, color: themeColor }}>{job.jobTitle}</div>
+                            <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+                                <div style={{ fontWeight: 900 }}>{job.company}</div>
+                                <div>•</div>
+                                <div style={{ fontWeight: 900 }}>{job.location}</div>
                             </div>
-                            <div style={{ marginTop: "5px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
+                            <div style={{ fontStyle: "italic" }}>{job.jobTitle}</div>
+                            <div style={{ marginTop: "10px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
                         </ExperienceTopSection>
                     </div>
                 ))}
@@ -225,22 +215,15 @@ const ClassicalTemplate = ({
                 {education.map((school, index) => (
                     <div key={`${index}-${school.date}-${school.schoolName}`} style={{
                         ...Styles.sectionRow,
-                        marginTop: `${index === 0 ? "10px" : "20px"}`
+                        marginTop: `${index === 0 ? "10px" : "0"}`
                     }}>
                         <ExperienceDate>{school.date}</ExperienceDate>
                         <ExperienceTopSection>
-                            <div style={{
-                                backgroundColor: `${themeColor}08`,
-                                border: `2px solid ${themeColor}`,
-                                borderRadius: "8px",
-                                padding: "12px",
-                                marginBottom: "10px",
-                                width: "100%",
-                            }}>
-                                <div style={{ fontWeight: 900, color: themeColor, marginBottom: "6px" }}>{school.schoolName}</div>
-                                <div style={{ fontStyle: "italic", fontSize: "16px", fontWeight: 700, color: themeColor }}>{school.degree}</div>
+                            <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
+                                <div style={{ fontWeight: 900 }}>{school.schoolName}</div>
                             </div>
-                            <div style={{ marginTop: "5px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(school.description) }} />
+                            <div style={{ fontStyle: "italic" }}>{school.degree}</div>
+                            <div style={{ marginTop: "10px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(school.description) }} />
                         </ExperienceTopSection>
                     </div>
                 ))}
