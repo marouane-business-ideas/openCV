@@ -6,6 +6,7 @@
  # Exit script in case of error in a command
  set -e 
   
+# I don't want the files/directories to be deployed
  rm -rf node_modules frontend/node_modules backend/node_modules frontend/dist backend/dist backend/database/database.db
  
  docker build --platform linux/amd64 -t onlineresume:latest .

@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-name: Deploy OnlineResume to VPS
+name: Deploy OnlineResume to Oracle VPS
 
 on:
   push:
