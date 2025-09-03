@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import useGetUserAccountType from "../../lib/hooks/useGetUserAccountType";
 import { ResumeContext } from "../../context/ResumeContext";
+import LanguageToggle from "../../components/LanguageToggle/LanguageToggle";
 
 function Layout() {
     const { signOut } = useClerk();
@@ -126,6 +127,9 @@ function Layout() {
                 {location.pathname === "/" &&
                     <footer className="flex justify-center w-full text-xs md:text-sm">
                         <div className="flex flex-col items-center">
+                            <div className="flex items-center space-x-4 mb-4">
+                                <LanguageToggle />
+                            </div>
                             <div className="flex items-center space-x-4">
                                 {isSignedIn ?
                                     <Link to="/contact">

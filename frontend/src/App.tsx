@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { AuthenticateWithRedirectCallback, ClerkProvider } from "@clerk/clerk-react";
-import { frFR, enUS } from "@clerk/localizations";
 
 import Home from "./routes/Home";
 import SignInPage from "./routes/SignIn";
@@ -17,6 +16,7 @@ import SubscribePage from "./routes/Subscribe";
 import ContactPage from "./routes/ContactPage";
 import ContextProvider from "./context/ContextProvider";
 import PdfViewer from "./features/PdfViewer/PdfViewer";
+import useClerkLocalization from "./lib/hooks/useClerkLocalization";
 
 
 const router = createBrowserRouter([
@@ -55,9 +55,11 @@ if (!PUBLISHABLE_KEY) {
 }
 
 const App = () => {
+  const clerkLocalization = useClerkLocalization();
+  
   return (
     <ClerkProvider
-      localization={window.navigator.language.includes("fr") ? frFR : enUS}
+      localization={clerkLocalization}
       publishableKey={PUBLISHABLE_KEY}
       afterSignOutUrl="/"
     >

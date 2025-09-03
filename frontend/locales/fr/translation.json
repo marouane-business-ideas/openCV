@@ -13,6 +13,11 @@
         "download_resume": "Télécharger le CV",
         "sign_in_to_download": "Connectez-vous pour télécharger votre CV au format PDF"
       },
+      "language": {
+        "toggle": "Changer la langue",
+        "english": "Anglais",
+        "french": "Français"
+      },
       "pricing_card": {
         "year": "an",
         "free_plan": {

@@ -13,6 +13,11 @@
       "download_resume": "Download Resume",
       "sign_in_to_download": "Sign in to download your resume as a PDF"
     },
+    "language": {
+      "toggle": "Toggle language",
+      "english": "English",
+      "french": "French"
+    },
     "pricing_card": {
       "year": "year",
       "free_plan": {
