@@ -27,7 +27,6 @@ const Styles: { [key: string]: React.CSSProperties } = {
     },
     personnalInfoName: {
         fontSize: "24px",
-        letterSpacing: "0.05em",
         textTransform: "uppercase",
         fontWeight: 900,
     },
