@@ -27,9 +27,9 @@ const Home: React.FC = () => {
                 </h2>
             </section>
             <section className="mt-20">
-                <Link 
+                <Link
                     data-testid="home-get-started-button"
-                    className="mx-auto w-fit block px-5 py-3 hover:bg-blue-600 bg-blue-500 text-white font-bold rounded-lg" 
+                    className="mx-auto w-fit block px-5 py-3 hover:bg-blue-600 bg-blue-500 text-white font-bold rounded-lg"
                     to="/resume">
                     {t("common.buttons.get_started")}
                 </Link>
@@ -88,7 +88,7 @@ const Home: React.FC = () => {
                 </MiniResumePreview>
             </section>
             <section className="mt-28 flex flex-col items-center md:flex-row justify-center gap-8">
-                {isSignedIn === false && <PricingCard
+                {!!isSignedIn === false && <PricingCard
                     name={t("common.pricing_card.free_plan.title")}
                     title={t("common.pricing_card.free_plan.secondary_title")}
                     price={0}
