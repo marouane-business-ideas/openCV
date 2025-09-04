@@ -91,6 +91,7 @@ const Styles: { [key: string]: React.CSSProperties } = {
         fontSize: "14px",
         letterSpacing: "0.175px",
         fontStyle: "italic",
+        display: "flex",
     }
 };
 
@@ -114,7 +115,16 @@ const SectionTextColumn = ({ children }: { children: React.ReactNode }) => {
 
 const ExperienceDate = ({ children }: { children: string }) => {
     return (
-        <div style={{ ...Styles.experienceDate }}>{children}</div>
+        <div style={{ ...Styles.experienceDate }}>
+            <span className="w-6 flex justify-center items-center mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    className="icon-custom fill-current flex-none inline-flex"
+                    style={{ height: "1rem", width: "0.875rem", marginRight: "5px" }}>
+                    <path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z" data-v-9d11e1e2="" />
+                </svg>
+            </span>
+            {children}
+        </div>
     );
 };
 
@@ -334,9 +344,11 @@ const ProfessionalTemplate = ({
                                         marginBottom: "10px",
                                         position: "relative"
                                     }}>
-                                        <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "6px" }}>{job.company}</div>
-                                        <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "4px" }}>{job.jobTitle} • {job.location}</div>
-                                        <ExperienceDate>{job.date}</ExperienceDate>
+                                        <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "4px" }}>{job.company}</div>
+                                        <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "6px" }}>{job.jobTitle} • {job.location}</div>
+                                        <ExperienceDate>
+                                            {job.date}
+                                        </ExperienceDate>
                                     </div>
                                     <div style={{ fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
                                 </div>
@@ -391,8 +403,8 @@ const ProfessionalTemplate = ({
                                         marginBottom: "10px",
                                         position: "relative"
                                     }}>
-                                        <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "6px" }}>{education.schoolName}</div>
-                                        <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "4px" }}>{education.degree}</div>
+                                        <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "4px" }}>{education.schoolName}</div>
+                                        <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "6px" }}>{education.degree}</div>
                                         <ExperienceDate>{education.date}</ExperienceDate>
                                     </div>
                                     <div style={{ fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(education.description) }} />
