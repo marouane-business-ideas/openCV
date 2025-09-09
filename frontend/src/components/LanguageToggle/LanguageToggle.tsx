@@ -39,13 +39,13 @@ const LanguageToggle = () => {
 
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative flex items-center space-x-4 mb-4" ref={dropdownRef}>
       <button
         onClick={handleLanguageToggle}
         className="cursor-pointer flex items-center space-x-2 text-gray-700 px-3 py-2 rounded-md transition-all duration-200 hover:bg-gray-200 hover:shadow-md text-sm"
         aria-label={t('common.language.toggle')}
       >
-        <span className="text-sm font-medium">
+        <span className="text-2xl font-medium">
           {languages.find(lang => lang.code !== currentLanguage)?.flag}
         </span>
       </button>
