@@ -7,5 +7,11 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     allowedHosts: ["onlineresume.dev", "www.onlineresume.dev"],
+    proxy: {
+      "/api": {
+        target: "http://localhost:1337",
+        changeOrigin: true,
+      },
+    },
   },
 });
