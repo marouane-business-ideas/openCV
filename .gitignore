@@ -14,6 +14,10 @@ dist-ssr
 
 database.db
 
+# Playwright outputs
+test-results
+playwright-report
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

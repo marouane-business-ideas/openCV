@@ -3,6 +3,7 @@ import process from "process";
 import { Cluster } from "puppeteer-cluster";
 
 import { initDb } from "./db.js";
+import { PUPPETEER_LAUNCH_OPTIONS } from "./pdf/renderPdf.js";
 
 const PORT = process.env.PORT || 1337;
 
@@ -19,17 +20,7 @@ const initApp = async () => {
             maxConcurrency: 20,
             retryLimit: 1,
             retryDelay: 1000,
-            puppeteerOptions: {
-                headless: true,
-                args: [
-                    "--no-sandbox",
-                    "--disable-setuid-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--disable-gpu",
-                    "--disable-software-rasterizer",
-                    "--disable-extensions",
-                ],
-            },
+            puppeteerOptions: PUPPETEER_LAUNCH_OPTIONS,
         });
 
         console.log("Puppeteer Cluster initialized");
