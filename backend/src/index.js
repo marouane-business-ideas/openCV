@@ -49,7 +49,8 @@ app.use(clerkMiddleware());
 app.use("/api/webhook", webhooksRouter(stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db));
 
 // Middleware to parse JSON bodies
-app.use(bodyParser.json());
+// The resume HTML sent for PDF generation embeds its fonts, hence the limit above the 100kb default
+app.use(bodyParser.json({ limit: "2mb" }));
 app.use(bodyParser.urlencoded());
 
 // Required authentification and authorization for request on this route

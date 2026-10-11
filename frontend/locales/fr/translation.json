@@ -59,7 +59,8 @@
           "template": {
             "select_template": "Sélectionner un modèle",
             "classic": "Classique",
-            "professional": "Professionnel"
+            "professional": "Professionnel",
+            "modern": "Moderne"
           },
           "profile": {
             "profile": "Profil",
@@ -124,10 +125,13 @@
     "details": "DÉTAILS",
     "work_experience_classic": "EXPÉRIENCES",
     "work_experience_professional": "EXPÉRIENCE PROFESSIONNELLE",
+    "professional_experience": "EXPÉRIENCES",
     "education": "DIPLÔMES ET FORMATIONS",
     "links": "LIENS",
     "languages": "LANGUES",
-    "skills": "COMPÉTENCES"
+    "skills": "COMPÉTENCES",
+    "expertise": "EXPERTISE",
+    "contact": "CONTACT"
   },
     "dashboard": {
       "title": "Vos CVs",

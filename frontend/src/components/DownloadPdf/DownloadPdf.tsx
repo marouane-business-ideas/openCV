@@ -1,5 +1,4 @@
-import { createElement, useState } from "react";
-import ReactDOMServer from "react-dom/server";
+import { useState } from "react";
 import classNames from "classnames";
 import { useParams } from "react-router";
 import { useAuth, useUser } from "@clerk/clerk-react";
@@ -8,8 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import { resumeInfoType, TemplateType } from "../../context/ResumeContext";
 import DownloadError from "../../utils/DownloadError";
-import ClassicalTemplate from "../../components/ResumeModels/ClassicalTemplate";
-import ProfessionalTemplate from "../../components/ResumeModels/ProfessionalTemplate";
+import { buildResumeHtml } from "../../components/ResumeModels/buildResumeHtml";
 
 const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfoType; isEditing: boolean, resumeTemplate: TemplateType }) => {
     const { resumeId } = useParams();
@@ -32,8 +30,7 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
     const downloadPdf = async (url: string, method: "PUT" | "POST") => {
         const token = await getToken();
 
-        const Preview = resumeTemplate === "professional" ? ProfessionalTemplate : ClassicalTemplate;
-        const htmlContent = ReactDOMServer.renderToStaticMarkup(createElement(Preview, { resume }));
+        const htmlContent = await buildResumeHtml(resume);
 
         const response = await fetch(url, {
             method,
