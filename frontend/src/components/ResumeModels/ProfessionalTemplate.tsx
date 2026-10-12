@@ -46,8 +46,11 @@ const Styles: { [key: string]: React.CSSProperties } = {
     resumeContentContainer: {
         marginTop: "20px",
         display: "grid",
-        gridTemplateColumns: "1fr 3fr",
+        // The columns keep their width whatever the content: a word longer than its column is broken instead of
+        // widening the column (which would squeeze the other one)
+        gridTemplateColumns: "minmax(0, 1fr) minmax(0, 3fr)",
         gridColumnGap: "0px",
+        overflowWrap: "anywhere",
     },
 
     sectionColumnLeft: {
