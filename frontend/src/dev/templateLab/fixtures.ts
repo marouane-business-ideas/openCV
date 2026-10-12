@@ -1,4 +1,4 @@
-import { getResumeDummyData, resumeInfoType } from "../../context/ResumeContext";
+import { getResumeDummyData, LanguageLevelType, resumeInfoType } from "../../context/ResumeContext";
 
 export interface Fixture {
     label: string;
@@ -105,11 +105,12 @@ const long: resumeInfoType = {
     ],
     skills: ["TypeScript", "Node.js", "React", "PostgreSQL", "Kafka", "Kubernetes", "AWS", "Terraform", "Go", "Python",
         "Domain-Driven Design", "Payments (PCI-DSS)", "Hiring & mentoring", "Public speaking"],
+    // Levels as the form saves them: the label shown to the user, not the key of the type (see Languages.tsx)
     languages: [
-        { language: "French", level: "native", id: "long-language-1" },
-        { language: "English", level: "fluent", id: "long-language-2" },
-        { language: "German", level: "intermediate", id: "long-language-3" },
-        { language: "Japanese", level: "beginner", id: "long-language-4" },
+        { language: "French", level: "Native" as LanguageLevelType, id: "long-language-1" },
+        { language: "English", level: "Fluent" as LanguageLevelType, id: "long-language-2" },
+        { language: "German", level: "Intermediate" as LanguageLevelType, id: "long-language-3" },
+        { language: "Japanese", level: "Beginner" as LanguageLevelType, id: "long-language-4" },
     ],
     links: [
         { linkName: "github.com/maximilienne-dupont-fontaine", linkUrl: "https://github.com/maximilienne-dupont-fontaine", id: "long-link-1" },

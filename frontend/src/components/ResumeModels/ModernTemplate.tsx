@@ -132,7 +132,8 @@ const ModernTemplate = ({
                                     <li key={language.id}>
                                         {language.language}
                                         {language.level && (
-                                            <span className="rt-muted"> · {t(`form.languages.levels.${language.level}`)}</span>
+                                            // The form saves the level as displayed ("Beginner", "Débutant"), the dummy data as a key ("beginner")
+                                            <span className="rt-muted"> · {t(`form.languages.levels.${language.level}`, { defaultValue: language.level })}</span>
                                         )}
                                     </li>
                                 ))}
