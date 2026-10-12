@@ -31,6 +31,19 @@ const templateLabPdf = (): Plugin => ({
       return renderer;
     };
 
+    // Chrome can go away while the dev server keeps running (e.g. when the computer sleeps): print again with a
+    // new one rather than failing until the dev server restarts
+    const render = async (html: string) => {
+      const current = getRenderer();
+      try {
+        return await (await current).render(html);
+      } catch {
+        if (renderer === current) renderer = undefined;
+        current.then((pdfRenderer) => pdfRenderer.close()).catch(() => {});
+        return (await getRenderer()).render(html);
+      }
+    };
+
     server.middlewares.use("/__template-lab/pdf", (req, res) => {
       // The dev server listens on 0.0.0.0: other machines must not be able to make this one's Chrome render HTML
       if (req.method !== "POST" || !LOOPBACK_ADDRESSES.includes(req.socket.remoteAddress ?? "")) {
@@ -44,7 +57,7 @@ const templateLabPdf = (): Plugin => ({
       req.on("data", (chunk: string) => { html += chunk; });
       req.on("end", async () => {
         try {
-          const pdf = await (await getRenderer()).render(html);
+          const pdf = await render(html);
           res.setHeader("Content-Type", "application/pdf");
           res.end(pdf);
         } catch (error) {
