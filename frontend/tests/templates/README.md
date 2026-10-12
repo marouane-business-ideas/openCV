@@ -27,8 +27,8 @@ npm run test:templates                  # from the root or from frontend/
 npx playwright show-report              # from frontend/: diffs and PDFs of the run
 ```
 
-`templates.visual.ts` prints every template with several resumes (`sample`, `long`, `empty`, and `reference` for
-the modern template) and fails when:
+`templates.visual.ts` prints every template with the same resumes (`sample`, `reference`, `long`, `empty`), so the
+templates are compared on the same text, and fails when:
 
 - content of the resume is missing from the PDF, text is too close to the edges or a page is blank,
 - the number of pages changed,
@@ -55,7 +55,7 @@ The screenshots depend on the OS (fonts, rendering): they are named after it (`-
    the template's root class and set what the host page could change (see the top of `ModernTemplate.css`).
 3. Use web fonts (see `modernTemplateFonts.ts`) rather than system fonts, which differ between machines and servers.
 4. Register it in `src/components/ResumeModels/templates.ts`, add its name to `locales/*/translation.json`.
-5. Add cases to `templates.visual.ts`, check the lab, then generate the screenshots.
+5. Add its name and page counts to `templates.visual.ts`, check the lab, then generate the screenshots.
 6. If it comes from a picture: crop the picture to the edges of the page, save it in `references/`, write a fixture
    with the same content (`src/dev/templateLab/fixtures.ts`) and add it to `templates.reference.visual.ts`.
    Adjust the CSS until that test passes before approving the screenshots.
