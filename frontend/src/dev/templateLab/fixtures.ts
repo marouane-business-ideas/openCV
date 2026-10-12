@@ -107,12 +107,12 @@ const long: resumeInfoType = {
         "Domain-Driven Design", "Payments (PCI-DSS)", "Hiring & mentoring", "Public speaking",
         // A word without any place to break, longer than the narrow columns of some templates
         "Microsoft.Extensions.DependencyInjection"],
-    // Levels as the form saves them: the label shown to the user, not the key of the type (see Languages.tsx)
+    // Levels as resumes saved before the form saved keys: the label the user picked, in English or in French
     languages: [
         { language: "French", level: "Native" as LanguageLevelType, id: "long-language-1" },
         { language: "English", level: "Fluent" as LanguageLevelType, id: "long-language-2" },
         { language: "German", level: "Intermediate" as LanguageLevelType, id: "long-language-3" },
-        { language: "Japanese", level: "Beginner" as LanguageLevelType, id: "long-language-4" },
+        { language: "Japanese", level: "Débutant" as LanguageLevelType, id: "long-language-4" },
     ],
     links: [
         { linkName: "github.com/maximilienne-dupont-fontaine", linkUrl: "https://github.com/maximilienne-dupont-fontaine", id: "long-link-1" },

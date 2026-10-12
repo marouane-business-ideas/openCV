@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import Schemify, { withoutScheme } from "../../utils/schemify";
 import { formatPhoneNumber } from "../../utils/formatPhone";
+import { languageLevelLabel } from "../../utils/languageLevel";
 import { ResumeTemplateProps } from "../../Types/CommonTypes";
 import { fontFaceCss } from "./templateFonts";
 import { modernTemplateFonts } from "./modernTemplateFonts";
@@ -132,8 +133,7 @@ const ModernTemplate = ({
                                     <li key={language.id}>
                                         {language.language}
                                         {language.level && (
-                                            // The form saves the level as displayed ("Beginner", "Débutant"), the dummy data as a key ("beginner")
-                                            <span className="rt-muted"> · {t(`form.languages.levels.${language.level}`, { defaultValue: language.level })}</span>
+                                            <span className="rt-muted"> · {languageLevelLabel(language.level, t)}</span>
                                         )}
                                     </li>
                                 ))}

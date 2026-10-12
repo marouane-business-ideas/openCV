@@ -2,6 +2,7 @@ import React, { type JSX } from "react";
 import DOMPurify from "isomorphic-dompurify";
 import { useTranslation } from "react-i18next";
 
+import { languageLevelLabel } from "../../utils/languageLevel";
 import Schemify, { withoutScheme } from "../../utils/schemify";
 import { formatPhoneNumber } from "../../utils/formatPhone";
 import { ResumeTemplateProps } from "../../Types/CommonTypes";
@@ -241,7 +242,7 @@ const ClassicalTemplate = ({
                         {languages.map((language, index) => (
                             <div key={language.id} style={{ display: "flex", gap: "3px" }}>
                                 <span>{language.language}</span>
-                                <span>({language.level})</span>
+                                <span>({languageLevelLabel(language.level, t)})</span>
                                 <span style={{ fontWeight: "900", marginLeft: "2px" }} >{index !== languages.length - 1 ? "•" : ""}</span>
                             </div>))
                         }
