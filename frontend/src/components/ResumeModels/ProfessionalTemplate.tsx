@@ -345,9 +345,7 @@ const ProfessionalTemplate = ({
                                     }}>
                                         <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "4px" }}>{job.company}</div>
                                         <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "6px" }}>{job.jobTitle} • {job.location}</div>
-                                        <ExperienceDate>
-                                            {job.date}
-                                        </ExperienceDate>
+                                        {job.date && <ExperienceDate>{job.date}</ExperienceDate>}
                                     </div>
                                     <div style={{ fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
                                 </div>
@@ -404,7 +402,7 @@ const ProfessionalTemplate = ({
                                     }}>
                                         <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "4px" }}>{education.schoolName}</div>
                                         <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "6px" }}>{education.degree}</div>
-                                        <ExperienceDate>{education.date}</ExperienceDate>
+                                        {education.date && <ExperienceDate>{education.date}</ExperienceDate>}
                                     </div>
                                     <div style={{ fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(education.description) }} />
                                 </div>
