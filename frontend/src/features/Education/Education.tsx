@@ -5,8 +5,7 @@ import classNames from "classnames";
 
 import { resumeInfoType, ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
 import Card from "../../components/Card/Card";
-import Description from "../../components/Description/Description";
-import { ContentEditableEvent } from "react-simple-wysiwyg";
+import RichTextEditor from "../../components/RichTextEditor/LazyRichTextEditor";
 import MoveArrows from "../../components/MoveArrows/MoveArrows";
 
 const Education = ({ edited }: { edited: boolean }) => {
@@ -26,10 +25,9 @@ const Education = ({ edited }: { edited: boolean }) => {
             dispatch({ type: `DELETE_SCHOOL${edited ? "_EDITED" : ""}`, payload: index });
     };
 
-    const handleSchoolChange = (e: React.ChangeEvent<HTMLInputElement> |
-        ContentEditableEvent, property: keyof resumeInfoType["education"][0], index: number) => {
+    const handleSchoolChange = (value: string, property: keyof resumeInfoType["education"][0], index: number) => {
         if (dispatch)
-            dispatch({ type: `SET_SCHOOL${edited ? "_EDITED" : ""}`, payload: { [property]: e.target.value, index } });
+            dispatch({ type: `SET_SCHOOL${edited ? "_EDITED" : ""}`, payload: { [property]: value, index } });
     };
 
     const movingAroundSchool = (index: number, direction: "up" | "down") => {
@@ -68,8 +66,7 @@ const Education = ({ edited }: { edited: boolean }) => {
 interface EducationItemProps {
     education: resumeInfoType["education"][0];
     index: number;
-    handleSchoolChange: (e: React.ChangeEvent<HTMLInputElement>
-        | ContentEditableEvent, property: keyof resumeInfoType["education"][0], index: number) => void;
+    handleSchoolChange: (value: string, property: keyof resumeInfoType["education"][0], index: number) => void;
     handleDeleteSchool: (index: number) => void;
     movingAroundSchool: (index: number, direction: "up" | "down") => void;
     educations: resumeInfoType["education"];
@@ -85,7 +82,7 @@ const EducationItem = ({ education, index, handleSchoolChange, handleDeleteSchoo
                     <label className="text-base font-medium text-gray-700" htmlFor={`school-${index}`}>
                         {t("form.education.school")}
                     </label>
-                    <input onChange={(e) => handleSchoolChange(e, "schoolName", index)}
+                    <input onChange={(e) => handleSchoolChange(e.target.value, "schoolName", index)}
                         className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                         id={`school-${index}`} name="school" required placeholder="Escp Europe" value={education.schoolName} />
                 </div>
@@ -101,7 +98,7 @@ const EducationItem = ({ education, index, handleSchoolChange, handleDeleteSchoo
                             </button>
                         </div>
                     </div>
-                    <input onChange={(e) => handleSchoolChange(e, "date", index)}
+                    <input onChange={(e) => handleSchoolChange(e.target.value, "date", index)}
                         className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                         id={`education-date-${index}`} name="date" required placeholder="August 2020" value={education.date} />
                 </div>
@@ -111,16 +108,15 @@ const EducationItem = ({ education, index, handleSchoolChange, handleDeleteSchoo
                     <label className="text-base font-medium text-gray-700" htmlFor={`degree-${index}`}>
                         {t("form.education.degree")}
                     </label>
-                    <input onChange={(e) => handleSchoolChange(e, "degree", index)}
+                    <input onChange={(e) => handleSchoolChange(e.target.value, "degree", index)}
                         className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                         id={`degree-${index}`} name="degree" required placeholder="Masters in Computer Science" value={education.degree} />
                 </div>
             </div>
             <div className="flex flex-col gap-2">
-                <label className="text-base font-medium text-gray-700" htmlFor={`description-${index}`}>
-                    {t("form.education.description")}
-                </label>
-                <Description onChange={handleSchoolChange} index={index} html={education.description} />
+                <span className="text-base font-medium text-gray-700">{t("form.education.description")}</span>
+                <RichTextEditor id={`school-description-${index}`} ariaLabel={t("form.education.description")} value={education.description}
+                    onChange={(description) => handleSchoolChange(description, "description", index)} />
             </div>
         </div>
     );

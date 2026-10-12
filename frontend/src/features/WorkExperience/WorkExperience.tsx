@@ -5,8 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { resumeInfoType, ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
 import Card from "../../components/Card/Card";
-import Description from "../../components/Description/Description";
-import { ContentEditableEvent } from "react-simple-wysiwyg";
+import RichTextEditor from "../../components/RichTextEditor/LazyRichTextEditor";
 import MoveArrows from "../../components/MoveArrows/MoveArrows";
 
 const WorkExperience = ({ edited }: { edited: boolean }) => {
@@ -26,10 +25,9 @@ const WorkExperience = ({ edited }: { edited: boolean }) => {
             dispatch({ type: `DELETE_WORK_EXPERIENCE${edited ? "_EDITED" : ""}`, payload: index });
     };
 
-    const handleWorkExperienceChange = (e: React.ChangeEvent<HTMLInputElement> |
-        ContentEditableEvent, property: keyof resumeInfoType["workExperience"][0], index: number) => {
+    const handleWorkExperienceChange = (value: string, property: keyof resumeInfoType["workExperience"][0], index: number) => {
         if (dispatch)
-            dispatch({ type: `SET_WORK_EXPERIENCE${edited ? "_EDITED" : ""}`, payload: { [property]: e.target.value, index } });
+            dispatch({ type: `SET_WORK_EXPERIENCE${edited ? "_EDITED" : ""}`, payload: { [property]: value, index } });
     };
 
     const movingAroundWorkExperience = (index: number, direction: "up" | "down") => {
@@ -68,8 +66,7 @@ const WorkExperience = ({ edited }: { edited: boolean }) => {
 interface JobExperienceProps {
     job: resumeInfoType["workExperience"][0];
     index: number;
-    handleWorkExperienceChange: (e: React.ChangeEvent<HTMLInputElement>
-        | ContentEditableEvent, property: keyof resumeInfoType["workExperience"][0], index: number) => void;
+    handleWorkExperienceChange: (value: string, property: keyof resumeInfoType["workExperience"][0], index: number) => void;
     handleDeletingWorkExperience: (index: number) => void;
     movingAroundWorkExperience: (index: number, direction: "up" | "down") => void;
     workExperience: resumeInfoType["workExperience"];
@@ -91,33 +88,34 @@ const JobExperience = ({ job, index, handleWorkExperienceChange, handleDeletingW
                         </button>
                     </div>
                 </div>
-                <input onChange={(e) => handleWorkExperienceChange(e, "company", index)}
+                <input onChange={(e) => handleWorkExperienceChange(e.target.value, "company", index)}
                     className="border p-1 rounded-md focus:outline-hidden border-gray-300"
                     type="text" id={`company-${index}`} name="company" required placeholder="Google" value={job.company} />
             </div>
             <div className="flex gap-2 justify-between">
                 <div className="flex flex-col gap-2 w-3/5">
                     <label className="text-base font-medium text-gray-700" htmlFor={`jobTitle-${index}`}>{t("form.work_experience.job_title")}</label>
-                    <input onChange={(e) => handleWorkExperienceChange(e, "jobTitle", index)}
+                    <input onChange={(e) => handleWorkExperienceChange(e.target.value, "jobTitle", index)}
                         className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="text"
                         id={`jobTitle-${index}`} name="jobTitle" required placeholder="Software engineer" value={job.jobTitle} />
                 </div>
                 <div className="flex flex-col gap-2 w-2/5">
                     <label className="text-base font-medium text-gray-700" htmlFor={`workExperience-date-${index}`}>{t("form.work_experience.date")}</label>
-                    <input onChange={(e) => handleWorkExperienceChange(e, "date", index)}
+                    <input onChange={(e) => handleWorkExperienceChange(e.target.value, "date", index)}
                         className="border p-1 rounded-md focus:outline-hidden border-gray-300"
                         type="text" id={`workExperience-date-${index}`} name="date" required placeholder="August 2020 - Present" value={job.date} />
                 </div>
             </div>
             <div className="flex flex-col gap-2 w-2/5">
                 <label className="text-base font-medium text-gray-700" htmlFor={`location-${index}`}>{t("form.work_experience.location")}</label>
-                <input onChange={(e) => handleWorkExperienceChange(e, "location", index)}
+                <input onChange={(e) => handleWorkExperienceChange(e.target.value, "location", index)}
                     className="border p-1 rounded-md focus:outline-hidden border-gray-300"
                     type="text" id={`location-${index}`} name="location" required placeholder="Paris, France" value={job.location} />
             </div>
             <div className="flex flex-col gap-2">
-                <label className="text-base font-medium text-gray-700">{t("form.work_experience.description")}</label>
-                <Description onChange={(e) => handleWorkExperienceChange(e, "description", index)} html={job.description} index={index} />
+                <span className="text-base font-medium text-gray-700">{t("form.work_experience.description")}</span>
+                <RichTextEditor id={`job-description-${index}`} ariaLabel={t("form.work_experience.description")} value={job.description}
+                    onChange={(description) => handleWorkExperienceChange(description, "description", index)} />
             </div>
         </div>
     );

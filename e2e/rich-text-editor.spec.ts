@@ -8,7 +8,7 @@ const preview = (page: Page) => page.frameLocator('#pdf-viewer-iframe');
 const editorOf = (page: Page, id: string) => {
   const text = page.locator(`#${id}`);
   const field = page.locator('.rich-text-editor').filter({ has: text });
-  return { text, button: (name: string) => field.getByRole('button', { name, exact: true }) };
+  return { field, text, button: (name: string) => field.getByRole('button', { name, exact: true }) };
 };
 
 const clear = async (text: Locator) => {
@@ -61,5 +61,31 @@ test.describe('Summary editor', () => {
     await expect(preview(page).getByText('Red text and bold text')).toBeVisible();
     await expect(preview(page).locator('strong', { hasText: 'bold text' })).toBeVisible();
     await expect(preview(page).locator('[style*="red"], [style*="Comic"]')).toHaveCount(0);
+  });
+});
+
+test.describe('Job and school descriptions', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/resume');
+  });
+
+  test('use the same editor as the summary', async ({ page }) => {
+    for (const id of ['job-description-0', 'school-description-0']) {
+      const { text, button } = editorOf(page, id);
+      await clear(text);
+      await button('Liste à puces').click();
+      await text.pressSequentially(`${id}: <i>tags</i> as text`);
+
+      await expect(preview(page).locator('ul > li', { hasText: `${id}: <i>tags</i> as text` })).toBeVisible();
+    }
+  });
+
+  test('offer formatting only, no way to edit the HTML', async ({ page }) => {
+    for (const id of ['summary', 'job-description-0', 'school-description-0']) {
+      const buttons = editorOf(page, id).field.getByRole('button');
+      await expect(buttons).toHaveCount(6);
+      expect(await buttons.evaluateAll((elements) => elements.map((element) => element.getAttribute('aria-label'))))
+        .toEqual(['Gras', 'Italique', 'Souligné', 'Liste à puces', 'Liste numérotée', 'Lien']);
+    }
   });
 });

@@ -35,7 +35,6 @@
     "react-frame-component": "^5.2.7",
     "react-i18next": "^15.5.2",
     "react-router": "^7.6.2",
-    "react-simple-wysiwyg": "^3.2.2",
     "swr": "^2.3.3",
     "uniqid": "^5.4.0",
     "use-immer": "^0.11.0"
