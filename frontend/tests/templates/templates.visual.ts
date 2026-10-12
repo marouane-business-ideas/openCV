@@ -38,3 +38,18 @@ for (const { template, fixture, lang, name } of cases) {
         }
     });
 }
+
+// The same resumes, as if a user had saved their summary and descriptions in the form's editor: the PDF must be the
+// same, compared with the same screenshots
+for (const { template, fixture, lang, name } of cases) {
+    test(`${name} through the editor`, async ({ page }) => {
+        await page.goto(`/template-lab.html?template=${template}&fixture=${fixture}&lang=${lang}&editor=1`);
+        const result: TemplateLabResult = await (await page.waitForFunction(() => window.templateLabResult)).jsonValue();
+
+        expect(result.missingTexts, "resume content missing from the PDF").toEqual([]);
+        expect(result.pageCount, "number of pages").toBe(pageCounts[name]);
+        for (let pageNumber = 1; pageNumber <= result.pageCount; pageNumber++) {
+            await expect(page.locator(`img[data-page="${pageNumber}"]`)).toHaveScreenshot(`${name}-page-${pageNumber}.png`);
+        }
+    });
+}

@@ -34,6 +34,10 @@ templates are compared on the same text, and fails when:
 - the number of pages changed,
 - a page doesn't look like its approved screenshot (`templates.visual.ts-snapshots/`).
 
+It also prints each case "through the editor": the summary and descriptions are first saved through the form's
+editor, like a user's text (option `editor=1` of the lab). The PDF must not change: it's compared with the same
+screenshots.
+
 `templates.reference.visual.ts` compares a template with the picture it was designed from (`references/`): it
 measures the text lines and the rules of the picture and of the first page of the PDF, and fails when a line breaks
 differently or moves beyond the tolerance. The report has the measures and the picture over the PDF.
