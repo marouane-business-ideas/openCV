@@ -56,6 +56,15 @@
     },
     
         "form": {
+          "editor": {
+            "bold": "Gras",
+            "italic": "Italique",
+            "underline": "Souligné",
+            "bullet_list": "Liste à puces",
+            "numbered_list": "Liste numérotée",
+            "link": "Lien",
+            "link_prompt": "Adresse du lien"
+          },
           "template": {
             "select_template": "Sélectionner un modèle",
             "classic": "Classique",

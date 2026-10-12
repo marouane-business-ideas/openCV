@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import Card from "../../components/Card/Card";
 import { resumeInfoType, ResumeContext, ResumeDispatchContext } from "../../context/ResumeContext";
 import TextArea from "../../components/TextArea/TextArea";
+import RichTextEditor from "../../components/RichTextEditor/LazyRichTextEditor";
 
 const Profile = ({ edited }: { edited: boolean }) => {
     const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
@@ -41,9 +42,9 @@ const Profile = ({ edited }: { edited: boolean }) => {
                         onChange={(e) => handleInputChange(e, "title")} value={personalInfo.title} />
                 </div>
                 <div className="flex flex-col gap-2">
-                    <label className="text-base font-medium text-gray-700" htmlFor="summary">{t("form.profile.summary")}</label>
-                    <TextArea id="summary" name="summary" placeholder="Conquer the world"
-                        onChange={(e) => handleInputChange(e, "summary")} value={personalInfo.summary} />
+                    <span className="text-base font-medium text-gray-700">{t("form.profile.summary")}</span>
+                    <RichTextEditor id="summary" ariaLabel={t("form.profile.summary")} placeholder="Conquer the world" value={personalInfo.summary}
+                        onChange={(summary) => dispatch?.({ type: `SET_PERSONAL_INFO${edited ? "_EDITED" : ""}`, payload: { summary } })} />
                 </div>
                 <div className="flex gap-2 justify-between">
                     <div className="flex flex-col gap-2 w-3/5">
