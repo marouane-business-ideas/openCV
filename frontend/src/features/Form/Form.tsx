@@ -11,8 +11,7 @@ import Theme from "../ResumeTheme/ResumeTheme";
 import ResumeTemplate from "../ResumeTemplate/ResumeTemplate";
 import useIsSmallScreen from "../../lib/hooks/useIsSmallScreen";
 import { ResumeContext, resumeInfoType } from "../../context/ResumeContext";
-import ProfessionalTemplate from "../../components/ResumeModels/ProfessionalTemplate";
-import ClassicalTemplate from "../../components/ResumeModels/ClassicalTemplate";
+import { getResumeTemplate } from "../../components/ResumeModels/templates";
 import MiniResumePreview from "../../components/MiniResumePreview/MiniResumePreview";
 
 
@@ -26,7 +25,7 @@ const Form = ({ edited }: { edited: boolean }) => {
     const resumeTemplate = resume.resumeTemplate;
 
 
-    const TemplateToUse = resumeTemplate === "professional" ? ProfessionalTemplate : ClassicalTemplate;
+    const { Component: TemplateToUse } = getResumeTemplate(resumeTemplate);
 
     return (
         <div className="h-full w-full lg:w-1/2 pt-0 pr-0 pb-5 pl-0 sm:p-5 flex 

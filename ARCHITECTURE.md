@@ -48,7 +48,7 @@ Online Resume Builder is a fullstack web application that allows users to create
 1. **Resume Builder Interface**
    - Form-based resume creation
    - Real-time preview
-   - Multiple resume templates
+   - Multiple resume templates (classic, professional, modern), registered in `src/components/ResumeModels/templates.ts`
    - Theme customization
    - Multi-language support (English/French)
 
@@ -115,7 +115,8 @@ src/
 
 #### PDF Generation Service
 - Uses Puppeteer Cluster for performance
-- Generates resumes from HTML templates
+- Generates resumes from HTML templates: the frontend renders the template to a self-contained HTML document
+  (`buildResumeHtml`, fonts embedded) and the backend prints it (`src/pdf/renderPdf.js`)
 - Handles multiple concurrent requests
 - System-installed Chrome for Docker compatibility
 
@@ -164,12 +165,17 @@ npm run preview
 
 # End-to-end testing
 npm run test:e2e
+
+# Resume templates: real PDFs compared with approved screenshots
+npm run test:templates
 ```
 
 ### Testing Strategy
 - **Unit Tests**: Vitest for utility functions
 - **Integration Tests**: API endpoint testing
 - **E2E Tests**: Playwright for user workflows
+- **Template Tests**: Playwright prints every resume template to a real PDF and compares its pages with approved
+  screenshots (`npm run test:templates`). A template lab shows these PDFs in dev: see `frontend/tests/templates/README.md`
 - **Type Checking**: TypeScript strict mode
 
 ## Performance Considerations

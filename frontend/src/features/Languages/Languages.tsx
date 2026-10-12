@@ -4,6 +4,7 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 import Card from "../../components/Card/Card";
 import { ResumeContext, ResumeDispatchContext, resumeInfoType } from "../../context/ResumeContext";
 import classNames from "classnames";
+import { LANGUAGE_LEVELS, languageLevelKey } from "../../utils/languageLevel";
 
 const Languages = ({ edited }: { edited: boolean }) => {
     const { onGoingResume, resumeBeingEdited } = useContext(ResumeContext);
@@ -59,12 +60,7 @@ const Languages = ({ edited }: { edited: boolean }) => {
                                 </button>
                             </div>
                             <div className="flex gap-3 text-base font-medium flex-wrap">
-                                {[
-                                    t("form.languages.levels.native"),
-                                    t("form.languages.levels.fluent"),
-                                    t("form.languages.levels.intermediate"),
-                                    t("form.languages.levels.beginner")
-                                ].map((level) => (
+                                {LANGUAGE_LEVELS.map((level) => (
                                     <Fragment key={level}>
                                         <input
                                             onChange={() => handleLanguageProficiencyLevelChange(level, index)}
@@ -72,10 +68,10 @@ const Languages = ({ edited }: { edited: boolean }) => {
                                             id={`${level}-${index}`}
                                             name={`languageProficiencyLevel-${index}`}
                                             value={level}
-                                            checked={language.level === level}
-                                            aria-label={`${level} proficiency`}
+                                            checked={languageLevelKey(language.level) === level}
+                                            aria-label={`${t(`form.languages.levels.${level}`)} proficiency`}
                                         />
-                                        <label htmlFor={`${level}-${index}`}>{level.charAt(0).toUpperCase() + level.slice(1)}</label>
+                                        <label htmlFor={`${level}-${index}`}>{t(`form.languages.levels.${level}`)}</label>
                                     </Fragment>
                                 ))}
                             </div>

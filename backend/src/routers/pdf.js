@@ -1,6 +1,7 @@
 import express from "express";
 
 import { getUserAccountType, getUserDownloadCount, getUserMaxPdfs, incrementUserDownloadCount } from "../db.js";
+import { renderPdf } from "../pdf/renderPdf.js";
 
 const pdfRouter = (db, cluster) => {
     const router = express.Router();
@@ -21,11 +22,7 @@ const pdfRouter = (db, cluster) => {
                     if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
                 }
 
-                const pdfBuffer = await cluster.execute(async ({ page }) => {
-                    await page.setContent(resumeHtml);
-                    const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
-                    return buffer;
-                });
+                const pdfBuffer = await cluster.execute(({ page }) => renderPdf(page, resumeHtml));
 
                 const filename = `CV_${Date.now()}.pdf`;
 
@@ -96,11 +93,7 @@ const pdfRouter = (db, cluster) => {
 
 
                 // Generate the PDF
-                const pdfBuffer = await cluster.execute(async ({ page }) => {
-                    await page.setContent(resumeHtml);
-                    const buffer = await page.pdf({ format: "A4", margin: { top: "35px", bottom: "30px" } });
-                    return buffer;
-                });
+                const pdfBuffer = await cluster.execute(({ page }) => renderPdf(page, resumeHtml));
 
                 await db.run("UPDATE pdf_metadata SET jsonContent = ?, htmlContent = ?, template = ? WHERE id = ? AND userId = ?",
                     [JSON.stringify(resumeData), resumeHtml, template, pdfId, userId]

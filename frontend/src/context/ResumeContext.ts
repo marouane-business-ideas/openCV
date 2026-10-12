@@ -2,7 +2,8 @@ import { createContext, Dispatch } from "react";
 import uniqid from "uniqid";
 
 export type LanguageLevelType = "native" | "fluent" | "intermediate" | "beginner" | "";
-export type TemplateType = "classic" | "professional";
+// Must match RESUME_TEMPLATES in backend/src/db.js
+export type TemplateType = "classic" | "professional" | "modern";
 export type AccountType_Type = "free" | "premium" | undefined;
 
 interface IAccountType {

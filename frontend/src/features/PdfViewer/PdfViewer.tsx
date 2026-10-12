@@ -4,8 +4,7 @@ import { useLocation } from "react-router";
 import classNames from "classnames";
 import { ResumeContext, resumeInfoType } from "../../context/ResumeContext";
 import DownloadPdf from "../../components/DownloadPdf/DownloadPdf";
-import ClassicalTemplate from "../../components/ResumeModels/ClassicalTemplate";
-import ProfessionalTemplate from "../../components/ResumeModels/ProfessionalTemplate";
+import { getResumeTemplate } from "../../components/ResumeModels/templates";
 
 
 const PdfViewer = ({ edited }: { edited: boolean }) => {
@@ -14,11 +13,13 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
 
     const resume = edited ? (resumeBeingEdited as resumeInfoType) : onGoingResume;
     const resumeTemplate = resume.resumeTemplate;
+    const { Component: Template } = getResumeTemplate(resumeTemplate);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
 
-    const resumeIntrinsicWidth = 790;
+    // Width of an A4 page at 96 dpi, so that the preview lays out like the PDF
+    const resumeIntrinsicWidth = 794;
     useEffect(() => {
         const updateScale = () => {
             if (containerRef.current) {
@@ -61,11 +62,7 @@ const PdfViewer = ({ edited }: { edited: boolean }) => {
                             transformOrigin: "left top",
                         }}
                     >
-                        {resumeTemplate === "professional" ?
-                            <ProfessionalTemplate resume={resume} />
-                            :
-                            <ClassicalTemplate resume={resume} />
-                        }
+                        <Template resume={resume} />
                     </Frame>
                 </div>
                 <DownloadPdf resume={resume} resumeTemplate={resumeTemplate} isEditing={edited} />

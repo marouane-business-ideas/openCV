@@ -58,7 +58,8 @@
     "template": {
       "select_template": "Select a Template",
       "classic": "Classic",
-      "professional": "Professional"
+      "professional": "Professional",
+      "modern": "Modern"
     },
     "profile": {
       "profile": "Profile",
@@ -123,10 +124,13 @@
     "details": "DETAILS",
     "work_experience_classic": "EXPERIENCE",
     "work_experience_professional": "WORK EXPERIENCE",
+    "professional_experience": "PROFESSIONAL EXPERIENCE",
     "education": "EDUCATION",
     "links": "LINKS",
     "languages": "LANGUAGES",
-    "skills": "SKILLS"
+    "skills": "SKILLS",
+    "expertise": "EXPERTISE",
+    "contact": "CONTACT"
   },
   "dashboard": {
     "title": "Your Resumes",

@@ -3,7 +3,8 @@ import React from "react";
 import DOMPurify from "isomorphic-dompurify";
 import { useTranslation } from "react-i18next";
 
-import Schemify from "../../utils/schemify";
+import { languageLevelLabel } from "../../utils/languageLevel";
+import Schemify, { withoutScheme } from "../../utils/schemify";
 import { formatPhoneNumber } from "../../utils/formatPhone";
 import { ResumeTemplateProps } from "../../Types/CommonTypes";
 
@@ -46,8 +47,11 @@ const Styles: { [key: string]: React.CSSProperties } = {
     resumeContentContainer: {
         marginTop: "20px",
         display: "grid",
-        gridTemplateColumns: "1fr 3fr",
+        // The columns keep their width whatever the content: a word longer than its column is broken instead of
+        // widening the column (which would squeeze the other one)
+        gridTemplateColumns: "minmax(0, 1fr) minmax(0, 3fr)",
         gridColumnGap: "0px",
+        overflowWrap: "anywhere",
     },
 
     sectionColumnLeft: {
@@ -214,7 +218,7 @@ const ProfessionalTemplate = ({
                                 <div key={link.id}
                                     style={{ lineBreak: "anywhere" }}
                                 >
-                                    <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >{link.linkName}</a>
+                                    <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >{withoutScheme(link.linkName)}</a>
                                 </div>))
                             }
                         </SectionTextColumn>
@@ -237,7 +241,7 @@ const ProfessionalTemplate = ({
                             {languages.map((language) => (
                                 <div key={language.id} style={{ display: "flex", gap: "3px" }}>
                                     <span>{language.language}</span>
-                                    <span>({language.level})</span>
+                                    <span>({languageLevelLabel(language.level, t)})</span>
                                 </div>))
                             }
                         </SectionTextColumn>
@@ -345,9 +349,7 @@ const ProfessionalTemplate = ({
                                     }}>
                                         <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "4px" }}>{job.company}</div>
                                         <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "6px" }}>{job.jobTitle} • {job.location}</div>
-                                        <ExperienceDate>
-                                            {job.date}
-                                        </ExperienceDate>
+                                        {job.date && <ExperienceDate>{job.date}</ExperienceDate>}
                                     </div>
                                     <div style={{ fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }} />
                                 </div>
@@ -404,7 +406,7 @@ const ProfessionalTemplate = ({
                                     }}>
                                         <div style={{ fontSize: "16px", fontWeight: 900, color: themeColor, marginBottom: "4px" }}>{education.schoolName}</div>
                                         <div style={{ fontStyle: "italic", fontSize: "15px", fontWeight: 700, color: themeColor, marginBottom: "6px" }}>{education.degree}</div>
-                                        <ExperienceDate>{education.date}</ExperienceDate>
+                                        {education.date && <ExperienceDate>{education.date}</ExperienceDate>}
                                     </div>
                                     <div style={{ fontSize: "14px", letterSpacing: "0.175px" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(education.description) }} />
                                 </div>

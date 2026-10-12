@@ -3,13 +3,12 @@ import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { resumeInfoType } from "../../context/ResumeContext";
 import { IPdf } from "../../Types/CommonTypes";
-import ClassicalTemplate from "../ResumeModels/ClassicalTemplate";
-import ProfessionalTemplate from "../ResumeModels/ProfessionalTemplate";
+import { getResumeTemplate } from "../ResumeModels/templates";
 
 const PdfCard = ({ pdf }: { pdf: IPdf }) => {
     const { t } = useTranslation();
     const resume = JSON.parse(pdf.jsonContent) as resumeInfoType;
-    const ResumeTemplate = pdf.template === "professional" ? ProfessionalTemplate : ClassicalTemplate;
+    const { Component: ResumeTemplate } = getResumeTemplate(pdf.template);
     return (
         <div key={pdf.createdAt} className="flex flex-col items-center bg-white m-8 shadow-md relative overflow-hidden"
             style={{ minWidth: "320px", maxWidth: "320px", minHeight: "450px", maxHeight: "450px" }} >

@@ -1,6 +1,6 @@
 import { assert, test, describe } from "vitest";
 
-import schemify from "../src/utils/schemify";
+import schemify, { withoutScheme } from "../src/utils/schemify";
 
 
 describe("Schemify adds appropriate protocol scheme info before url", () => {
@@ -40,5 +40,20 @@ describe("Schemify doesn't modify URLs that already have a protocol scheme", () 
 
     test("ftp://example.com => ftp://example.com", () => {
         assert.strictEqual(schemify("ftp://example.com", ""), "ftp://example.com");
+    });
+});
+
+describe("withoutScheme removes the protocol scheme of a URL, to display it", () => {
+    test("https://github.com/johndoe => github.com/johndoe", () => {
+        assert.strictEqual(withoutScheme("https://github.com/johndoe"), "github.com/johndoe");
+    });
+
+    test("HTTP://www.google.com => www.google.com", () => {
+        assert.strictEqual(withoutScheme("HTTP://www.google.com"), "www.google.com");
+    });
+
+    test("linkedin.com/in/johndoe and \"Blog\" are unchanged", () => {
+        assert.strictEqual(withoutScheme("linkedin.com/in/johndoe"), "linkedin.com/in/johndoe");
+        assert.strictEqual(withoutScheme("Blog"), "Blog");
     });
 });
