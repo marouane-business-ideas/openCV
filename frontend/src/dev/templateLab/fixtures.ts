@@ -104,7 +104,9 @@ const long: resumeInfoType = {
         { schoolName: "Lycée Henri-IV", degree: "Baccalauréat scientifique", date: "2003", description: "", id: "long-school-3" },
     ],
     skills: ["TypeScript", "Node.js", "React", "PostgreSQL", "Kafka", "Kubernetes", "AWS", "Terraform", "Go", "Python",
-        "Domain-Driven Design", "Payments (PCI-DSS)", "Hiring & mentoring", "Public speaking"],
+        "Domain-Driven Design", "Payments (PCI-DSS)", "Hiring & mentoring", "Public speaking",
+        // A word without any place to break, longer than the narrow columns of some templates
+        "Microsoft.Extensions.DependencyInjection"],
     // Levels as the form saves them: the label shown to the user, not the key of the type (see Languages.tsx)
     languages: [
         { language: "French", level: "Native" as LanguageLevelType, id: "long-language-1" },

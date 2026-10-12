@@ -90,11 +90,14 @@
     break-after: avoid;
 }
 
+/* The columns keep their width whatever the content: a word longer than its column is broken instead of
+   widening the column (which would squeeze the other one) */
 .rt-modern .rt-columns {
     display: grid;
-    grid-template-columns: 387fr 252fr;
+    grid-template-columns: minmax(0, 387fr) minmax(0, 252fr);
     column-gap: 38px;
     align-items: start;
+    overflow-wrap: break-word;
 }
 
 /* The side column is narrow: its text can go almost up to the end of the rules */
