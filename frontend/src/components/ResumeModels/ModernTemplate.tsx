@@ -46,7 +46,7 @@ const ModernTemplate = ({
     const filledLanguages = languages.filter((language) => language.language.trim());
     const filledLinks = links.filter((link) => link.linkName || link.linkUrl);
 
-    const hasMainContacts = personalInfo.phoneNumber || personalInfo.email || filledLinks.length > 0;
+    const hasMainContacts = personalInfo.phoneNumber || personalInfo.email;
     const hasOtherContacts = personalInfo.location || personalInfo.nationality;
 
     return (
@@ -93,11 +93,6 @@ const ModernTemplate = ({
                                     <ul className="rt-contact-group rt-strong">
                                         {personalInfo.phoneNumber && <li>{formatPhoneNumber(personalInfo.phoneNumber)}</li>}
                                         {personalInfo.email && <li><a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a></li>}
-                                        {filledLinks.map((link) => (
-                                            <li key={link.id}>
-                                                <a target="_blank" href={Schemify(link.linkUrl, "https")}>{link.linkName || link.linkUrl}</a>
-                                            </li>
-                                        ))}
                                     </ul>
                                 )}
                                 {hasOtherContacts && (
@@ -139,6 +134,17 @@ const ModernTemplate = ({
                                         {language.level && (
                                             <span className="rt-muted"> · {t(`form.languages.levels.${language.level}`)}</span>
                                         )}
+                                    </li>
+                                ))}
+                            </ul>
+                        </Section>
+                    )}
+                    {filledLinks.length > 0 && (
+                        <Section title={t("resume.links")}>
+                            <ul className="rt-list rt-links">
+                                {filledLinks.map((link) => (
+                                    <li key={link.id}>
+                                        <a target="_blank" href={Schemify(link.linkUrl, "https")}>{link.linkName || link.linkUrl}</a>
                                     </li>
                                 ))}
                             </ul>

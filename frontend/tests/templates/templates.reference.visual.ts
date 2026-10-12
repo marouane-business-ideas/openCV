@@ -19,14 +19,16 @@ const references = [
         fixture: "reference",
         picture: "references/modern.png",
         // Measured separately so that the lines of the two columns don't merge
-        areas: { header: [40, 20, 770, 330], main: [40, 330, 455, 1059], side: [470, 330, 770, 1059] } as Record<string, Area>,
+        areas: { header: [40, 20, 770, 330], main: [40, 330, 455, 1059] } as Record<string, Area>,
+        // Parts of the page that differ from the picture on purpose, with their rules: the side column has a
+        // "Links" section, where the picture shows the links under "Contact"
+        areasNotLikeThePicture: [[470, 330, 770, 1059]] as Area[],
         // The picture is only 602px wide for the page: each of its pixels is 1.3px here, and the edges of light text are blurred
         tolerance: { baseline: 4, edges: 5 },
         // In the picture, the first job is 6px further from its rule than every other first line: the template keeps one gap
         areaTolerance: { main: { baseline: 8, edges: 5 } } as Record<string, Tolerance>,
-        // Lines (numbered from 1) that can't end like in the picture, because of the data rather than the template:
-        // the picture breaks the address after "1108 Lenview Dr", the form has a single location field
-        lineEndsToIgnore: { side: [5, 6] } as Record<string, number[]>,
+        // Lines (numbered from 1) that can't end like in the picture, because of the data rather than the template
+        lineEndsToIgnore: {} as Record<string, number[]>,
     },
 ];
 
@@ -79,7 +81,14 @@ const compare = (
     return { problems, report: report.join("\n") };
 };
 
-for (const { template, fixture, picture, areas, tolerance, areaTolerance, lineEndsToIgnore } of references) {
+const isInside = ({ left, y }: Rule, [x1, y1, x2, y2]: Area) => left >= x1 && left <= x2 && y >= y1 && y <= y2;
+
+const withoutRulesIn = (layout: PageLayout, ignoredAreas: Area[]): PageLayout => ({
+    ...layout,
+    rules: layout.rules.filter((rule) => !ignoredAreas.some((area) => isInside(rule, area))),
+});
+
+for (const { template, fixture, picture, areas, areasNotLikeThePicture, tolerance, areaTolerance, lineEndsToIgnore } of references) {
     test(`${template} template looks like ${picture}`, async ({ page }, testInfo) => {
         await page.goto(`/template-lab.html?template=${template}&fixture=${fixture}&lang=en`);
         const result: TemplateLabResult = await (await page.waitForFunction(() => window.templateLabResult)).jsonValue();
@@ -96,7 +105,8 @@ for (const { template, fixture, picture, areas, tolerance, areaTolerance, lineEn
             };
         }, { pictureUrl, areas });
 
-        const { problems, report } = compare(pictureLayout, pdfLayout, tolerance, areaTolerance, lineEndsToIgnore);
+        const { problems, report } = compare(withoutRulesIn(pictureLayout, areasNotLikeThePicture),
+            withoutRulesIn(pdfLayout, areasNotLikeThePicture), tolerance, areaTolerance, lineEndsToIgnore);
         await testInfo.attach("picture (red) over the PDF.png", { body: Buffer.from(overlay.split(",")[1], "base64"), contentType: "image/png" });
         await testInfo.attach("measures (picture | PDF).txt", { body: report, contentType: "text/plain" });
 

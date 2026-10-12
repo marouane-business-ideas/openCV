@@ -187,7 +187,9 @@
 
 /* Right column */
 
-.rt-modern .rt-contact {
+/* Emails and links have no spaces: they must break anywhere rather than widen the column */
+.rt-modern .rt-contact,
+.rt-modern .rt-links {
     overflow-wrap: anywhere;
 }
 
