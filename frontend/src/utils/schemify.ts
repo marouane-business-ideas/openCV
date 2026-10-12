@@ -12,4 +12,7 @@ function Schemify(url: string, protocolScheme?: string) {
     return url;
 }
 
+// Links are shown without their scheme: "https://github.com/johndoe" reads "github.com/johndoe"
+export const withoutScheme = (url: string) => url.replace(new RegExp(URL_SCHEME_REGEXP, "i"), "");
+
 export default Schemify;

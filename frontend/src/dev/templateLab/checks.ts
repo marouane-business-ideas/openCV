@@ -1,5 +1,6 @@
 import { resumeInfoType } from "../../context/ResumeContext";
 import { formatPhoneNumber } from "../../utils/formatPhone";
+import { withoutScheme } from "../../utils/schemify";
 import { PdfPage } from "./inspectPdf";
 
 // Templates keep at least this distance between their text and the left and right edges of the page
@@ -36,7 +37,7 @@ const expectedTexts = (resume: resumeInfoType) => {
         ...education.flatMap((school) => [school.schoolName, school.degree, school.date, ...htmlTexts(school.description)]),
         ...skills,
         ...languages.map((language) => language.language),
-        ...links.map((link) => link.linkName),
+        ...links.map((link) => withoutScheme(link.linkName)),
     ].filter((text) => text.trim());
 };
 

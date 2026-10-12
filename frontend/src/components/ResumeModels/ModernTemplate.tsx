@@ -3,7 +3,7 @@ import classNames from "classnames";
 import DOMPurify from "isomorphic-dompurify";
 import { useTranslation } from "react-i18next";
 
-import Schemify from "../../utils/schemify";
+import Schemify, { withoutScheme } from "../../utils/schemify";
 import { formatPhoneNumber } from "../../utils/formatPhone";
 import { ResumeTemplateProps } from "../../Types/CommonTypes";
 import { fontFaceCss } from "./templateFonts";
@@ -144,7 +144,7 @@ const ModernTemplate = ({
                             <ul className="rt-list rt-links">
                                 {filledLinks.map((link) => (
                                     <li key={link.id}>
-                                        <a target="_blank" href={Schemify(link.linkUrl, "https")}>{link.linkName || link.linkUrl}</a>
+                                        <a target="_blank" href={Schemify(link.linkUrl, "https")}>{withoutScheme(link.linkName || link.linkUrl)}</a>
                                     </li>
                                 ))}
                             </ul>

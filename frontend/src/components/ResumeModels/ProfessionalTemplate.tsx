@@ -3,7 +3,7 @@ import React from "react";
 import DOMPurify from "isomorphic-dompurify";
 import { useTranslation } from "react-i18next";
 
-import Schemify from "../../utils/schemify";
+import Schemify, { withoutScheme } from "../../utils/schemify";
 import { formatPhoneNumber } from "../../utils/formatPhone";
 import { ResumeTemplateProps } from "../../Types/CommonTypes";
 
@@ -214,7 +214,7 @@ const ProfessionalTemplate = ({
                                 <div key={link.id}
                                     style={{ lineBreak: "anywhere" }}
                                 >
-                                    <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >{link.linkName}</a>
+                                    <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >{withoutScheme(link.linkName)}</a>
                                 </div>))
                             }
                         </SectionTextColumn>
