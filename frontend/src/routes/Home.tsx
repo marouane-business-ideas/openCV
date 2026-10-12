@@ -5,6 +5,7 @@ import { useTranslation, Trans } from "react-i18next";
 
 import ProfessionalTemplate from "../components/ResumeModels/ProfessionalTemplate";
 import ClassicalTemplate from "../components/ResumeModels/ClassicalTemplate";
+import ModernTemplate from "../components/ResumeModels/ModernTemplate";
 import { getResumeDummyData, ResumeContext } from "../context/ResumeContext";
 import PricingCard from "../components/PricingCard/PricingCard";
 import MiniResumePreview from "../components/MiniResumePreview/MiniResumePreview";
@@ -76,7 +77,7 @@ const Home: React.FC = () => {
                     </p>
                 </div>
             </section>
-            <section className="flex flex-col items-center md:flex-row md:justify-center mt-16">
+            <section className="flex flex-col items-center md:flex-row md:flex-wrap md:justify-center mt-16">
                 <MiniResumePreview>
                     <ProfessionalTemplate customStyle={{ minWidth: "840px", transform: "scale(0.4)", transformOrigin: "top" }}
                         resume={getResumeDummyData()} />
@@ -85,6 +86,10 @@ const Home: React.FC = () => {
                     <ClassicalTemplate customThemeColor="#7A6C55"
                         customStyle={{ minWidth: "840px", transform: "scale(0.37)", transformOrigin: "top" }}
                         resume={getResumeDummyData("classic")} />
+                </MiniResumePreview>
+                <MiniResumePreview>
+                    <ModernTemplate customStyle={{ marginTop: "10px", transform: "scale(0.41)", transformOrigin: "top" }}
+                        resume={getResumeDummyData("modern")} />
                 </MiniResumePreview>
             </section>
             <section className="mt-28 flex flex-col items-center md:flex-row justify-center gap-8">
