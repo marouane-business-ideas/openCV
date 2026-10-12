@@ -2,10 +2,9 @@ import { useEffect, useRef } from "react";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
 import { Editor, EditorContent, useEditor, useEditorState } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import { Placeholder } from "@tiptap/extensions";
 import { BoldIcon, ItalicIcon, LinkIcon, ListBulletIcon, NumberedListIcon, UnderlineIcon } from "@heroicons/react/16/solid";
 
+import { editorExtensions } from "./editorExtensions";
 import { fromEditorHtml, toEditorHtml } from "./richText";
 import "./RichTextEditor.css";
 
@@ -17,22 +16,6 @@ export interface RichTextEditorProps {
     ariaLabel: string;
     placeholder?: string;
 }
-
-// Only what a resume needs: anything else typed or pasted is dropped, and typed HTML is just text
-const extensions = (placeholder: string) => [
-    StarterKit.configure({
-        heading: false,
-        blockquote: false,
-        codeBlock: false,
-        code: false,
-        horizontalRule: false,
-        strike: false,
-        // Would add an empty line after a list ending the text
-        trailingNode: false,
-        link: { openOnClick: false, defaultProtocol: "https" },
-    }),
-    Placeholder.configure({ placeholder }),
-];
 
 const ToolbarButton = ({ label, active, onClick, children }: {
     label: string,
@@ -120,7 +103,7 @@ const RichTextEditor = ({ id, value, onChange, ariaLabel, placeholder = "" }: Ri
     }, [onChange]);
 
     const editor = useEditor({
-        extensions: extensions(placeholder),
+        extensions: editorExtensions(placeholder),
         content: toEditorHtml(value),
         editorProps: {
             attributes: { ...(id && { id }), "role": "textbox", "aria-multiline": "true", "aria-label": ariaLabel },
