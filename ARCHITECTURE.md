@@ -171,6 +171,8 @@ npm run test:e2e
 
 # Resume templates: real PDFs compared with approved screenshots (in Docker)
 npm run test:templates
+# ...after changing a template on purpose: approve the new screenshots (check the diffs first)
+npm run test:templates -- --update-snapshots
 ```
 
 ### Testing Strategy
