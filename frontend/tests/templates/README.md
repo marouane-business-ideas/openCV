@@ -34,9 +34,8 @@ templates are compared on the same text, and fails when:
 - the number of pages changed,
 - a page doesn't look like its approved screenshot (`templates.visual.ts-snapshots/`).
 
-It also prints each case "through the editor": the summary and descriptions are first saved through the form's
-editor, like a user's text (option `editor=1` of the lab). The PDF must not change: it's compared with the same
-screenshots.
+Before printing, the summary and descriptions are saved through the form's editor, like a user's text (option
+"Through the editor" of the lab, `editor=1`).
 
 When a change is intended, check the diffs in the report, then approve the new screenshots:
 

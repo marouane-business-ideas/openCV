@@ -3,7 +3,8 @@ import type { TemplateLabResult } from "../../src/dev/templateLab/TemplateLab";
 
 // Every resume is printed with every template, so that the templates are compared on the same text.
 // Each case is printed by the template lab (template-lab.html), which goes through the same code as the
-// download button: buildResumeHtml() in the browser, then renderPdf() of the backend
+// download button: buildResumeHtml() in the browser, then renderPdf() of the backend.
+// The summary and descriptions are first saved through the form's editor (editor=1), like a user's text
 const templates = ["classic", "professional", "modern"];
 // See src/dev/templateLab/fixtures.ts
 const fixtures = ["sample", "reference", "long", "empty"];
@@ -23,7 +24,7 @@ const cases = templates.flatMap((template) => fixtures.flatMap((fixture) =>
 
 for (const { template, fixture, lang, name } of cases) {
     test(name, async ({ page }, testInfo) => {
-        await page.goto(`/template-lab.html?template=${template}&fixture=${fixture}&lang=${lang}`);
+        await page.goto(`/template-lab.html?template=${template}&fixture=${fixture}&lang=${lang}&editor=1`);
         const result: TemplateLabResult = await (await page.waitForFunction(() => window.templateLabResult)).jsonValue();
 
         await testInfo.attach(`${name}.pdf`, { body: Buffer.from(result.pdfBase64, "base64"), contentType: "application/pdf" });
@@ -33,21 +34,6 @@ for (const { template, fixture, lang, name } of cases) {
         expect(result.blankPages, "blank pages").toEqual([]);
         expect(result.pageCount, "number of pages").toBe(pageCounts[name]);
 
-        for (let pageNumber = 1; pageNumber <= result.pageCount; pageNumber++) {
-            await expect(page.locator(`img[data-page="${pageNumber}"]`)).toHaveScreenshot(`${name}-page-${pageNumber}.png`);
-        }
-    });
-}
-
-// The same resumes, as if a user had saved their summary and descriptions in the form's editor: the PDF must be the
-// same, compared with the same screenshots
-for (const { template, fixture, lang, name } of cases) {
-    test(`${name} through the editor`, async ({ page }) => {
-        await page.goto(`/template-lab.html?template=${template}&fixture=${fixture}&lang=${lang}&editor=1`);
-        const result: TemplateLabResult = await (await page.waitForFunction(() => window.templateLabResult)).jsonValue();
-
-        expect(result.missingTexts, "resume content missing from the PDF").toEqual([]);
-        expect(result.pageCount, "number of pages").toBe(pageCounts[name]);
         for (let pageNumber = 1; pageNumber <= result.pageCount; pageNumber++) {
             await expect(page.locator(`img[data-page="${pageNumber}"]`)).toHaveScreenshot(`${name}-page-${pageNumber}.png`);
         }
