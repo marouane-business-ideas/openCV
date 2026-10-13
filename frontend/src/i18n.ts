@@ -40,7 +40,8 @@ i18n
             en: { translation: en },
             fr: { translation: fr }
         },
-        debug: import.meta.env.VITE_I18N_DEBUG_MODE, // Enable debug mode in development mode
+        // Environment variables are strings: "false" would enable it
+        debug: import.meta.env.VITE_I18N_DEBUG_MODE === "true",
         supportedLngs: supportedLanguages,
         fallbackLng: "en", // Fallback language if detection fails
         interpolation: { escapeValue: false },
