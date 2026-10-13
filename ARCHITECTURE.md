@@ -12,7 +12,7 @@ Online Resume Builder is a fullstack web application that allows users to create
 ┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
 │   Nginx Proxy   │    │   Frontend   │    │    Backend      │
 │   (Port 80/443) │───▶│  React App   │───▶│  Express.js     │
-│                 │    │  (Port 4173) │    │  (Port 1337)    │
+│                 │    │ (built files)│    │  (Port 1337)    │
 └─────────────────┘    └──────────────┘    └─────────────────┘
                               │                       │
                               │                       ▼
@@ -161,8 +161,9 @@ Secrets are never in the repository nor in the Docker image.
 
 ### Process Management
 - **Supervisor**: Manages multiple processes
-  - Nginx web server
-  - Node.js application
+  - Nginx web server: serves the frontend's built files (`frontend/build/client`, built with the Docker image) and
+    proxies `/api/` to the backend
+  - Node.js backend
 
 
 ## Development & Testing

@@ -40,6 +40,9 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 # Install frontend and backend dependencies
 RUN npm run install:all
 
+# Build the frontend: Nginx serves the files it writes (see nginx.conf)
+RUN npm run build:frontend
+
 # Clean up unnecessary files (optional)
 RUN npm cache clean --force
 
@@ -52,5 +55,5 @@ EXPOSE 80
 # Expose port 443 for Https
 EXPOSE 443
 
-# Start Nginx and npm run preview
+# Start Nginx and the backend
 CMD ["supervisord", "-c", "./supervisord.conf"]
