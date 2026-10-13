@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next';
-import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from "react-i18next";
+import { useState, useRef, useEffect } from "react";
 
 
 const LanguageToggle = () => {
@@ -10,8 +10,8 @@ const LanguageToggle = () => {
   const currentLanguage = i18n.language;
 
   const languages = [
-    { code: 'en-US', name: t('common.language.english'), flag: '🇺🇸' },
-    { code: 'fr', name: t('common.language.french'), flag: '🇫🇷' }
+    { code: "en-US", name: t("common.language.english"), flag: "🇺🇸" },
+    { code: "fr", name: t("common.language.french"), flag: "🇫🇷" }
   ];
 
   const handleLanguageChange = (languageCode: string) => {
@@ -21,8 +21,8 @@ const LanguageToggle = () => {
 
   const handleLanguageToggle = () => {
     setIsOpen(!isOpen);
-    handleLanguageChange(currentLanguage === 'en-US' ? 'fr' : 'en-US')
-  }
+    handleLanguageChange(currentLanguage === "en-US" ? "fr" : "en-US");
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -31,9 +31,9 @@ const LanguageToggle = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -42,8 +42,9 @@ const LanguageToggle = () => {
     <div className="relative flex items-center space-x-4 mb-4" ref={dropdownRef}>
       <button
         onClick={handleLanguageToggle}
-        className="cursor-pointer flex items-center space-x-2 text-gray-700 px-3 py-2 rounded-md transition-all duration-200 hover:bg-gray-200 hover:shadow-md text-sm"
-        aria-label={t('common.language.toggle')}
+        className="cursor-pointer flex items-center space-x-2 text-gray-700 px-3 py-2 rounded-md transition-all duration-200
+            hover:bg-gray-200 hover:shadow-md text-sm"
+        aria-label={t("common.language.toggle")}
       >
         <span className="text-2xl font-medium">
           {languages.find(lang => lang.code !== currentLanguage)?.flag}

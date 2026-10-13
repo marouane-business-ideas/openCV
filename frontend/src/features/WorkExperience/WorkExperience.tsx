@@ -100,7 +100,9 @@ const JobExperience = ({ job, index, handleWorkExperienceChange, handleDeletingW
                         id={`jobTitle-${index}`} name="jobTitle" required placeholder="Software engineer" value={job.jobTitle} />
                 </div>
                 <div className="flex flex-col gap-2 w-2/5">
-                    <label className="text-base font-medium text-gray-700" htmlFor={`workExperience-date-${index}`}>{t("form.work_experience.date")}</label>
+                    <label className="text-base font-medium text-gray-700" htmlFor={`workExperience-date-${index}`}>
+                        {t("form.work_experience.date")}
+                    </label>
                     <input onChange={(e) => handleWorkExperienceChange(e.target.value, "date", index)}
                         className="border p-1 rounded-md focus:outline-hidden border-gray-300"
                         type="text" id={`workExperience-date-${index}`} name="date" required placeholder="August 2020 - Present" value={job.date} />

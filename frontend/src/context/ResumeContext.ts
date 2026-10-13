@@ -9,7 +9,7 @@ export type AccountType_Type = "free" | "premium" | undefined;
 interface IAccountType {
     type: AccountType_Type;
     isLoading: boolean;
-    error: any;
+    error: unknown;
 }
 
 const savedState = localStorage.getItem("resumeState");

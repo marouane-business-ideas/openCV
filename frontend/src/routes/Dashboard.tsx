@@ -65,7 +65,8 @@ function Dashboard() {
                     {user && <p className="text-xl font-semibold">{user.fullName}</p>}
                     {user && <p className="mt-2 text-gray-500">Email: {user.emailAddresses[0].emailAddress}</p>}
                     <p className="mt-2 text-gray-500">
-                        {t("dashboard.subscription")}: {accountType.type === "free" ? t("dashboard.free_subscription") : t("dashboard.premium_subscription")}
+                        {t("dashboard.subscription")}:{" "}
+                        {accountType.type === "free" ? t("dashboard.free_subscription") : t("dashboard.premium_subscription")}
                     </p>
                     <Link to="/dashboard/account" className="flex items-center justify-center mt-4 w-full bg-blue-500 text-white py-2
                          px-4 rounded-lg shadow-md hover:bg-blue-600 transition duration-200">
