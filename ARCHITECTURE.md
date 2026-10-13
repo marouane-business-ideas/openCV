@@ -183,7 +183,7 @@ npm run test:templates -- --update-snapshots
   `frontend/tests/templates/README.md`
 - **Type Checking**: TypeScript strict mode
 - **The backend has no tests of its own**: the PDF renderer is covered by the template tests
-- **CI** (`.github/workflows/tests.yml`): every pull request, and every push to main before deploying, runs the build,
+- **CI** (`.github/workflows/tests.yml`): every pull request, and every push to main before deploying, runs lint, the build,
   the unit tests, the template tests and the E2E tests (except `@clerk`)
 
 ## Performance Considerations
