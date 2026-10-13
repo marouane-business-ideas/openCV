@@ -253,7 +253,9 @@ const ClassicalTemplate = ({
                     <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap" }}>
                         {links.map((link, index) => (
                             <div key={link.id} style={{ display: "flex", gap: "3px" }}>
-                                <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >{withoutScheme(link.linkName)}</a>
+                                <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >
+                                    {withoutScheme(link.linkName)}
+                                </a>
                                 <span style={{ fontWeight: "900", marginLeft: "2px" }} >{index !== links.length - 1 ? "•" : ""}</span>
                             </div>))
                         }

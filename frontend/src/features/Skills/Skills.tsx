@@ -25,7 +25,8 @@ const Skills = ({ edited }: { edited: boolean }) => {
                     <label className="text-base font-medium text-gray-700" htmlFor="skills">
                         {t("form.skills.skills_list")}
                     </label>
-                    <BulletListTextarea ariaLabel="Skills list" onChange={handleInputChange} name="skills" value={skills} placeholder={t("form.skills.add_skill_placeholder")} />
+                    <BulletListTextarea ariaLabel="Skills list" onChange={handleInputChange} name="skills" value={skills}
+                        placeholder={t("form.skills.add_skill_placeholder")} />
                 </div>
             </div>
         </Card>);
