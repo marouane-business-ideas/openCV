@@ -10,7 +10,7 @@ const LanguageToggle = () => {
   const currentLanguage = i18n.language;
 
   const languages = [
-    { code: "en-US", name: t("common.language.english"), flag: "🇺🇸" },
+    { code: "en", name: t("common.language.english"), flag: "🇺🇸" },
     { code: "fr", name: t("common.language.french"), flag: "🇫🇷" }
   ];
 
@@ -21,7 +21,7 @@ const LanguageToggle = () => {
 
   const handleLanguageToggle = () => {
     setIsOpen(!isOpen);
-    handleLanguageChange(currentLanguage === "en-US" ? "fr" : "en-US");
+    handleLanguageChange(currentLanguage === "en" ? "fr" : "en");
   };
 
   useEffect(() => {
