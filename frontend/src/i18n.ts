@@ -2,11 +2,12 @@ import i18n, { LanguageDetectorModule } from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "../locales/en/translation.json";
 import fr from "../locales/fr/translation.json";
+import { getHomePathLanguage } from "./lib/homePath";
 
 export const supportedLanguages = ["en", "fr"] as const;
 export type Language = typeof supportedLanguages[number];
 
-// Remembers the language the user picked
+// Remembers the language the user picked. Read by nginx too, to send French users to the French home page
 const LANGUAGE_COOKIE = "lang";
 const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
 
@@ -15,9 +16,10 @@ const readLanguageCookie = () =>
 
 const languageDetector: LanguageDetectorModule = {
     type: "languageDetector",
-    // The language the user picked, else the browser's languages in order of preference. i18next keeps the first
-    // supported one, ignoring the region ("en-GB" gives "en"), and falls back to fallbackLng
-    detect: () => readLanguageCookie() ?? [...navigator.languages],
+    // The language of the home page URL ("/" or "/fr"), else the language the user picked, else the browser's
+    // languages in order of preference. i18next keeps the first supported one, ignoring the region ("en-GB" gives
+    // "en"), and falls back to fallbackLng
+    detect: () => getHomePathLanguage(window.location.pathname) ?? readLanguageCookie() ?? [...navigator.languages],
     cacheUserLanguage: (language) => {
         const secure = window.location.protocol === "https:" ? "; Secure" : "";
         document.cookie = `${LANGUAGE_COOKIE}=${language}; Path=/; Max-Age=${ONE_YEAR_IN_SECONDS}; SameSite=Lax${secure}`;

@@ -1,10 +1,15 @@
 import { useTranslation } from "react-i18next";
 import { useState, useRef, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
+
+import { getHomePath, isHomePath } from "../../lib/homePath";
 
 
 const LanguageToggle = () => {
   const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentLanguage = i18n.language;
@@ -16,6 +21,10 @@ const LanguageToggle = () => {
 
   const handleLanguageChange = (languageCode: string) => {
     i18n.changeLanguage(languageCode);
+    // On the home page, the language is in the URL
+    if (isHomePath(location.pathname)) {
+      navigate(getHomePath(languageCode) + location.search);
+    }
     setIsOpen(false);
   };
 

@@ -9,16 +9,24 @@ import ModernTemplate from "../components/ResumeModels/ModernTemplate";
 import { getResumeDummyData, ResumeContext } from "../context/ResumeContext";
 import PricingCard from "../components/PricingCard/PricingCard";
 import MiniResumePreview from "../components/MiniResumePreview/MiniResumePreview";
+import { homePaths, SITE_URL, useHomePath } from "../lib/homePath";
 
 const Home: React.FC = () => {
     const { isSignedIn } = useUser();
     const { accountType } = useContext(ResumeContext);
     const { t } = useTranslation();
+    const homePath = useHomePath();
 
     const isPremium = accountType?.type === "premium";
 
     return (
         <div className="h-full px-3 lg:py-36 py-20">
+            {/* Tell search engines that the home page exists in each language (React places these in <head>) */}
+            <link rel="canonical" href={SITE_URL + homePath} />
+            {Object.entries(homePaths).map(([language, path]) =>
+                <link key={language} rel="alternate" hrefLang={language} href={SITE_URL + path} />
+            )}
+            <link rel="alternate" hrefLang="x-default" href={SITE_URL + homePaths.en} />
             <section className="mx-auto max-w-(--breakpoint-lg)">
                 <h1 className="text-center lg:text-5xl text-3xl font-bold tracking-tight">
                     {t("home.title")}

@@ -17,6 +17,7 @@ import ContactPage from "./routes/ContactPage";
 import ContextProvider from "./context/ContextProvider";
 import PdfViewer from "./features/PdfViewer/PdfViewer";
 import useClerkLocalization from "./lib/hooks/useClerkLocalization";
+import { useHomePath } from "./lib/homePath";
 
 
 const router = createBrowserRouter([
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Home /> },
+      { path: "fr", element: <Home /> },
       { path: "resume", element: <ResumeBuilder /> },
       { path: "resume/preview", element: <PdfViewer edited={false} /> },
       { path: "resume/:resumeId", element: <ProtectedRoute><ResumeBuilder /></ProtectedRoute> },
@@ -56,12 +58,13 @@ if (!PUBLISHABLE_KEY) {
 
 const App = () => {
   const clerkLocalization = useClerkLocalization();
+  const homePath = useHomePath();
   
   return (
     <ClerkProvider
       localization={clerkLocalization}
       publishableKey={PUBLISHABLE_KEY}
-      afterSignOutUrl="/"
+      afterSignOutUrl={homePath}
     >
       <ContextProvider>
         <RouterProvider router={router} />
