@@ -34,9 +34,8 @@ templates are compared on the same text, and fails when:
 - the number of pages changed,
 - a page doesn't look like its approved screenshot (`templates.visual.ts-snapshots/`).
 
-`templates.reference.visual.ts` compares a template with the picture it was designed from (`references/`): it
-measures the text lines and the rules of the picture and of the first page of the PDF, and fails when a line breaks
-differently or moves beyond the tolerance. The report has the measures and the picture over the PDF.
+Before printing, the summary and descriptions are saved through the form's editor, like a user's text (option
+"Through the editor" of the lab, `editor=1`).
 
 When a change is intended, check the diffs in the report, then approve the new screenshots:
 
@@ -56,6 +55,5 @@ The screenshots depend on the OS (fonts, rendering): they are named after it (`-
 3. Use web fonts (see `modernTemplateFonts.ts`) rather than system fonts, which differ between machines and servers.
 4. Register it in `src/components/ResumeModels/templates.ts`, add its name to `locales/*/translation.json`.
 5. Add its name and page counts to `templates.visual.ts`, check the lab, then generate the screenshots.
-6. If it comes from a picture: crop the picture to the edges of the page, save it in `references/`, write a fixture
-   with the same content (`src/dev/templateLab/fixtures.ts`) and add it to `templates.reference.visual.ts`.
-   Adjust the CSS until that test passes before approving the screenshots.
+6. If it comes from a picture: crop the picture to the edges of the page, write a fixture with the same content
+   (`src/dev/templateLab/fixtures.ts`) and lay the picture over the PDF in the lab ("Reference picture").

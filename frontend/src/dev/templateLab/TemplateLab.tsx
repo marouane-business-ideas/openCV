@@ -7,6 +7,7 @@ import { resumeTemplates } from "../../components/ResumeModels/templates";
 import { fixtures } from "./fixtures";
 import { inspectPdf, PdfPage } from "./inspectPdf";
 import { checkPdf, PdfChecks } from "./checks";
+import { resumeThroughEditor } from "./throughEditor";
 
 interface Settings {
     template: TemplateType;
@@ -14,6 +15,8 @@ interface Settings {
     lang: string;
     // Empty to use the fixture's theme color
     color: string;
+    // Summary and descriptions saved through the form's editor first, like a user's text
+    editor: boolean;
 }
 
 export interface TemplateLabResult extends PdfChecks {
@@ -40,6 +43,7 @@ const readSettings = (): Settings => {
         fixture: params.get("fixture") ?? "reference",
         lang: params.get("lang") ?? "en",
         color: params.get("color") ?? "",
+        editor: params.get("editor") === "1",
     };
 };
 
@@ -49,9 +53,9 @@ const toBase64 = (bytes: Uint8Array) => {
     return btoa(binary);
 };
 
-const renderPdf = async ({ template, fixture, lang, color }: Settings) => {
+const renderPdf = async ({ template, fixture, lang, color, editor }: Settings) => {
     await i18n.changeLanguage(lang);
-    const fixtureResume = fixtures[fixture].resume;
+    const fixtureResume = editor ? resumeThroughEditor(fixtures[fixture].resume) : fixtures[fixture].resume;
     const resume = { ...fixtureResume, resumeTemplate: template, themeColor: color || fixtureResume.themeColor };
 
     const start = performance.now();
@@ -97,7 +101,8 @@ const TemplateLab = () => {
     const update = (change: Partial<Settings>) => setSettings((current) => ({ ...current, ...change }));
 
     useEffect(() => {
-        const params = new URLSearchParams(Object.entries(settings).filter(([, value]) => value));
+        const params = new URLSearchParams(Object.entries(settings).filter(([, value]) => value)
+        .map(([name, value]) => [name, value === true ? "1" : String(value)]));
         window.history.replaceState(null, "", `?${params}`);
 
         let cancelled = false;
@@ -157,6 +162,10 @@ const TemplateLab = () => {
                     Theme color
                     <input type="color" value={settings.color || fixtureColor} onChange={(e) => update({ color: e.target.value })} />
                     {settings.color && <button className="underline" onClick={() => update({ color: "" })}>reset</button>}
+                </label>
+                <label className="flex items-center gap-2" title="Summary and descriptions saved through the form's editor first">
+                    <input type="checkbox" checked={settings.editor} onChange={(e) => update({ editor: e.target.checked })} />
+                    Through the editor
                 </label>
                 <label className="flex items-center gap-2" title="Shown over the first page. Crop the picture to the edges of the page.">
                     Reference picture

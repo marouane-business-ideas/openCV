@@ -1,0 +1,33 @@
+/* Tailwind's reset removes what makes lists and links visible */
+
+.rich-text-editor .tiptap {
+    min-height: 3lh;
+    outline: none;
+    overflow-wrap: break-word;
+}
+
+.rich-text-editor .tiptap ul,
+.rich-text-editor .tiptap ol {
+    padding-left: 1.5rem;
+}
+
+.rich-text-editor .tiptap ul {
+    list-style: disc;
+}
+
+.rich-text-editor .tiptap ol {
+    list-style: decimal;
+}
+
+.rich-text-editor .tiptap a {
+    color: var(--color-blue-600);
+    text-decoration: underline;
+}
+
+.rich-text-editor .tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: var(--color-gray-400);
+    pointer-events: none;
+}

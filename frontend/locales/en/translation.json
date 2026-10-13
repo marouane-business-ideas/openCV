@@ -55,6 +55,15 @@
   
   },
   "form": {
+    "editor": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "bullet_list": "Bulleted list",
+      "numbered_list": "Numbered list",
+      "link": "Link",
+      "link_prompt": "Address of the link"
+    },
     "template": {
       "select_template": "Select a Template",
       "classic": "Classic",
