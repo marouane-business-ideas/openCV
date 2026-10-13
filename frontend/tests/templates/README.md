@@ -22,10 +22,15 @@ With `npm run dev` running, open http://localhost:5173/template-lab.html
 
 ## Tests
 
+They run in Docker, in Playwright's Linux image, like on GitHub (see `.github/workflows/tests.yml`): the screenshots
+are the same on every machine. Start Docker first.
+
 ```bash
 npm run test:templates                  # from the root or from frontend/
 npx playwright show-report              # from frontend/: diffs and PDFs of the run
 ```
+
+The first run installs the dependencies for Linux (a few minutes), then a run takes about a minute.
 
 `templates.visual.ts` prints every template with the same resumes (`sample`, `reference`, `long`, `empty`), so the
 templates are compared on the same text, and fails when:
@@ -43,7 +48,8 @@ When a change is intended, check the diffs in the report, then approve the new s
 npm run test:templates -- --update-snapshots
 ```
 
-The screenshots depend on the OS (fonts, rendering): they are named after it (`-darwin`), and another OS needs its own.
+The screenshots depend on the OS (fonts, rendering): that's why the tests always run in the same Linux image. The
+image's version (`run-in-docker.sh` and the workflow) must follow `@playwright/test`'s.
 
 ## Adding a template
 
