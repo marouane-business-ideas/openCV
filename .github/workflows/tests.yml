@@ -1,0 +1,71 @@
+# Runs on every pull request, and before every deploy (see deploy.yml)
+name: Tests
+
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  build:
+    name: Type-check, build and unit tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      # The deployed app is built the same way when its container starts: a build that fails here would fail there
+      - run: npm run build
+      - run: npx vitest run
+
+  templates:
+    name: Template tests
+    runs-on: ubuntu-latest
+    # The image the screenshots were made with (see frontend/tests/templates/run-in-docker.sh)
+    container:
+      image: mcr.microsoft.com/playwright:v1.54.1-noble
+      options: --ipc=host
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci --no-audit --no-fund
+        working-directory: frontend
+      # Puppeteer, which prints the PDFs
+      - run: npm ci --no-audit --no-fund
+        working-directory: backend
+      - run: npx playwright test
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: template-tests-report
+          path: frontend/playwright-report
+          retention-days: 14
+
+  e2e:
+    name: End-to-end tests
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.54.1-noble
+      options: --ipc=host
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
+        working-directory: frontend
+      - run: npm ci --no-audit --no-fund
+        working-directory: backend
+      # The backend creates its database there
+      - run: mkdir -p backend/database
+      - run: npx playwright test --grep-invert @clerk
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: e2e-tests-report
+          path: playwright-report
+          retention-days: 14

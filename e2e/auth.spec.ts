@@ -11,7 +11,8 @@ const TEST_USERS = {
   }
 };
 
-test.describe('Authentication Flow', () => {
+// @clerk: signs in with Clerk's test accounts, not run by the CI (see .github/workflows/tests.yml)
+test.describe('Authentication Flow', { tag: '@clerk' }, () => {
   test.beforeEach(async ({ page }) => {
     // Start from the homepage
     await page.goto('/');

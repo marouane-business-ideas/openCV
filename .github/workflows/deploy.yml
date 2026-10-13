@@ -7,7 +7,12 @@ on:
       - main
 
 jobs:
+  tests:
+    uses: ./.github/workflows/tests.yml
+
   deploy:
+    # Nothing is deployed when a test fails
+    needs: tests
     runs-on: ubuntu-latest
 
     steps:
