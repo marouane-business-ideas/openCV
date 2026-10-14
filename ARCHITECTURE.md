@@ -37,7 +37,9 @@ Online Resume Builder is a fullstack web application that allows users to create
 - **Build Tool**: Vite 6.3.5
 - **Styling**: Tailwind CSS 4.1.8
 - **Routing**: React Router 7.6.2 in framework mode, without a server (`ssr: false`, see
-  `frontend/react-router.config.ts`): `react-router build` writes the HTML of the pages, served as static files
+  `frontend/react-router.config.ts`): `react-router build` writes the HTML of the pages, served as static files.
+  The home page is pre-rendered in each language (`/`, `/fr`, see `src/entry.server.tsx`), with its content; other
+  pages share an empty HTML file (`__spa-fallback.html`) and are rendered in the browser
 - **State Management**: React Context + useImmer hook
 - **Authentication**: Clerk React SDK
 - **Internationalization**: i18next with French/English support

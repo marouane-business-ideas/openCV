@@ -1,6 +1,37 @@
 import { defineConfig, type Plugin } from "vite";
+import { existsSync, statSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import { join, resolve } from "node:path";
 import { reactRouter } from "@react-router/dev/vite";
+
+/**
+ * `vite preview` serves the build like nginx does in production (see nginx.conf): a file of the build, else the
+ * page's own HTML file (pre-rendered pages), else the app without content (__spa-fallback.html). Without it,
+ * every page would get the English home page's HTML.
+ */
+const previewLikeNginx = (): Plugin => ({
+  name: "preview-like-nginx",
+  configurePreviewServer(server) {
+    const clientDirectory = resolve(server.config.root, server.config.build.outDir);
+    const isFile = (path: string) => existsSync(path) && statSync(path).isFile();
+
+    server.middlewares.use((req, res, next) => {
+      const { pathname, search } = new URL(req.url ?? "/", "http://localhost");
+      if (isFile(join(clientDirectory, pathname))) {
+        next();
+        return;
+      }
+      if (pathname.startsWith("/assets/")) {
+        res.statusCode = 404;
+        res.end();
+        return;
+      }
+      const pageFile = join(pathname, "index.html");
+      req.url = (isFile(join(clientDirectory, pageFile)) ? pageFile : "/__spa-fallback.html") + search;
+      next();
+    });
+  },
+});
 
 interface PdfRenderer {
   render: (html: string) => Promise<Uint8Array>;
@@ -105,7 +136,7 @@ const templateLabPage = (): Plugin => ({
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRouter(), templateLabPage(), templateLabPdf()],
+  plugins: [reactRouter(), templateLabPage(), templateLabPdf(), previewLikeNginx()],
   server: {
     host: "0.0.0.0",
     allowedHosts: ["onlineresume.dev", "www.onlineresume.dev"],

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import useGetUserAccountType from "../../lib/hooks/useGetUserAccountType";
 import { ResumeContext } from "../../context/ResumeContext";
 import LanguageToggle from "../../components/LanguageToggle/LanguageToggle";
-import { getHomePathLanguage, isHomePath, useHomePath } from "../../lib/homePath";
+import { isHomePath, useHomePath } from "../../lib/homePath";
 
 function Layout() {
     const { signOut } = useClerk();
@@ -17,7 +17,7 @@ function Layout() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const { accountType } = useContext(ResumeContext);
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const homePath = useHomePath();
 
     useGetUserAccountType();
@@ -35,14 +35,6 @@ function Layout() {
     useEffect(() => {
         setIsMenuOpen(false);
     }, [location]);
-
-    // The home page shows the language of its URL, also when reached with the browser's back and forward buttons
-    useEffect(() => {
-        const homeLanguage = getHomePathLanguage(location.pathname);
-        if (homeLanguage && homeLanguage !== i18n.language) {
-            i18n.changeLanguage(homeLanguage);
-        }
-    }, [location.pathname, i18n]);
 
     // I want to prevent Premium users for seeing the landing page (As of now, it is suited to logged out and free plan users, not premium users)
     useEffect(() => {

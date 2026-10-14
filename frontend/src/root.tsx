@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import ContextProvider from "./context/ContextProvider";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
 import useClerkLocalization from "./lib/hooks/useClerkLocalization";
 import { useHomePath } from "./lib/homePath";
+import useIsHydrated from "./lib/hooks/useIsHydrated";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -61,12 +62,8 @@ export function Layout({ children }: { children: ReactNode }) {
 
 // Shown instead of the page when it fails, or when no page matches the URL
 export function ErrorBoundary() {
-    // When the page fails to load, React first takes over the HTML sent by the server, which is empty: render the same
-    // (nothing) first, or React reports that they differ
-    const [isHydrated, setIsHydrated] = useState(false);
-    useEffect(() => setIsHydrated(true), []);
-
-    return isHydrated ? <ErrorPage /> : null;
+    // When the page fails to load, React first takes over the HTML sent by the server, which has no error page
+    return useIsHydrated() ? <ErrorPage /> : null;
 }
 
 // Shown until the JavaScript takes over the page
