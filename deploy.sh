@@ -2,6 +2,7 @@
 
  # This script can only "re-deploy". It won't work for a first time deployment
  # It will also not work if there's more than one running container on the VPS
+ # The backend's secrets are the ones the last deploy from GitHub wrote on the VPS (see .github/workflows/deploy.yml)
 
  # Exit script in case of error in a command
  set -e 
@@ -22,4 +23,5 @@
  ssh -i /Users/marouane_faris/.ssh/oracle/ssh-key-2024-09-03.key ubuntu@89.168.63.99 'sudo docker run -d --name onlineresume \
  --restart unless-stopped --dns 8.8.8.8 --dns 1.1.1.1 \
  -p 80:80 -p 443:443 -v ./database:/app/backend/database \
- -v ./httpsEncryption:/etc/letsencrypt onlineresume:latest'
+ -v ./httpsEncryption:/etc/letsencrypt \
+ -v ./backend.env.production.local:/app/backend/.env.production.local:ro onlineresume:latest'

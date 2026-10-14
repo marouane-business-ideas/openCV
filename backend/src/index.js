@@ -14,9 +14,24 @@ import webhooksRouter from "./routers/webhooks.js";
 import accountTypeRouter from "./routers/accountType.js";
 import contactFormRouter from "./routers/contactForm.js";
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+// .env.<NODE_ENV> holds the settings, in the repository. The secrets are in .env.<NODE_ENV>.local, never in the
+// repository: on the developer's computer (see .env.example), written on the server by the deploy (deploy.yml)
+dotenv.config({ path: [`.env.${process.env.NODE_ENV}.local`, `.env.${process.env.NODE_ENV}`] });
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const SECRETS = ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SIGNING_SECRET", "CLERK_SECRET_KEY", "CLERK_WEBHOOK_SECRET",
+    "GMAIL_APP_PASSWORD"];
+const missingSecrets = SECRETS.filter((name) => !process.env[name]);
+if (missingSecrets.length) {
+    if (process.env.NODE_ENV === "production") {
+        console.error(`Missing in .env.production.local: ${missingSecrets.join(", ")}`);
+        process.exit(1);
+    }
+    // In development (and in the CI), the server starts anyway: only the features using them fail
+    console.warn(`Missing in .env.${process.env.NODE_ENV}.local: ${missingSecrets.join(", ")}`);
+}
+
+// Stripe refuses to be created without a key: a placeholder lets the server start, Stripe's API rejects it
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_missing");
 const stripeWebhookSigningSecret = process.env.STRIPE_WEBHOOK_SIGNING_SECRET;
 
 const CLERK_WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
