@@ -11,6 +11,8 @@ export type Language = typeof supportedLanguages[number];
 const LANGUAGE_COOKIE = "lang";
 const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
 
+const isBrowser = typeof window !== "undefined";
+
 const readLanguageCookie = () =>
     document.cookie.split("; ").find((cookie) => cookie.startsWith(`${LANGUAGE_COOKIE}=`))?.split("=")[1];
 
@@ -18,9 +20,13 @@ const languageDetector: LanguageDetectorModule = {
     type: "languageDetector",
     // The language of the home page URL ("/" or "/fr"), else the language the user picked, else the browser's
     // languages in order of preference. i18next keeps the first supported one, ignoring the region ("en-GB" gives
-    // "en"), and falls back to fallbackLng
-    detect: () => getHomePathLanguage(window.location.pathname) ?? readLanguageCookie() ?? [...navigator.languages],
+    // "en"), and falls back to fallbackLng (also when the build renders pages, outside the browser)
+    detect: () => {
+        if (!isBrowser) return undefined;
+        return getHomePathLanguage(window.location.pathname) ?? readLanguageCookie() ?? [...navigator.languages];
+    },
     cacheUserLanguage: (language) => {
+        if (!isBrowser) return;
         const secure = window.location.protocol === "https:" ? "; Secure" : "";
         document.cookie = `${LANGUAGE_COOKIE}=${language}; Path=/; Max-Age=${ONE_YEAR_IN_SECONDS}; SameSite=Lax${secure}`;
     },
@@ -40,9 +46,10 @@ i18n
         interpolation: { escapeValue: false },
     });
 
-i18n.on("languageChanged", (language) => {
-    document.documentElement.lang = language;
-});
-document.documentElement.lang = i18n.language;
+// React keeps <html lang> in line with the language (see root.tsx), but the HTML sent by the server may be in
+// another language: correct it before React takes over the page
+if (isBrowser) {
+    document.documentElement.lang = i18n.language;
+}
 
 export default i18n;

@@ -12,7 +12,8 @@ interface IAccountType {
     error: unknown;
 }
 
-const savedState = localStorage.getItem("resumeState");
+// Not in the browser (when the build renders pages), there is no saved resume
+const savedState = typeof localStorage === "undefined" ? null : localStorage.getItem("resumeState");
 
 export const getResumeDummyData = (resumeTemplate: TemplateType = "professional"): resumeInfoType => ({
     resumeTemplate,

@@ -1,5 +1,6 @@
 import { defineConfig, type Plugin } from "vite";
-import react from "@vitejs/plugin-react";
+import { readFile } from "node:fs/promises";
+import { reactRouter } from "@react-router/dev/vite";
 
 interface PdfRenderer {
   render: (html: string) => Promise<Uint8Array>;
@@ -73,9 +74,38 @@ const templateLabPdf = (): Plugin => ({
   },
 });
 
+// React Router's plugin adds hot reloading to every React file, which needs this script to run first. React Router
+// adds it to the app's pages only. If a React Router upgrade renames it, the template lab fails with "React Router
+// Vite plugin can't detect preamble"
+const REACT_ROUTER_HMR_PREAMBLE = "/@id/__x00__virtual:react-router/inject-hmr-runtime";
+
+/**
+ * Dev-only: serves the template lab's page. React Router's dev server answers every other URL with the app.
+ */
+const templateLabPage = (): Plugin => ({
+  name: "template-lab-page",
+  apply: "serve",
+  configureServer(server) {
+    server.middlewares.use(async (req, res, next) => {
+      if (new URL(req.url ?? "/", "http://localhost").pathname !== "/template-lab.html") {
+        next();
+        return;
+      }
+      try {
+        const html = (await readFile(new URL("./template-lab.html", import.meta.url), "utf8"))
+          .replace("<head>", `<head>\n    <script type="module" src="${REACT_ROUTER_HMR_PREAMBLE}"></script>`);
+        res.setHeader("Content-Type", "text/html");
+        res.end(await server.transformIndexHtml(req.url ?? "/", html));
+      } catch (error) {
+        next(error);
+      }
+    });
+  },
+});
+
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), templateLabPdf()],
+  plugins: [reactRouter(), templateLabPage(), templateLabPdf()],
   server: {
     host: "0.0.0.0",
     allowedHosts: ["onlineresume.dev", "www.onlineresume.dev"],

@@ -34,3 +34,7 @@ playwright-report
 
 # Secrets: .env.*.local (covered by *.local above), and a plain .env if someone creates one
 .env
+
+# React Router: generated types, build output
+frontend/.react-router
+frontend/build
