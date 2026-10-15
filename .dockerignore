@@ -1,0 +1,4 @@
+# Secrets never go into the image: the server's are mounted when the container starts (see deploy.yml).
+# deploy.sh builds the image from a local folder, where these files exist
+**/*.local
+**/.env

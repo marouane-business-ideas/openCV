@@ -6,21 +6,18 @@ const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET
     const router = express.Router();
 
     router.post("/stripe", bodyParser.raw({ type: "application/json" }), async (req, res) => {
-        let event = req.body;
+        let event;
 
-        if (stripeWebhookSigningSecret) {
-            // Get the signature sent by Stripe
-            const signature = req.headers["stripe-signature"];
-            try {
-                event = stripe.webhooks.constructEvent(
-                    req.body,
-                    signature,
-                    stripeWebhookSigningSecret
-                );
-            } catch (err) {
-                console.log("⚠️  Webhook signature verification failed.", err.message);
-                return res.sendStatus(400);
-            }
+        // Only events signed by Stripe are accepted: without the secret, none is
+        try {
+            event = stripe.webhooks.constructEvent(
+                req.body,
+                req.headers["stripe-signature"],
+                stripeWebhookSigningSecret
+            );
+        } catch (err) {
+            console.log("⚠️  Webhook signature verification failed.", err.message);
+            return res.sendStatus(400);
         }
 
         if (event.type === "payment_intent.succeeded") {

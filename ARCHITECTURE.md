@@ -139,6 +139,18 @@ src/
 once the tests pass. See ".github/workflows/deploy.yml" to for the github actions implementation
 - **Deployment script**: See deploy.sh script at the root of the project
 
+### Configuration and secrets
+Secrets are never in the repository nor in the Docker image.
+- **Settings** (ports, URLs, Stripe price, Clerk publishable keys): `.env.development` and `.env.production`, in the
+  repository, in `backend/` and `frontend/`. The frontend's are sent to the browser: nothing secret there.
+- **Secrets** (Stripe secret key and webhook secret, Clerk secret key and webhook secret, Gmail app password): the
+  backend reads them from `backend/.env.<NODE_ENV>.local`, ignored by git.
+  - In development: create `backend/.env.development.local` from `backend/.env.example`. Without it, the backend
+    starts (the CI runs it that way) but the features using the secrets fail.
+  - In production: they're GitHub secrets (Settings > Secrets and variables > Actions). The deploy writes them on the
+    VPS (`~/backend.env.production.local`) and mounts that file in the container. The backend refuses to start if
+    one is missing. To change a secret: update it in GitHub, then re-run the deploy.
+
 ### Containerization
 - **Docker**: Single container deployment
 - **Base Image**: Node.js 22.6.0
@@ -213,7 +225,7 @@ npm run test:templates -- --update-snapshots
 - **Container Security**: Minimal attack surface
 - **IP Filtering**: Direct IP access blocked
 - **SSL/TLS**: Modern cipher suites
-- **Environment Variables**: Secure credential management
+- **Secrets**: outside the repository and the image, see "Configuration and secrets"
 
 ## Conclusion
 

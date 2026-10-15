@@ -24,6 +24,28 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      # The backend's secrets come from the repository's GitHub secrets (Settings > Secrets and variables > Actions):
+      # they are never in the repository nor in the image. The container reads them from the VPS (see below)
+      - name: Write the backend's secrets on VPS
+        env:
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SIGNING_SECRET: ${{ secrets.STRIPE_WEBHOOK_SIGNING_SECRET }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          CLERK_WEBHOOK_SECRET: ${{ secrets.CLERK_WEBHOOK_SECRET }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: |
+          names="STRIPE_SECRET_KEY STRIPE_WEBHOOK_SIGNING_SECRET CLERK_SECRET_KEY CLERK_WEBHOOK_SECRET GMAIL_APP_PASSWORD"
+          # Stop before touching the running app: the backend wouldn't start without them
+          for name in $names; do
+            if [ -z "$(printenv "$name")" ]; then
+              echo "::error::The GitHub secret $name is missing (Settings > Secrets and variables > Actions)"
+              exit 1
+            fi
+          done
+          for name in $names; do
+            printf '%s="%s"\n' "$name" "$(printenv "$name")"
+          done | ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_HOST }} 'umask 077 && cat > backend.env.production.local'
+
       - name: Build Docker image
         run: |
           docker build --platform linux/amd64 -t onlineresume:latest .
@@ -50,5 +72,6 @@ jobs:
               -p 80:80 -p 443:443 \
               -v ./database:/app/backend/database \
               -v ./httpsEncryption:/etc/letsencrypt \
+              -v ./backend.env.production.local:/app/backend/.env.production.local:ro \
               onlineresume:latest
           '
