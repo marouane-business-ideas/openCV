@@ -100,7 +100,7 @@ const ModernTemplate = ({
                                     <ul className="rt-contact-group rt-muted">
                                         {personalInfo.location && <li>{personalInfo.location}</li>}
                                         {personalInfo.nationality && (
-                                            <li>{t("form.profile.nationality")}: {personalInfo.nationality}</li>
+                                            <li>{t("resume.nationality", { nationality: personalInfo.nationality })}</li>
                                         )}
                                     </ul>
                                 )}

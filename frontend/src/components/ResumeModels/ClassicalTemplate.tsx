@@ -79,7 +79,9 @@ const Styles: { [key: string]: React.CSSProperties } = {
         width: firstColumnWidth,
         minWidth: firstColumnWidth,
         maxWidth: firstColumnWidth,
-
+        // The accents of bold capitals (Ô, É) rise above the line: when a title starts a page, Chrome would print
+        // them at the bottom of the previous page. The padding keeps them in the title, on its page
+        paddingTop: "3px",
     },
     SectionText: {
         fontSize: "14px",
@@ -180,7 +182,7 @@ const ClassicalTemplate = ({
                 {personalInfo.nationality && (
                     <>
                         <div>•</div>
-                        <div>{t("form.profile.nationality")}: {personalInfo.nationality}</div>
+                        <div>{t("resume.nationality", { nationality: personalInfo.nationality })}</div>
                     </>
                 )}
             </div>
@@ -242,7 +244,7 @@ const ClassicalTemplate = ({
                         {languages.map((language, index) => (
                             <div key={language.id} style={{ display: "flex", gap: "3px" }}>
                                 <span>{language.language}</span>
-                                <span>({languageLevelLabel(language.level, t)})</span>
+                                {language.level && <span>({languageLevelLabel(language.level, t)})</span>}
                                 <span style={{ fontWeight: "900", marginLeft: "2px" }} >{index !== languages.length - 1 ? "•" : ""}</span>
                             </div>))
                         }

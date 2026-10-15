@@ -139,7 +139,8 @@
     "languages": "LANGUAGES",
     "skills": "SKILLS",
     "expertise": "EXPERTISE",
-    "contact": "CONTACT"
+    "contact": "CONTACT",
+    "nationality": "Nationality: {{nationality}}"
   },
   "dashboard": {
     "title": "Your Resumes",
