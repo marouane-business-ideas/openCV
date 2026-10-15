@@ -1,0 +1,5 @@
+#!/bin/sh
+# Runs the frontend's fast checks before each push: a failure stops the push. The template and end-to-end tests are
+# too slow for every push, the CI runs them. Skip with git push --no-verify
+cd "$(git rev-parse --show-toplevel)/frontend" || exit 1
+npm run lint && npx vitest run

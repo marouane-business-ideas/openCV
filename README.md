@@ -1,6 +1,7 @@
 **DEV mode:**
 
-1) Then run npm run install:all still inside the top level directory
+1) Then run npm run install:all still inside the top level directory. It also sets up the git hook that runs the
+   frontend's lint and unit tests before each push (skip it with git push --no-verify)
 2) Finally run npm run dev to launch the app (both frontend and backend) in dev mode
 
 **PROD mode:**
