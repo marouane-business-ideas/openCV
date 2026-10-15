@@ -11,7 +11,8 @@
     "preview": "npm run build:frontend && concurrently \"npm:start:backend\" \"npm run preview --prefix frontend\"",
     "test:e2e": "playwright test",
     "test:templates": "npm run test:templates --prefix frontend",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "prepare": "git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true"
   },
   "keywords": [],
   "author": "Marouane Faris",
