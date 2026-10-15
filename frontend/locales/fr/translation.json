@@ -140,7 +140,8 @@
     "languages": "LANGUES",
     "skills": "COMPÉTENCES",
     "expertise": "EXPERTISE",
-    "contact": "CONTACT"
+    "contact": "CONTACT",
+    "nationality": "Nationalité\u00a0: {{nationality}}"
   },
     "dashboard": {
       "title": "Vos CVs",

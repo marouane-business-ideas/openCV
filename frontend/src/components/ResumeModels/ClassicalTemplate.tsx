@@ -180,7 +180,7 @@ const ClassicalTemplate = ({
                 {personalInfo.nationality && (
                     <>
                         <div>•</div>
-                        <div>{t("form.profile.nationality")}: {personalInfo.nationality}</div>
+                        <div>{t("resume.nationality", { nationality: personalInfo.nationality })}</div>
                     </>
                 )}
             </div>
