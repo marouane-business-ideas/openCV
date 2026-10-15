@@ -242,7 +242,7 @@ const ClassicalTemplate = ({
                         {languages.map((language, index) => (
                             <div key={language.id} style={{ display: "flex", gap: "3px" }}>
                                 <span>{language.language}</span>
-                                <span>({languageLevelLabel(language.level, t)})</span>
+                                {language.level && <span>({languageLevelLabel(language.level, t)})</span>}
                                 <span style={{ fontWeight: "900", marginLeft: "2px" }} >{index !== languages.length - 1 ? "•" : ""}</span>
                             </div>))
                         }

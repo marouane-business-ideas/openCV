@@ -241,7 +241,7 @@ const ProfessionalTemplate = ({
                             {languages.map((language) => (
                                 <div key={language.id} style={{ display: "flex", gap: "3px" }}>
                                     <span>{language.language}</span>
-                                    <span>({languageLevelLabel(language.level, t)})</span>
+                                    {language.level && <span>({languageLevelLabel(language.level, t)})</span>}
                                 </div>))
                             }
                         </SectionTextColumn>
