@@ -12,7 +12,7 @@ Online Resume Builder is a fullstack web application that allows users to create
 ┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
 │   Nginx Proxy   │    │   Frontend   │    │    Backend      │
 │   (Port 80/443) │───▶│  React App   │───▶│  Express.js     │
-│                 │    │  (Port 4173) │    │  (Port 1337)    │
+│                 │    │ (built files)│    │  (Port 1337)    │
 └─────────────────┘    └──────────────┘    └─────────────────┘
                               │                       │
                               │                       ▼
@@ -36,7 +36,10 @@ Online Resume Builder is a fullstack web application that allows users to create
 - **Framework**: React 19.1.0 with TypeScript
 - **Build Tool**: Vite 6.3.5
 - **Styling**: Tailwind CSS 4.1.8
-- **Routing**: React Router 7.6.2
+- **Routing**: React Router 7.6.2 in framework mode, without a server (`ssr: false`, see
+  `frontend/react-router.config.ts`): `react-router build` writes the HTML of the pages, served as static files.
+  The home page is pre-rendered in each language (`/`, `/fr`, see `src/entry.server.tsx`), with its content; other
+  pages share an empty HTML file (`__spa-fallback.html`) and are rendered in the browser
 - **State Management**: React Context + useImmer hook
 - **Authentication**: Clerk React SDK
 - **Internationalization**: i18next with French/English support
@@ -65,6 +68,8 @@ Online Resume Builder is a fullstack web application that allows users to create
 #### Component Structure
 ```
 src/
+├── root.tsx               # HTML document of every page, providers (Clerk, resume context), error page
+├── routes.ts              # URL → page
 ├── features/
 │   ├── Form/              # Main resume form
 │   ├── PdfViewer/         # PDF preview component
@@ -158,8 +163,9 @@ Secrets are never in the repository nor in the Docker image.
 
 ### Process Management
 - **Supervisor**: Manages multiple processes
-  - Nginx web server
-  - Node.js application
+  - Nginx web server: serves the frontend's built files (`frontend/build/client`, built with the Docker image) and
+    proxies `/api/` to the backend
+  - Node.js backend
 
 
 ## Development & Testing

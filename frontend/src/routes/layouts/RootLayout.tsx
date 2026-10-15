@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import useGetUserAccountType from "../../lib/hooks/useGetUserAccountType";
 import { ResumeContext } from "../../context/ResumeContext";
 import LanguageToggle from "../../components/LanguageToggle/LanguageToggle";
+import { isHomePath, useHomePath } from "../../lib/homePath";
 
 function Layout() {
     const { signOut } = useClerk();
@@ -17,6 +18,7 @@ function Layout() {
     const menuRef = useRef<HTMLDivElement>(null);
     const { accountType } = useContext(ResumeContext);
     const { t } = useTranslation();
+    const homePath = useHomePath();
 
     useGetUserAccountType();
 
@@ -36,7 +38,7 @@ function Layout() {
 
     // I want to prevent Premium users for seeing the landing page (As of now, it is suited to logged out and free plan users, not premium users)
     useEffect(() => {
-        if (isSignedIn && location.pathname === "/" && accountType.type === "premium") {
+        if (isSignedIn && isHomePath(location.pathname) && accountType.type === "premium") {
             navigate("/resume");
         }
     }, [isSignedIn, accountType, navigate, location]);
@@ -45,7 +47,7 @@ function Layout() {
         <div className="h-full">
             <header className={"sticky top-0 z-10 flex h-(--header-height) items-center border-b-2 px-3 lg:px-12 bg-blue-500"}>
                 <div className="flex w-full justify-between items-center text-white font-bold">
-                    <Link className="lg:text-2xl text-lg" to="/">OnlineResume</Link>
+                    <Link className="lg:text-2xl text-lg" to={homePath}>OnlineResume</Link>
 
                     <button
                         className="lg:hidden text-white"
@@ -63,7 +65,7 @@ function Layout() {
                                     to="/dashboard">{t("common.buttons.dashboard")}</Link>
                             )}
                             <button
-                                onClick={() => signOut({ redirectUrl: "/" })}
+                                onClick={() => signOut({ redirectUrl: homePath })}
                                 className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
                                      hover:shadow-lg hover:scale-105"
                             >
@@ -102,7 +104,7 @@ function Layout() {
                                 to="/dashboard" onClick={() => setIsMenuOpen(false)}>{t("common.buttons.dashboard")}</Link>
                         )}
                         <button
-                            onClick={() => { signOut({ redirectUrl: "/" }); setIsMenuOpen(false); }}
+                            onClick={() => { signOut({ redirectUrl: homePath }); setIsMenuOpen(false); }}
                             className="block w-full bg-white text-blue-500 px-4 py-2 rounded-md mb-2"
                         >
                             {t("common.buttons.sign_out")}
@@ -124,7 +126,7 @@ function Layout() {
 
             <main className="h-full w-full">
                 <Outlet />
-                {location.pathname === "/" &&
+                {isHomePath(location.pathname) &&
                     <footer className="flex justify-center w-full text-xs md:text-sm">
                         <div className="flex flex-col items-center">
                             <div className="flex items-center space-x-4 mb-4">

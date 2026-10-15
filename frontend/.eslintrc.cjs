@@ -6,13 +6,14 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  ignorePatterns: ['dist', 'build', '.react-router', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
-      { allowConstantExport: true },
+      // React Router's plugin keeps fast refresh working for the loaders of route modules
+      { allowConstantExport: true, allowExportNames: ['loader', 'clientLoader'] },
     ],
     'max-len': ['warn', { code: 150 }],
     'quotes': ['warn', 'double'],

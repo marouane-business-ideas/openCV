@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link } from "react-router";
+import { Link, type ClientLoaderFunctionArgs } from "react-router";
 import { useUser } from "@clerk/clerk-react";
 import { useTranslation, Trans } from "react-i18next";
 
@@ -9,16 +9,42 @@ import ModernTemplate from "../components/ResumeModels/ModernTemplate";
 import { getResumeDummyData, ResumeContext } from "../context/ResumeContext";
 import PricingCard from "../components/PricingCard/PricingCard";
 import MiniResumePreview from "../components/MiniResumePreview/MiniResumePreview";
+import i18n from "../i18n";
+import { getHomePathLanguage, homePaths, SITE_URL, useHomePath } from "../lib/homePath";
+import useIsHydrated from "../lib/hooks/useIsHydrated";
+
+// The home page shows the language of its URL, also when reached from another page or with the browser's back and
+// forward buttons. Runs in the browser before the page is shown, so that it is rendered in that language right away
+// (on the first load, i18n.ts already picked the language of the URL)
+export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
+    await i18n.changeLanguage(getHomePathLanguage(new URL(request.url).pathname));
+    return null;
+}
+
+// Runs only when the build writes the page (entry.server.tsx sets its language). Without it, React Router would wait
+// for the clientLoader before showing the page, so the build would write an empty page
+export function loader() {
+    return null;
+}
 
 const Home: React.FC = () => {
     const { isSignedIn } = useUser();
     const { accountType } = useContext(ResumeContext);
     const { t } = useTranslation();
+    const homePath = useHomePath();
 
-    const isPremium = accountType?.type === "premium";
+    // The build renders this page for visitors without a saved account type: premium users see their version once
+    // the saved one is read
+    const isPremium = useIsHydrated() && accountType?.type === "premium";
 
     return (
         <div className="h-full px-3 lg:py-36 py-20">
+            {/* Tell search engines that the home page exists in each language (React places these in <head>) */}
+            <link rel="canonical" href={SITE_URL + homePath} />
+            {Object.entries(homePaths).map(([language, path]) =>
+                <link key={language} rel="alternate" hrefLang={language} href={SITE_URL + path} />
+            )}
+            <link rel="alternate" hrefLang="x-default" href={SITE_URL + homePaths.en} />
             <section className="mx-auto max-w-(--breakpoint-lg)">
                 <h1 className="text-center lg:text-5xl text-3xl font-bold tracking-tight">
                     {t("home.title")}
