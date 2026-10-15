@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
-import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/clerk-react";
+import { useClerk, useUser } from "@clerk/clerk-react";
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "react-i18next";
 
 import useGetUserAccountType from "../../lib/hooks/useGetUserAccountType";
+import useAuthState from "../../lib/hooks/useAuthState";
 import { ResumeContext } from "../../context/ResumeContext";
 import LanguageToggle from "../../components/LanguageToggle/LanguageToggle";
 import { isHomePath, useHomePath } from "../../lib/homePath";
@@ -12,6 +13,8 @@ import { isHomePath, useHomePath } from "../../lib/homePath";
 function Layout() {
     const { signOut } = useClerk();
     const { isSignedIn } = useUser();
+    // The buttons don't wait for Clerk to load (see useAuthState)
+    const authState = useAuthState();
     const location = useLocation();
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -57,7 +60,7 @@ function Layout() {
                     </button>
 
                     <nav role="navigation" className="hidden lg:flex items-center gap-5 text-base">
-                        <SignedIn>
+                        {authState === "signed-in" && <>
                             {location.pathname !== "/dashboard" && (
                                 <Link
                                     className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-400
@@ -71,8 +74,8 @@ function Layout() {
                             >
                                 {t("common.buttons.sign_out")}
                             </button>
-                        </SignedIn>
-                        <SignedOut>
+                        </>}
+                        {authState === "signed-out" && <>
                             <Link
                                 data-testid="navbar-login-testid"
                                 className="bg-white text-blue-500 px-4 py-2 rounded-md transition-all duration-200
@@ -86,7 +89,7 @@ function Layout() {
                                 to="/sign-up?redirect_url=/resume">
                                 {t("common.buttons.create_account")}
                             </Link>
-                        </SignedOut>
+                        </>}
                     </nav>
                 </div>
             </header>
@@ -97,7 +100,7 @@ function Layout() {
                 style={{ maxHeight: "0px" }}
             >
                 <nav role="navigation" className="p-4">
-                    <SignedIn>
+                    {authState === "signed-in" && <>
                         {location.pathname !== "/dashboard" && (
                             <Link
                                 className="block bg-white text-blue-500 px-4 py-2 rounded-md mb-2 text-center"
@@ -109,8 +112,8 @@ function Layout() {
                         >
                             {t("common.buttons.sign_out")}
                         </button>
-                    </SignedIn>
-                    <SignedOut>
+                    </>}
+                    {authState === "signed-out" && <>
                         <div className="flex flex-col items-center">
                             <Link
                                 data-testid="navbar-login-mobile-testid"
@@ -120,7 +123,7 @@ function Layout() {
                                 className="block bg-white text-blue-500 px-4 py-2 rounded-md mb-2 w-full text-center"
                                 to="/sign-up" onClick={() => setIsMenuOpen(false)}>{t("common.buttons.create_account")}</Link>
                         </div>
-                    </SignedOut>
+                    </>}
                 </nav>
             </div>
 
@@ -133,7 +136,7 @@ function Layout() {
                                 <LanguageToggle />
                             </div>
                             <div className="flex items-center space-x-4">
-                                {isSignedIn ?
+                                {authState === "signed-in" ?
                                     <Link to="/contact">
                                         <EnvelopeIcon className="size-6" />
                                     </Link>
