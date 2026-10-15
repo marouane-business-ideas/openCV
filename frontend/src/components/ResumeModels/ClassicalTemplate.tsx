@@ -79,7 +79,9 @@ const Styles: { [key: string]: React.CSSProperties } = {
         width: firstColumnWidth,
         minWidth: firstColumnWidth,
         maxWidth: firstColumnWidth,
-
+        // The accents of bold capitals (Ô, É) rise above the line: when a title starts a page, Chrome would print
+        // them at the bottom of the previous page. The padding keeps them in the title, on its page
+        paddingTop: "3px",
     },
     SectionText: {
         fontSize: "14px",
