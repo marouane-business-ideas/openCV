@@ -31,7 +31,6 @@ const Styles: { [key: string]: React.CSSProperties } = {
     },
     personnalTitle: {
         fontSize: "14px",
-        textTransform: "uppercase",
         letterSpacing: "0.10em",
         fontWeight: 500,
     },
@@ -152,7 +151,8 @@ const ProfessionalTemplate = ({
                     <div style={{
                         ...Styles.personnalInfoAdresses
                     }}>
-                        {personalInfo.title}
+                        {/* Only the title is in capitals: the location and the phone number keep the case they were typed in */}
+                        {personalInfo.title && <span style={{ textTransform: "uppercase" }}>{personalInfo.title}</span>}
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <svg style={{ height: "12px", width: "12px" }} xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
