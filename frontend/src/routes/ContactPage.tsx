@@ -4,6 +4,8 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useTranslation } from "react-i18next";
 
+import { useHomePath } from "../lib/homePath";
+
 
 const ContactPage: React.FC = () => {
     const [isSuccess, setSuccess] = useState<boolean | null>(null);
@@ -12,6 +14,7 @@ const ContactPage: React.FC = () => {
     const { user, isSignedIn } = useUser();
     const { getToken } = useAuth();
     const { t } = useTranslation();
+    const homePath = useHomePath();
 
 
     const submitForm = async (name: FormDataEntryValue | null, formMessage: FormDataEntryValue | null) => {
@@ -65,7 +68,7 @@ const ContactPage: React.FC = () => {
                     <span className="lg:text-base text-sm text-center">
                         {t("contact.success_message")}
                     </span>
-                    <Link className="mx-auto block px-5 py-3 hover:bg-blue-600 bg-blue-500 text-white font-bold rounded-lg" to="/">
+                    <Link className="mx-auto block px-5 py-3 hover:bg-blue-600 bg-blue-500 text-white font-bold rounded-lg" to={homePath}>
                         {t("contact.go_to_home")}
                     </Link>
                 </div>
