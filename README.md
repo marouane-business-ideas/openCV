@@ -7,4 +7,5 @@
 **PROD mode:**
 
 1) Same as above
-2) Run npm run preview
+2) Run npm run preview:local to test a production build locally (http://localhost:4173), with the development
+settings: npm run preview uses the production ones, with which signing in only works on onlineresume.dev

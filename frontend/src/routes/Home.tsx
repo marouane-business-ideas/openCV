@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { Link, type ClientLoaderFunctionArgs } from "react-router";
-import { useUser } from "@clerk/clerk-react";
 import { useTranslation, Trans } from "react-i18next";
 
 import ProfessionalTemplate from "../components/ResumeModels/ProfessionalTemplate";
@@ -12,6 +11,7 @@ import MiniResumePreview from "../components/MiniResumePreview/MiniResumePreview
 import i18n from "../i18n";
 import { getHomePathLanguage, homePaths, SITE_URL, useHomePath } from "../lib/homePath";
 import useIsHydrated from "../lib/hooks/useIsHydrated";
+import useAuthState from "../lib/hooks/useAuthState";
 
 // The home page shows the language of its URL, also when reached from another page or with the browser's back and
 // forward buttons. Runs in the browser before the page is shown, so that it is rendered in that language right away
@@ -28,7 +28,8 @@ export function loader() {
 }
 
 const Home: React.FC = () => {
-    const { isSignedIn } = useUser();
+    // Doesn't wait for Clerk to load (see useAuthState). The build writes the signed-out version
+    const isSignedIn = useAuthState() === "signed-in";
     const { accountType } = useContext(ResumeContext);
     const { t } = useTranslation();
     const homePath = useHomePath();
@@ -119,7 +120,7 @@ const Home: React.FC = () => {
                 </MiniResumePreview>
             </section>
             <section className="mt-28 flex flex-col items-center md:flex-row justify-center gap-8">
-                {!!isSignedIn === false && <PricingCard
+                {!isSignedIn && <PricingCard
                     name={t("common.pricing_card.free_plan.title")}
                     title={t("common.pricing_card.free_plan.secondary_title")}
                     price={0}

@@ -178,7 +178,12 @@ npm run install:all
 # Development mode (concurrent frontend/backend)
 npm run dev
 
-# Production preview
+# Production build, tested locally: built like in production, but with the development settings (Clerk's development
+# instance, the backend's development secrets), on http://localhost:4173
+npm run preview:local
+
+# Production preview, with the production settings: Clerk's production instance only accepts onlineresume.dev, and the
+# backend refuses to start without the production secrets, so signing in doesn't work locally
 npm run preview
 
 # Unit tests (from frontend/)
