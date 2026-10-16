@@ -236,6 +236,8 @@ npm run test:templates -- --update-snapshots
 ### Testing Strategy
 - **Unit Tests**: Vitest for utility functions (`frontend/tests/`)
 - **E2E Tests**: Playwright for user workflows (`e2e/`). Those tagged `@clerk` sign in with Clerk's test accounts
+  and check what the user gets: the downloaded resume opens as a PDF (read with pdf.js) and shows what they typed, and
+  the dashboard lists it
 - **Template Tests**: Playwright prints every resume template to a real PDF and compares its pages with approved
   screenshots (`npm run test:templates`, in Playwright's Linux image). A template lab shows these PDFs in dev: see
   `frontend/tests/templates/README.md`

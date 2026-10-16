@@ -1,4 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+import { openDownloadedPdf, pdfShows } from './helpers/downloadedPdf';
 
 const TEST_USERS = {
   free: {
@@ -11,6 +13,39 @@ const TEST_USERS = {
   }
 };
 
+const signIn = async (page: Page, user: { email: string, password: string }) => {
+  await page.getByTestId('navbar-login-testid').click();
+  await expect(page.getByText('S\'identifier')).toBeVisible();
+  await page.getByPlaceholder('Adresse e-mail').fill(user.email);
+  await page.getByPlaceholder('Mot de passe').fill(user.password);
+  await page.getByRole('button', { name: 'Continuer', exact: true }).click();
+};
+
+// What the user gets in the end: the resume they downloaded opens as a PDF and shows what they typed, and they find
+// it in their dashboard
+const downloadResumeAndCheckIt = async (page: Page) => {
+  // A name of this run only, to recognize this resume in the PDF and in the dashboard
+  const name = `Test PDF ${Date.now()}`;
+  await page.locator('#name').fill(name);
+
+  await expect(page.getByTestId('download-pdf-button')).toBeVisible();
+  const downloadPromise = page.waitForEvent('download');
+  await page.getByTestId('download-pdf-button').click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe('CV.pdf');
+
+  // The file opens in a PDF reader, with the resume in it
+  const pdf = await openDownloadedPdf(download);
+  expect(pdf.pageCount).toBeGreaterThan(0);
+  expect(pdfShows(pdf.text, name), `the PDF should show "${name}"`).toBe(true);
+
+  // The dashboard lists it, without error
+  await page.getByRole('link', { name: 'Mon compte' }).click();
+  await expect(page).toHaveURL('/dashboard');
+  await expect(page.getByText(name)).toBeVisible();
+  await expect(page.getByText('Une erreur est survenue lors de la récupération des PDF')).toHaveCount(0);
+};
+
 // @clerk: signs in with Clerk's test accounts, not run by the CI (see .github/workflows/tests.yml)
 test.describe('Authentication Flow', { tag: '@clerk' }, () => {
   test.beforeEach(async ({ page }) => {
@@ -18,13 +53,8 @@ test.describe('Authentication Flow', { tag: '@clerk' }, () => {
     await page.goto('/fr');
   });
 
-  test('free user can sign in and download resume in PDF format', async ({ page }) => {
-    // Sign in as free user
-    await page.getByTestId('navbar-login-testid').click();
-    await expect(page.getByText('S\'identifier')).toBeVisible();
-    await page.getByPlaceholder('Adresse e-mail').fill(TEST_USERS.free.email);
-    await page.getByPlaceholder('Mot de passe').fill(TEST_USERS.free.password);
-    await page.getByRole('button', { name: 'Continuer', exact: true }).click();
+  test('free user can sign in, download a resume that opens as a PDF, and find it in the dashboard', async ({ page }) => {
+    await signIn(page, TEST_USERS.free);
 
     // Wait for successful authentication and redirect to the resume builder
     await expect(page).toHaveURL('/resume');
@@ -32,47 +62,16 @@ test.describe('Authentication Flow', { tag: '@clerk' }, () => {
     // Verify user is authenticated (sign in button should be gone)
     await expect(page.getByTestId('navbar-login-testid')).not.toBeVisible();
 
-    // Wait for the PDF download button to be visible
-    await expect(page.getByTestId('download-pdf-button')).toBeVisible();
-
-    // Set up download promise before clicking
-    const downloadPromise = page.waitForEvent('download');
-
-    // Click the PDF download button
-    await page.getByTestId('download-pdf-button').click();
-
-    // Wait for the download to complete
-    const download = await downloadPromise;
-
-    // Verify the download occurred and has the expected filename
-    expect(download.suggestedFilename()).toBe('CV.pdf');
+    await downloadResumeAndCheckIt(page);
   });
 
-  test('premium user can sign in and download resume in PDF format', async ({ page }) => {
-    // Sign in as premium user
-    await page.getByTestId('navbar-login-testid').click();
-    await expect(page.getByText('S\'identifier')).toBeVisible();
-    await page.getByPlaceholder('Adresse e-mail').fill(TEST_USERS.premium.email);
-    await page.getByPlaceholder('Mot de passe').fill(TEST_USERS.premium.password);
-    await page.getByRole('button', { name: 'Continuer', exact: true }).click();
+  test('premium user can sign in, download a resume that opens as a PDF, and find it in the dashboard', async ({ page }) => {
+    await signIn(page, TEST_USERS.premium);
 
     // Wait for successful authentication and redirect to resume page
     await expect(page).toHaveURL('/resume');
 
-    // Wait for the PDF download button to be visible
-    await expect(page.getByTestId('download-pdf-button')).toBeVisible();
-
-    // Set up download promise before clicking
-    const downloadPromise = page.waitForEvent('download');
-
-    // Click the PDF download button
-    await page.getByTestId('download-pdf-button').click();
-
-    // Wait for the download to complete
-    const download = await downloadPromise;
-
-    // Verify the download occurred and has the expected filename
-    expect(download.suggestedFilename()).toBe('CV.pdf');
+    await downloadResumeAndCheckIt(page);
   });
 
 });

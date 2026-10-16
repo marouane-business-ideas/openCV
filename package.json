@@ -21,6 +21,7 @@
   "description": "",
   "devDependencies": {
     "@playwright/test": "^1.54.1",
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "pdfjs-dist": "5.4.624"
   }
 }
