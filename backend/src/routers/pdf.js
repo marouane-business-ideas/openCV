@@ -1,9 +1,9 @@
 import express from "express";
 
-import { getUserAccountType, getUserDownloadCount, getUserMaxPdfs, incrementUserDownloadCount } from "../db.js";
+import { checkCanDownloadPdf, incrementUserDownloadCount, PDF_LIMIT_ERROR } from "../db.js";
 import { renderPdf } from "../pdf/renderPdf.js";
 
-const pdfRouter = (db, cluster) => {
+const pdfRouter = (db, cluster, getUserProfile) => {
     const router = express.Router();
 
     router.route("/:userId/pdfs")
@@ -12,15 +12,7 @@ const pdfRouter = (db, cluster) => {
             const { resumeHtml, resumeData, template } = req.body;
 
             try {
-                const [userAccountType, userPdfCount, userMaxPdfs] = await Promise.all([
-                    await getUserAccountType(db, userId),
-                    await getUserDownloadCount(db, userId),
-                    await getUserMaxPdfs(db, userId)
-                ]);
-
-                if (userAccountType === "free") {
-                    if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
-                }
+                await checkCanDownloadPdf(db, userId, getUserProfile);
 
                 const pdfBuffer = await cluster.execute(({ page }) => renderPdf(page, resumeHtml));
 
@@ -42,7 +34,7 @@ const pdfRouter = (db, cluster) => {
 
             } catch (err) {
                 console.error(err.message);
-                if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
+                if (err.message === PDF_LIMIT_ERROR) {
                     return res.status(403).json({ status: "Forbidden", message: "You reached the limit of pdfs you can generate on the free plan" });
                 }
                 res.status(500).json({ status: "Internal Server Error", message: "An error occurred while generating the PDF" });
@@ -81,16 +73,7 @@ const pdfRouter = (db, cluster) => {
             const { resumeHtml, resumeData, template } = req.body;
 
             try {
-                const [userAccountType, userPdfCount, userMaxPdfs] = await Promise.all([
-                    await getUserAccountType(db, userId),
-                    await getUserDownloadCount(db, userId),
-                    await getUserMaxPdfs(db, userId)
-                ]);
-
-                if (userAccountType === "free") {
-                    if (userPdfCount >= userMaxPdfs) throw new Error("SQLITE_CONSTRAINT: PDF limit exceeded for this user");
-                }
-
+                await checkCanDownloadPdf(db, userId, getUserProfile);
 
                 // Generate the PDF
                 const pdfBuffer = await cluster.execute(({ page }) => renderPdf(page, resumeHtml));
@@ -111,7 +94,7 @@ const pdfRouter = (db, cluster) => {
 
             } catch (err) {
                 console.error(err);
-                if (err.message === "SQLITE_CONSTRAINT: PDF limit exceeded for this user") {
+                if (err.message === PDF_LIMIT_ERROR) {
                     return res.status(403).json({ status: "Forbidden", message: "You reached the limit of pdfs you can generate on the free plan" });
                 }
                 res.status(500).json({ status: "Internal Server Error", message: "Failed to generate PDF" });

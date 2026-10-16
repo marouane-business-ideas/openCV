@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import process from "process";
 import Stripe from "stripe";
-import { clerkMiddleware } from "@clerk/express";
+import { clerkClient, clerkMiddleware } from "@clerk/express";
 
 import initApp from "./app.js";
 
@@ -78,7 +78,15 @@ app.use("/api/users", stripeRouter(stripe));
 app.use("/api/users", accountTypeRouter(db));
 
 /**  PDF routes */
-app.use("/api/users", pdfRouter(db, cluster));
+// What the user.created webhook (webhooks.js) would have saved, for users who have no row
+const getUserProfile = async (userId) => {
+    const user = await clerkClient.users.getUser(userId);
+    return {
+        fullName: [user.firstName, user.lastName].filter(Boolean).join(" "),
+        email: (user.primaryEmailAddress ?? user.emailAddresses[0])?.emailAddress,
+    };
+};
+app.use("/api/users", pdfRouter(db, cluster, getUserProfile));
 
 // Contact form
 app.use("/api/users", contactFormRouter(GMAIL_APP_PASSWORD));
