@@ -82,7 +82,18 @@ jobs:
         working-directory: backend
       # The backend creates its database there
       - run: mkdir -p backend/database
-      - run: npx playwright test --grep-invert @clerk
+      # Both in this job, which merging requires (the repository's rules name it): some bugs only exist in one
+      - name: Against the dev server
+        run: npx playwright test --grep-invert @clerk
+        env:
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/dev
+      - name: Against the production build
+        # Even when the dev server's failed
+        if: ${{ !cancelled() }}
+        run: npx playwright test --grep-invert @clerk
+        env:
+          E2E_APP: build
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/build
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
