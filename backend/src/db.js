@@ -73,15 +73,22 @@ export const PDF_LIMIT_ERROR = "SQLITE_CONSTRAINT: PDF limit exceeded for this u
 
 /**
  * Users normally get their row from Clerk's user.created webhook, at sign-up. When it's missing (the webhook failed,
- * or the database was started over), it's created here from the user's Clerk profile: without a row, the download
- * count can't be saved and the free plan's limit would never apply.
+ * or the database was started over), it's created here from the user's Clerk profile and Stripe subscription:
+ * without a row, the download count can't be saved, the free plan's limit would never apply, and paying users would
+ * be treated as free.
  */
 export async function ensureUser(db, userId, getUserProfile) {
     if (await db.get("SELECT 1 FROM users WHERE id = ?", [userId])) return;
 
-    const { fullName, email } = await getUserProfile(userId);
-    await db.run("INSERT OR IGNORE INTO users (id, fullName, email, accountType) VALUES (?, ?, ?, 'free')",
-        [userId, fullName, email]);
+    const { fullName, email, isPremium } = await getUserProfile(userId);
+    await db.run("INSERT OR IGNORE INTO users (id, fullName, email, accountType) VALUES (?, ?, ?, ?)",
+        [userId, fullName, email, isPremium ? "premium" : "free"]);
+}
+
+/** On a successful payment: the row is created first if missing, so the payment can't go unrecorded */
+export async function markUserPremium(db, userId, email, getUserProfile) {
+    await ensureUser(db, userId, getUserProfile);
+    await db.run("UPDATE users SET accountType = 'premium' WHERE id = ? OR email = ?", [userId, email]);
 }
 
 /** Throws PDF_LIMIT_ERROR when a free user has used up their PDFs, and refuses users the limit can't be checked for */

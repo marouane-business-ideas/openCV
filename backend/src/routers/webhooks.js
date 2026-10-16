@@ -2,7 +2,9 @@ import express from "express";
 import { Webhook } from "svix";
 import bodyParser from "body-parser";
 
-const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db) => {
+import { markUserPremium } from "../db.js";
+
+const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db, getUserProfile) => {
     const router = express.Router();
 
     router.post("/stripe", bodyParser.raw({ type: "application/json" }), async (req, res) => {
@@ -30,12 +32,8 @@ const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET
                 const session = await stripe.checkout.sessions.list({ payment_intent: paymentIntent.id });
                 const subscription = await stripe.subscriptions.retrieve(session.data[0].subscription);
 
-                await db.run(`
-                    UPDATE users
-                     SET accountType = "premium"
-                    WHERE id = ? OR email = ?`,
-                    [subscription.metadata.clerck_user_id, subscription.metadata.clerck_user_email]
-                );
+                await markUserPremium(db, subscription.metadata.clerck_user_id, subscription.metadata.clerck_user_email,
+                    getUserProfile);
             } catch (error) {
                 console.error("Error handling stripe payment", error);
             }
