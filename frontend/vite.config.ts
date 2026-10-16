@@ -14,10 +14,12 @@ const previewLikeNginx = (): Plugin => ({
   configurePreviewServer(server) {
     const clientDirectory = resolve(server.config.root, server.config.build.outDir);
     const isFile = (path: string) => existsSync(path) && statSync(path).isFile();
+    // Like nginx's /api/ location: these go to the backend (preview.proxy, the dev server's proxy by default)
+    const proxiedPaths = Object.keys(server.config.preview.proxy ?? {});
 
     server.middlewares.use((req, res, next) => {
       const { pathname, search } = new URL(req.url ?? "/", "http://localhost");
-      if (isFile(join(clientDirectory, pathname))) {
+      if (proxiedPaths.some((path) => pathname.startsWith(path)) || isFile(join(clientDirectory, pathname))) {
         next();
         return;
       }
