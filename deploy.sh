@@ -12,15 +12,15 @@
  
  docker build --platform linux/amd64 -t onlineresume:latest .
 
- docker save onlineresume:latest | gzip | ssh -i /Users/marouane_faris/.ssh/oracle/ssh-key-2024-09-03.key ubuntu@89.168.63.99 'sudo docker stop $(sudo docker ps -q) && \
+ docker save onlineresume:latest | gzip | ssh ubuntu@54.39.230.66 'sudo docker stop $(sudo docker ps -q) && \
  sudo docker rm $(sudo docker ps -a -q) && \
  sudo docker image rm onlineresume:latest --force && sudo docker load'
 
  # Delete no longer needed local image to save space !  
  docker image rm onlineresume:latest
 
- # --dns: the host resolver (169.254.169.254) is unreachable from inside containers on this Oracle VPS
- ssh -i /Users/marouane_faris/.ssh/oracle/ssh-key-2024-09-03.key ubuntu@89.168.63.99 'sudo docker run -d --name onlineresume \
+ # --dns: don't depend on the host's resolver, which some VPS hosts make unreachable from inside containers
+ ssh ubuntu@54.39.230.66 'sudo docker run -d --name onlineresume \
  --restart unless-stopped --dns 8.8.8.8 --dns 1.1.1.1 \
  -p 80:80 -p 443:443 -v ./database:/app/backend/database \
  -v ./httpsEncryption:/etc/letsencrypt \

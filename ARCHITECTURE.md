@@ -140,7 +140,7 @@ src/
 ## Infrastructure & Deployment
 
 ### Deployment
-- **Github Actions**: All commits on main pushed to remote are automatically deployed to an Oracle VPS (**user**: ubuntu /**IP**: 89.168.63.99),
+- **Github Actions**: All commits on main pushed to remote are automatically deployed to an OVH VPS in Canada (**user**: ubuntu /**IP**: 54.39.230.66),
 once the tests pass. See ".github/workflows/deploy.yml" to for the github actions implementation
 - **Deployment script**: See deploy.sh script at the root of the project
 
