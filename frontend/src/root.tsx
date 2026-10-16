@@ -81,6 +81,10 @@ export default function App() {
             localization={clerkLocalization}
             publishableKey={PUBLISHABLE_KEY}
             afterSignOutUrl={homePath}
+            // After signing in or up, users land on the resume builder, unless the link they came from says otherwise
+            // (redirect_url, like the premium plan's sign-up going to /subscribe)
+            signInFallbackRedirectUrl="/resume"
+            signUpFallbackRedirectUrl="/resume"
             // Clerk's own navigations (after signing in or out, between sign-in steps) stay in the app: without these,
             // Clerk reloads the whole page, and the header waits for Clerk to load again
             routerPush={(to) => navigate(to)}

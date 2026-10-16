@@ -14,8 +14,8 @@ const TEST_USERS = {
 // @clerk: signs in with Clerk's test accounts, not run by the CI (see .github/workflows/tests.yml)
 test.describe('Authentication Flow', { tag: '@clerk' }, () => {
   test.beforeEach(async ({ page }) => {
-    // Start from the homepage
-    await page.goto('/');
+    // Start from the French homepage, like the browser's locale ("/" is the English one)
+    await page.goto('/fr');
   });
 
   test('free user can sign in and download resume in PDF format', async ({ page }) => {
@@ -26,15 +26,11 @@ test.describe('Authentication Flow', { tag: '@clerk' }, () => {
     await page.getByPlaceholder('Mot de passe').fill(TEST_USERS.free.password);
     await page.getByRole('button', { name: 'Continuer', exact: true }).click();
 
-    // Wait for successful authentication and redirect to homepage
-    await expect(page).toHaveURL('/');
+    // Wait for successful authentication and redirect to the resume builder
+    await expect(page).toHaveURL('/resume');
 
     // Verify user is authenticated (sign in button should be gone)
     await expect(page.getByTestId('navbar-login-testid')).not.toBeVisible();
-
-    // Navigate to resume builder
-    await page.getByTestId('home-get-started-button').click();
-    await expect(page).toHaveURL('/resume');
 
     // Wait for the PDF download button to be visible
     await expect(page.getByTestId('download-pdf-button')).toBeVisible();
