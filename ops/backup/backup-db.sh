@@ -19,6 +19,8 @@ integrity=$(sqlite3 "$work/$name" "PRAGMA integrity_check;")
 
 gzip -9 "$work/$name"
 age --recipient "$AGE_RECIPIENT" --output "$work/$name.gz.age" "$work/$name.gz"
-rclone copyto "$work/$name.gz.age" "r2:$R2_BUCKET/db/$name.gz.age"
+# --s3-no-head: after an upload, Ubuntu's rclone (1.60) checks it with a HEAD on the version R2 returned, which R2
+# answers with 501. The upload is still verified: rclone sends its MD5 and R2 refuses it if the content differs
+rclone copyto --s3-no-head "$work/$name.gz.age" "r2:$R2_BUCKET/db/$name.gz.age"
 
 echo "Backed up $name.gz.age ($(stat -c %s "$work/$name.gz.age") bytes)"
