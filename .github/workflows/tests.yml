@@ -25,6 +25,25 @@ jobs:
       - run: npm run build
       - run: npx vitest run
 
+  backend:
+    name: Backend unit tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      # These tests don't print PDFs: no need for Puppeteer's browser
+      - run: npm ci --no-audit --no-fund
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+      - run: npm test
+
   templates:
     name: Template tests
     runs-on: ubuntu-latest

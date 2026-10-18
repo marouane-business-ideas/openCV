@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "NODE_ENV=development nodemon src/index.js",
-    "start": "NODE_ENV=production node src/index.js"
+    "start": "NODE_ENV=production node src/index.js",
+    "test": "node --test"
   },
   "type": "module",
   "dependencies": {

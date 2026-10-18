@@ -40,9 +40,9 @@ async function migratePdfMetadataTemplates(db) {
     }
 }
 
-export async function initDb() {
+export async function initDb(filename = process.cwd() + "/database/database.db") {
     const db = await open({
-        filename: process.cwd() + "/database/database.db",
+        filename,
         driver: sqlite3.Database
     });
 
@@ -69,6 +69,39 @@ export async function initDb() {
     return db;
 }
 
+export const PDF_LIMIT_ERROR = "SQLITE_CONSTRAINT: PDF limit exceeded for this user";
+
+/**
+ * Users normally get their row from Clerk's user.created webhook, at sign-up. When it's missing (the webhook failed,
+ * or the database was started over), it's created here from the user's Clerk profile and Stripe subscription:
+ * without a row, the download count can't be saved, the free plan's limit would never apply, and paying users would
+ * be treated as free.
+ */
+export async function ensureUser(db, userId, getUserProfile) {
+    if (await db.get("SELECT 1 FROM users WHERE id = ?", [userId])) return;
+
+    const { fullName, email, isPremium } = await getUserProfile(userId);
+    await db.run("INSERT OR IGNORE INTO users (id, fullName, email, accountType) VALUES (?, ?, ?, ?)",
+        [userId, fullName, email, isPremium ? "premium" : "free"]);
+}
+
+/** On a successful payment: the row is created first if missing, so the payment can't go unrecorded */
+export async function markUserPremium(db, userId, email, getUserProfile) {
+    await ensureUser(db, userId, getUserProfile);
+    await db.run("UPDATE users SET accountType = 'premium' WHERE id = ? OR email = ?", [userId, email]);
+}
+
+/** Throws PDF_LIMIT_ERROR when a free user has used up their PDFs, and refuses users the limit can't be checked for */
+export async function checkCanDownloadPdf(db, userId, getUserProfile) {
+    await ensureUser(db, userId, getUserProfile);
+
+    const user = await db.get("SELECT accountType, downloadedPdfs, maxPdfs FROM users WHERE id = ?", [userId]);
+    // E.g. another row already has this email: without a row of their own, the download couldn't be counted
+    if (!user) throw new Error(`No user row for ${userId}: the PDF limit can't be enforced`);
+
+    if (user.accountType === "free" && user.downloadedPdfs >= user.maxPdfs) throw new Error(PDF_LIMIT_ERROR);
+}
+
 export async function incrementUserDownloadCount(db, userId) {
     await db.run(`
         UPDATE users
@@ -90,15 +123,6 @@ export async function getUserDownloadCount(db, userId) {
     return result ? result.downloadedPdfs : 0;
 }
 
-
-export async function getUserMaxPdfs(db, userId) {
-    const result = await db.get(`
-        SELECT maxPdfs
-        FROM users
-        WHERE id = ?
-    `, [userId]);
-    return result ? result.maxPdfs : 5;
-}
 
 export async function getUserAccountType(db, userId) {
     const result = await db.get(`

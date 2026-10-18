@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import helmet from "helmet";
 import process from "process";
 import Stripe from "stripe";
-import { clerkMiddleware } from "@clerk/express";
+import { clerkClient, clerkMiddleware } from "@clerk/express";
 
 import initApp from "./app.js";
 
@@ -60,8 +60,25 @@ app.use((req, res, next) => {
 
 app.use(clerkMiddleware());
 
+// Clerk and Stripe hold what a user's row is rebuilt from when it's missing (see ensureUser in db.js): the
+// user.created webhook (webhooks.js) and the premium subscription's metadata (stripe.js)
+const getUserProfile = async (userId) => {
+    const [user, subscriptions] = await Promise.all([
+        clerkClient.users.getUser(userId),
+        stripe.subscriptions.search({
+            query: `status:'active' AND metadata['clerck_user_id']:'${userId.replaceAll("'", "\\'")}'`,
+            limit: 1,
+        }),
+    ]);
+    return {
+        fullName: [user.firstName, user.lastName].filter(Boolean).join(" "),
+        email: (user.primaryEmailAddress ?? user.emailAddresses[0])?.emailAddress,
+        isPremium: subscriptions.data.length > 0,
+    };
+};
+
 // This middleware needs to be called before calling app.use(bodyParser.json());
-app.use("/api/webhook", webhooksRouter(stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db));
+app.use("/api/webhook", webhooksRouter(stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db, getUserProfile));
 
 // Middleware to parse JSON bodies
 // The resume HTML sent for PDF generation embeds its fonts, hence the limit above the 100kb default
@@ -75,10 +92,10 @@ app.use("/api/users", clerkAuthRouter);
 app.use("/api/users", stripeRouter(stripe));
 
 // Check account type (free or premium) route
-app.use("/api/users", accountTypeRouter(db));
+app.use("/api/users", accountTypeRouter(db, getUserProfile));
 
 /**  PDF routes */
-app.use("/api/users", pdfRouter(db, cluster));
+app.use("/api/users", pdfRouter(db, cluster, getUserProfile));
 
 // Contact form
 app.use("/api/users", contactFormRouter(GMAIL_APP_PASSWORD));
