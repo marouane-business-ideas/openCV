@@ -139,6 +139,11 @@ const templateLabPage = (): Plugin => ({
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [reactRouter(), templateLabPage(), templateLabPdf(), previewLikeNginx()],
+  // React Router's plugin scans no entry for dependencies at startup: the template lab's were only found on the first
+  // page load, and the reload Vite then forces made template tests time out at random
+  optimizeDeps: {
+    entries: ["template-lab.html"],
+  },
   server: {
     host: "0.0.0.0",
     allowedHosts: ["onlineresume.dev", "www.onlineresume.dev"],
