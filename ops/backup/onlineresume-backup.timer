@@ -1,0 +1,11 @@
+[Unit]
+Description=Back up the OnlineResume database every night
+
+[Timer]
+OnCalendar=*-*-* 03:00:00 UTC
+RandomizedDelaySec=15min
+# A night missed while the server was off is caught up at the next boot
+Persistent=true
+
+[Install]
+WantedBy=timers.target
