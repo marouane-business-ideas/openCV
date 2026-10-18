@@ -2,7 +2,7 @@ import express from "express";
 import { Webhook } from "svix";
 import bodyParser from "body-parser";
 
-import { addUser, markUserPremium } from "../db.js";
+import { addUser, formatFullName, markUserPremium } from "../db.js";
 
 const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db, getUserProfile) => {
     const router = express.Router();
@@ -66,7 +66,7 @@ const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET
                 // The app may already have added the row (see ensureUser): a failure here would make Clerk retry
                 // the webhook, then disable it
                 const added = await addUser(db, {
-                    id, fullName: first_name + " " + last_name, email: email_addresses[0].email_address,
+                    id, fullName: formatFullName(first_name, last_name), email: email_addresses[0].email_address,
                 });
 
                 console.log(added ? "User registered in database:" : "User already in database:", id);

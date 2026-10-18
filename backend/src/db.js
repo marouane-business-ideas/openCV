@@ -71,6 +71,9 @@ export async function initDb(filename = process.cwd() + "/database/database.db")
 
 export const PDF_LIMIT_ERROR = "SQLITE_CONSTRAINT: PDF limit exceeded for this user";
 
+/** The name saved in a user's row: Clerk gives null for a first or last name the user didn't enter */
+export const formatFullName = (firstName, lastName) => [firstName, lastName].filter(Boolean).join(" ");
+
 /**
  * Adds a user's row unless they already have one, and tells whether it did. Clerk's user.created webhook and
  * ensureUser() can both add a new user's row, in either order: the second one must not fail.

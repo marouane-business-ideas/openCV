@@ -1,7 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { addUser, checkCanDownloadPdf, ensureUser, incrementUserDownloadCount, initDb, markUserPremium, PDF_LIMIT_ERROR } from "./db.js";
+import {
+    addUser, checkCanDownloadPdf, ensureUser, formatFullName, incrementUserDownloadCount, initDb, markUserPremium, PDF_LIMIT_ERROR,
+} from "./db.js";
 
 const profile = (email, isPremium = false) => async () => ({ fullName: "Ada Lovelace", email, isPremium });
 
@@ -92,4 +94,10 @@ test("the app doesn't fetch the profile of a user the sign-up webhook already ad
 
     assert.equal(await addUser(db, { id: "user_1", fullName: "Ada Lovelace", email: "ada@example.com" }), true);
     await ensureUser(db, "user_1", () => assert.fail("the profile shouldn't be fetched"));
+});
+
+test("a name the user didn't enter is left out of their full name", () => {
+    assert.equal(formatFullName("Ada", "Lovelace"), "Ada Lovelace");
+    assert.equal(formatFullName("Ada", null), "Ada");
+    assert.equal(formatFullName(null, null), "");
 });
