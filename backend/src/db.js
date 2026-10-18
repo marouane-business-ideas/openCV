@@ -72,6 +72,16 @@ export async function initDb(filename = process.cwd() + "/database/database.db")
 export const PDF_LIMIT_ERROR = "SQLITE_CONSTRAINT: PDF limit exceeded for this user";
 
 /**
+ * Adds a user's row unless they already have one, and tells whether it did. Clerk's user.created webhook and
+ * ensureUser() can both add a new user's row, in either order: the second one must not fail.
+ */
+export async function addUser(db, { id, fullName, email, accountType = "free" }) {
+    const { changes } = await db.run("INSERT OR IGNORE INTO users (id, fullName, email, accountType) VALUES (?, ?, ?, ?)",
+        [id, fullName, email, accountType]);
+    return changes > 0;
+}
+
+/**
  * Users normally get their row from Clerk's user.created webhook, at sign-up. When it's missing (the webhook failed,
  * or the database was started over), it's created here from the user's Clerk profile and Stripe subscription:
  * without a row, the download count can't be saved, the free plan's limit would never apply, and paying users would
@@ -81,8 +91,7 @@ export async function ensureUser(db, userId, getUserProfile) {
     if (await db.get("SELECT 1 FROM users WHERE id = ?", [userId])) return;
 
     const { fullName, email, isPremium } = await getUserProfile(userId);
-    await db.run("INSERT OR IGNORE INTO users (id, fullName, email, accountType) VALUES (?, ?, ?, ?)",
-        [userId, fullName, email, isPremium ? "premium" : "free"]);
+    await addUser(db, { id: userId, fullName, email, accountType: isPremium ? "premium" : "free" });
 }
 
 /** On a successful payment: the row is created first if missing, so the payment can't go unrecorded */
