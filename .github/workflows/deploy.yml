@@ -9,6 +9,8 @@ on:
 jobs:
   tests:
     uses: ./.github/workflows/tests.yml
+    secrets:
+      CLERK_DEVELOPMENT_SECRET_KEY: ${{ secrets.CLERK_DEVELOPMENT_SECRET_KEY }}
 
   deploy:
     # Nothing is deployed when a test fails

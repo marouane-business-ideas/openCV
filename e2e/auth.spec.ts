@@ -1,5 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
+import { setupClerkTestingToken } from '@clerk/testing/playwright';
 
+import { fetchClerkTestingToken } from './helpers/clerk';
 import { openDownloadedPdf, pdfShows } from './helpers/downloadedPdf';
 
 const TEST_USERS = {
@@ -46,9 +48,14 @@ const downloadResumeAndCheckIt = async (page: Page) => {
   await expect(page.getByText('Une erreur est survenue lors de la récupération des PDF')).toHaveCount(0);
 };
 
-// @clerk: signs in with Clerk's test accounts, not run by the CI (see .github/workflows/tests.yml)
+// @clerk: sign in with Clerk's test accounts, which needs the secret key of Clerk's development instance
 test.describe('Authentication Flow', { tag: '@clerk' }, () => {
+  test.beforeAll(async () => {
+    await fetchClerkTestingToken();
+  });
+
   test.beforeEach(async ({ page }) => {
+    await setupClerkTestingToken({ page });
     // Start from the French homepage, like the browser's locale ("/" is the English one)
     await page.goto('/fr');
   });
