@@ -1,0 +1,9 @@
+[Unit]
+Description=Back up the OnlineResume database to Cloudflare R2
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/onlineresume-backup.env
+ExecStart=/usr/local/bin/onlineresume-backup-db

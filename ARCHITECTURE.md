@@ -156,6 +156,35 @@ Secrets are never in the repository nor in the Docker image.
     VPS (`~/backend.env.production.local`) and mounts that file in the container. The backend refuses to start if
     one is missing. To change a secret: update it in GitHub, then re-run the deploy.
 
+### Database backups
+The SQLite database (`~/database/database.db` on the VPS, mounted in the container) is the only copy of users' plans,
+download counts and saved resumes. Every night at 03:00 UTC, a systemd timer on the VPS copies it with
+`sqlite3 .backup` (consistent while the app writes), checks the copy's integrity, compresses it, encrypts it with
+[age](https://age-encryption.org) and uploads it to the Cloudflare R2 bucket `online-resume` (EU jurisdiction, so
+off OVH, and only reachable through the `.eu.` endpoint). R2 deletes backups after 30 days. Files: `ops/backup/`.
+- **Access**: an R2 API token with Object Read & Write on that bucket only, restricted to the VPS's IPv4 and IPv6
+  addresses (the VPS reaches Cloudflare over IPv6: with IPv4 alone, R2 answers 403).
+- **Encryption**: the VPS only has the age *public* key. The private key is kept off the server (password manager):
+  it's the only way to read the backups. Losing it makes them useless.
+- **Install** (once, on the VPS, from a checkout of the repo):
+  ```bash
+  sudo apt install -y sqlite3 age rclone
+  sudo install -m 755 ops/backup/backup-db.sh /usr/local/bin/onlineresume-backup-db
+  sudo install -m 644 ops/backup/onlineresume-backup.service ops/backup/onlineresume-backup.timer /etc/systemd/system/
+  sudo install -m 600 ops/backup/backup.env.example /etc/onlineresume-backup.env   # then fill it in with sudo nano
+  sudo systemctl daemon-reload && sudo systemctl enable --now onlineresume-backup.timer
+  ```
+- **Check**: `systemctl list-timers onlineresume-backup.timer` (next and last run),
+  `journalctl -u onlineresume-backup.service` (results). Back up now: `sudo systemctl start onlineresume-backup.service`.
+- **Restore**:
+  ```bash
+  # Download a backup (or from the Cloudflare dashboard), then on a machine that has the private key:
+  age --decrypt --identity onlineresume-backup.agekey database-<date>.db.gz.age | gunzip > database.db
+  sqlite3 database.db "PRAGMA integrity_check;"   # must print ok
+  # On the VPS, after copying database.db there:
+  sudo docker stop onlineresume && sudo cp database.db ~/database/database.db && sudo docker start onlineresume
+  ```
+
 ### Containerization
 - **Docker**: Single container deployment
 - **Base Image**: Node.js 22.6.0
