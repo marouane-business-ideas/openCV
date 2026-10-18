@@ -6,6 +6,7 @@ import Stripe from "stripe";
 import { clerkClient, clerkMiddleware } from "@clerk/express";
 
 import initApp from "./app.js";
+import { formatFullName } from "./db.js";
 
 import pdfRouter from "./routers/pdf.js";
 import clerkAuthRouter from "./routers/clerkAuth.js";
@@ -71,7 +72,7 @@ const getUserProfile = async (userId) => {
         }),
     ]);
     return {
-        fullName: [user.firstName, user.lastName].filter(Boolean).join(" "),
+        fullName: formatFullName(user.firstName, user.lastName),
         email: (user.primaryEmailAddress ?? user.emailAddresses[0])?.emailAddress,
         isPremium: subscriptions.data.length > 0,
     };

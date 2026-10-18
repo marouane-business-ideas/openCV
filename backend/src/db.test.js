@@ -1,7 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { checkCanDownloadPdf, incrementUserDownloadCount, initDb, markUserPremium, PDF_LIMIT_ERROR } from "./db.js";
+import {
+    addUser, checkCanDownloadPdf, ensureUser, formatFullName, incrementUserDownloadCount, initDb, markUserPremium, PDF_LIMIT_ERROR,
+} from "./db.js";
 
 const profile = (email, isPremium = false) => async () => ({ fullName: "Ada Lovelace", email, isPremium });
 
@@ -77,4 +79,25 @@ test("a payment upgrades an existing free user", async () => {
     await markUserPremium(db, "user_1", "ada@example.com", () => assert.fail("the profile shouldn't be fetched"));
 
     assert.equal(await accountType(db, "user_1"), "premium");
+});
+
+test("the sign-up webhook doesn't fail when the app already added the user's row", async () => {
+    const db = await initDb(":memory:");
+    await ensureUser(db, "user_1", profile("ada@example.com"));
+
+    assert.equal(await addUser(db, { id: "user_1", fullName: "Ada Lovelace", email: "ada@example.com" }), false);
+    assert.equal((await db.get("SELECT COUNT(*) AS count FROM users")).count, 1);
+});
+
+test("the app doesn't fetch the profile of a user the sign-up webhook already added", async () => {
+    const db = await initDb(":memory:");
+
+    assert.equal(await addUser(db, { id: "user_1", fullName: "Ada Lovelace", email: "ada@example.com" }), true);
+    await ensureUser(db, "user_1", () => assert.fail("the profile shouldn't be fetched"));
+});
+
+test("a name the user didn't enter is left out of their full name", () => {
+    assert.equal(formatFullName("Ada", "Lovelace"), "Ada Lovelace");
+    assert.equal(formatFullName("Ada", null), "Ada");
+    assert.equal(formatFullName(null, null), "");
 });
