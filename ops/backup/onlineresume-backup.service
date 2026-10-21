@@ -7,3 +7,6 @@ After=network-online.target
 Type=oneshot
 EnvironmentFile=/etc/onlineresume-backup.env
 ExecStart=/usr/local/bin/onlineresume-backup-db
+# Reports the backup's exit status to healthchecks.io (0 = success), which emails when a backup fails or when none is
+# reported for a day. "-": a failed report doesn't fail the backup, healthchecks.io then alerts on the missing report
+ExecStopPost=-/usr/bin/curl -fsS -m 10 --retry 5 -o /dev/null ${HEALTHCHECK_URL}/${EXIT_STATUS}

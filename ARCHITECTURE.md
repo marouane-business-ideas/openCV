@@ -164,6 +164,10 @@ download counts and saved resumes. Every night at 03:00 UTC, a systemd timer on 
 off OVH, and only reachable through the `.eu.` endpoint). R2 deletes backups after 30 days. Files: `ops/backup/`.
 - **Access**: an R2 API token with Object Read & Write on that bucket only, restricted to the VPS's IPv4 and IPv6
   addresses (the VPS reaches Cloudflare over IPv6: with IPv4 alone, R2 answers 403).
+- **Alert**: after each backup, the service reports its exit status to the healthchecks.io check
+  `onlineresume-backup` (cron `0 3 * * *` UTC, 1 h grace), which emails when a backup fails or when none is reported
+  (server down, timer stopped...). Without it, a broken backup would go unnoticed until R2's 30-day expiry had deleted
+  every backup.
 - **Encryption**: the VPS only has the age *public* key. The private key is kept off the server (password manager):
   it's the only way to read the backups. Losing it makes them useless.
 - **Install** (once, on the VPS, from a checkout of the repo):
