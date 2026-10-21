@@ -120,7 +120,13 @@ export async function updatePlanFromSubscription(db, { status, metadata }, getUs
         return "premium";
     }
     if (ENDED_SUBSCRIPTION_STATUSES.includes(status)) {
-        await db.run("UPDATE users SET accountType = 'free' WHERE id = ? OR email = ?", [userId, email]);
+        // Back on the free plan, they get its 5 PDFs: the ones downloaded while premium don't count. Only when they
+        // were premium, so that the same event received twice doesn't give 5 more
+        await db.run(`
+            UPDATE users
+            SET accountType = 'free', downloadedPdfs = 0
+            WHERE (id = ? OR email = ?) AND accountType = 'premium'
+        `, [userId, email]);
         return "free";
     }
     return null;

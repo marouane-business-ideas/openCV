@@ -101,12 +101,24 @@ for (const status of ["canceled", "unpaid"]) {
     });
 }
 
-test("a former premium user who already downloaded 5 PDFs gets no more on the free plan", async () => {
+test("a former premium user gets the free plan's 5 PDFs, whatever they downloaded while premium", async () => {
     const db = await premiumUser(12);
 
     await updatePlanFromSubscription(db, subscription("canceled"), profile("ada@example.com"));
 
-    await assert.rejects(checkCanDownloadPdf(db, "user_1", profile("ada@example.com")), { message: PDF_LIMIT_ERROR });
+    for (let i = 0; i < 5; i++) await downloadPdf(db, "user_1", profile("ada@example.com"));
+    await assert.rejects(downloadPdf(db, "user_1", profile("ada@example.com")), { message: PDF_LIMIT_ERROR });
+});
+
+test("the end of a subscription received twice doesn't give 5 more PDFs", async () => {
+    const db = await premiumUser();
+    await updatePlanFromSubscription(db, subscription("canceled"), profile("ada@example.com"));
+    for (let i = 0; i < 5; i++) await downloadPdf(db, "user_1", profile("ada@example.com"));
+
+    // Stripe sends customer.subscription.updated then .deleted for the same cancellation, and can resend events
+    await updatePlanFromSubscription(db, subscription("canceled"), profile("ada@example.com"));
+
+    await assert.rejects(downloadPdf(db, "user_1", profile("ada@example.com")), { message: PDF_LIMIT_ERROR });
 });
 
 test("premium is kept while Stripe retries a failed renewal", async () => {
