@@ -136,6 +136,10 @@ src/
 - Premium account management
 - Webhook handling for payment events
 - Account type validation
+- Premium follows the subscription (`routers/webhooks.js`): granted on its first payment (`payment_intent.succeeded`),
+  ended when it's canceled or unpaid, given back if it's paid again (`customer.subscription.updated` and `.deleted`).
+  While Stripe retries a failed renewal (`past_due`), the user stays premium. The Stripe webhook endpoint
+  (Developers > Webhooks) must send these 3 events
 
 ## Infrastructure & Deployment
 
