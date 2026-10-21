@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
     addUser, checkCanDownloadPdf, ensureUser, formatFullName, incrementUserDownloadCount, initDb, markUserPremium, PDF_LIMIT_ERROR,
+    updatePlanFromSubscription,
 } from "./db.js";
 
 const profile = (email, isPremium = false) => async () => ({ fullName: "Ada Lovelace", email, isPremium });
@@ -79,6 +80,70 @@ test("a payment upgrades an existing free user", async () => {
     await markUserPremium(db, "user_1", "ada@example.com", () => assert.fail("the profile shouldn't be fetched"));
 
     assert.equal(await accountType(db, "user_1"), "premium");
+});
+
+const subscription = (status) => ({ status, metadata: { clerck_user_id: "user_1", clerck_user_email: "ada@example.com" } });
+
+const premiumUser = async (downloadedPdfs = 0) => {
+    const db = await initDb(":memory:");
+    await db.run(`INSERT INTO users (id, fullName, email, accountType, downloadedPdfs)
+        VALUES ('user_1', 'Ada', 'ada@example.com', 'premium', ?)`, [downloadedPdfs]);
+    return db;
+};
+
+for (const status of ["canceled", "unpaid"]) {
+    test(`a ${status} subscription puts the user back on the free plan`, async () => {
+        const db = await premiumUser();
+
+        assert.equal(await updatePlanFromSubscription(db, subscription(status), profile("ada@example.com")), "free");
+
+        assert.equal(await accountType(db, "user_1"), "free");
+    });
+}
+
+test("a former premium user gets the free plan's 5 PDFs, whatever they downloaded while premium", async () => {
+    const db = await premiumUser(12);
+
+    await updatePlanFromSubscription(db, subscription("canceled"), profile("ada@example.com"));
+
+    for (let i = 0; i < 5; i++) await downloadPdf(db, "user_1", profile("ada@example.com"));
+    await assert.rejects(downloadPdf(db, "user_1", profile("ada@example.com")), { message: PDF_LIMIT_ERROR });
+});
+
+test("the end of a subscription received twice doesn't give 5 more PDFs", async () => {
+    const db = await premiumUser();
+    await updatePlanFromSubscription(db, subscription("canceled"), profile("ada@example.com"));
+    for (let i = 0; i < 5; i++) await downloadPdf(db, "user_1", profile("ada@example.com"));
+
+    // Stripe sends customer.subscription.updated then .deleted for the same cancellation, and can resend events
+    await updatePlanFromSubscription(db, subscription("canceled"), profile("ada@example.com"));
+
+    await assert.rejects(downloadPdf(db, "user_1", profile("ada@example.com")), { message: PDF_LIMIT_ERROR });
+});
+
+test("premium is kept while Stripe retries a failed renewal", async () => {
+    const db = await premiumUser();
+
+    assert.equal(await updatePlanFromSubscription(db, subscription("past_due"), profile("ada@example.com")), null);
+
+    assert.equal(await accountType(db, "user_1"), "premium");
+});
+
+test("a subscription paid again after being unpaid gives premium back", async () => {
+    const db = await premiumUser();
+    await updatePlanFromSubscription(db, subscription("unpaid"), profile("ada@example.com"));
+
+    assert.equal(await updatePlanFromSubscription(db, subscription("active"), profile("ada@example.com")), "premium");
+
+    assert.equal(await accountType(db, "user_1"), "premium");
+});
+
+test("the end of a subscription doesn't create a row for a user who has none", async () => {
+    const db = await initDb(":memory:");
+
+    await updatePlanFromSubscription(db, subscription("canceled"), () => assert.fail("the profile shouldn't be fetched"));
+
+    assert.equal((await db.get("SELECT COUNT(*) AS count FROM users")).count, 0);
 });
 
 test("the sign-up webhook doesn't fail when the app already added the user's row", async () => {
