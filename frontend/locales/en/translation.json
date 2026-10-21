@@ -163,7 +163,9 @@
     "current_plan": "Your Current Plan",
     "upgrade_button": "Upgrade to Premium",
     "free_account_type": "Free",
-    "premium_account_type": "Premium"
+    "premium_account_type": "Premium",
+    "manage_subscription_button": "Manage or cancel my subscription",
+    "manage_subscription_hint": "Change your card, download your invoices or cancel your subscription. If you cancel, Premium stays active until the end of the period you've paid for."
   },
   "contact": {
     "title": "Contact Us",

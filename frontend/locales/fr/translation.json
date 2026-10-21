@@ -164,7 +164,9 @@
       "current_plan": "Votre abonnement",
       "upgrade_button": "Passer à l'abonnement Premium",
       "free_account_type": "Gratuit",
-      "premium_account_type": "Premium"
+      "premium_account_type": "Premium",
+      "manage_subscription_button": "Gérer ou résilier mon abonnement",
+      "manage_subscription_hint": "Changez de carte, téléchargez vos factures ou résiliez votre abonnement. En cas de résiliation, Premium reste actif jusqu'à la fin de la période payée."
     },
     "contact": {
       "title": "Contactez-nous",

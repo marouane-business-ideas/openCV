@@ -1,6 +1,8 @@
 import express from "express";
 import process from "process";
 
+import { findActiveSubscriptions } from "../subscriptions.js";
+
 const stripeRouter = (stripe) => {
     const router = express.Router();
 
@@ -33,6 +35,27 @@ const stripeRouter = (stripe) => {
             res.redirect(303, session.url);
         } catch (error) {
             console.error("Checkout session error", error);
+            res.sendStatus(500);
+        }
+    });
+
+    // Stripe's customer portal, where premium users cancel their subscription, change their card and download their
+    // invoices. What it allows is set in the Stripe dashboard: Settings > Billing > Customer portal
+    router.post("/:userId/manage-subscription", async (req, res) => {
+        const { userId } = req.params;
+
+        try {
+            const [subscription] = await findActiveSubscriptions(stripe, userId);
+            if (!subscription) return res.status(404).send("No active subscription");
+
+            const session = await stripe.billingPortal.sessions.create({
+                customer: subscription.customer,
+                return_url: process.env.STRIPE_PORTAL_RETURN_URL,
+            });
+
+            res.redirect(303, session.url);
+        } catch (error) {
+            console.error("Customer portal session error", error);
             res.sendStatus(500);
         }
     });

@@ -49,6 +49,19 @@ const AccountPage = () => {
                     </form>
                 </>
             }
+            {
+                accountType.type === "premium" && <>
+                    <p className="text-md text-gray-600 mb-4">{t("account.manage_subscription_hint")}</p>
+                    <form action={`/api/users/${user?.id}/manage-subscription`} method="POST">
+                        <button
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
+                            type="submit"
+                        >
+                            {t("account.manage_subscription_button")}
+                        </button>
+                    </form>
+                </>
+            }
         </div >
     );
 };
