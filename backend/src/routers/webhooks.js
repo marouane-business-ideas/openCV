@@ -2,7 +2,7 @@ import express from "express";
 import { Webhook } from "svix";
 import bodyParser from "body-parser";
 
-import { addUser, formatFullName, markUserPremium } from "../db.js";
+import { addUser, formatFullName, markUserPremium, updatePlanFromSubscription } from "../db.js";
 
 const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db, getUserProfile) => {
     const router = express.Router();
@@ -30,12 +30,28 @@ const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET
                 const paymentIntent = event.data.object;
 
                 const session = await stripe.checkout.sessions.list({ payment_intent: paymentIntent.id });
+                // A renewal has no checkout session: the subscription events below keep the plan up to date
+                if (!session.data.length) return;
                 const subscription = await stripe.subscriptions.retrieve(session.data[0].subscription);
 
                 await markUserPremium(db, subscription.metadata.clerck_user_id, subscription.metadata.clerck_user_email,
                     getUserProfile);
             } catch (error) {
                 console.error("Error handling stripe payment", error);
+            }
+
+        } else if (event.type === "customer.subscription.updated" || event.type === "customer.subscription.deleted") {
+            res.status(200).send();
+
+            try {
+                // Events can arrive out of order: the subscription's current status is read from Stripe, not the event
+                const subscription = await stripe.subscriptions.retrieve(event.data.object.id);
+                const plan = await updatePlanFromSubscription(db, subscription, getUserProfile);
+
+                console.log(`Subscription ${subscription.id} of ${subscription.metadata.clerck_user_id} is ` +
+                    `${subscription.status}: ${plan ? `plan set to ${plan}` : "plan unchanged"}`);
+            } catch (error) {
+                console.error("Error handling stripe subscription change", error);
             }
 
         } else {

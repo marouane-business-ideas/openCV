@@ -103,6 +103,29 @@ export async function markUserPremium(db, userId, email, getUserProfile) {
     await db.run("UPDATE users SET accountType = 'premium' WHERE id = ? OR email = ?", [userId, email]);
 }
 
+// canceled: by the user, by us, or by Stripe once a renewal's payment retries are exhausted. unpaid: the same, with
+// Stripe's "mark as unpaid" setting. The others can't happen with our checkout, but don't give premium either
+const ENDED_SUBSCRIPTION_STATUSES = ["canceled", "unpaid", "incomplete_expired", "paused"];
+
+/**
+ * Keeps a user's plan in line with their Stripe subscription when it changes, and returns the plan it set, if any.
+ * past_due (Stripe is retrying a failed renewal) and incomplete (the first payment is in progress, see markUserPremium)
+ * leave the plan as it is.
+ */
+export async function updatePlanFromSubscription(db, { status, metadata }, getUserProfile) {
+    const { clerck_user_id: userId, clerck_user_email: email } = metadata;
+
+    if (status === "active") {
+        await markUserPremium(db, userId, email, getUserProfile);
+        return "premium";
+    }
+    if (ENDED_SUBSCRIPTION_STATUSES.includes(status)) {
+        await db.run("UPDATE users SET accountType = 'free' WHERE id = ? OR email = ?", [userId, email]);
+        return "free";
+    }
+    return null;
+}
+
 /** Throws PDF_LIMIT_ERROR when a free user has used up their PDFs, and refuses users the limit can't be checked for */
 export async function checkCanDownloadPdf(db, userId, getUserProfile) {
     await ensureUser(db, userId, getUserProfile);
