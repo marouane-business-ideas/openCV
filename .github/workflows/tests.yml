@@ -8,6 +8,8 @@ on:
       # For the end-to-end tests (see below)
       CLERK_DEVELOPMENT_SECRET_KEY:
         required: true
+      STRIPE_DEVELOPMENT_SECRET_KEY:
+        required: true
 
 jobs:
   build:
@@ -87,12 +89,14 @@ jobs:
       # The backend creates its database there
       - run: mkdir -p backend/database
       # Both in this job, which merging requires (the repository's rules name it): some bugs only exist in one.
-      # CLERK_SECRET_KEY: Clerk's development instance's, the one the app uses here, for the backend and the tests that
-      # sign in (e2e/helpers/clerk.ts). Only given to these steps
+      # The secrets of the development settings the app uses here, only given to these steps. CLERK_SECRET_KEY: for the
+      # backend and the tests that sign in (e2e/helpers/clerk.ts). STRIPE_SECRET_KEY (test mode): for the backend, which
+      # looks up a user's subscription to rebuild their missing row (ensureUser in db.js), as the CI's database is empty
       - name: Against the dev server
         run: npx playwright test
         env:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_DEVELOPMENT_SECRET_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_DEVELOPMENT_SECRET_KEY }}
           PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/dev
       - name: Against the production build
         # Even when the dev server's failed
@@ -100,6 +104,7 @@ jobs:
         run: npx playwright test
         env:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_DEVELOPMENT_SECRET_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_DEVELOPMENT_SECRET_KEY }}
           E2E_APP: build
           PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/build
       - uses: actions/upload-artifact@v4

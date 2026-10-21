@@ -152,9 +152,10 @@ Secrets are never in the repository nor in the Docker image.
   backend reads them from `backend/.env.<NODE_ENV>.local`, ignored by git.
   - In development: create `backend/.env.development.local` from `backend/.env.example`. Without it, the backend
     starts but the features using the secrets fail.
-  - In the CI: only the Clerk secret key of the development instance, for the E2E tests that sign in: the GitHub
-    secret `CLERK_DEVELOPMENT_SECRET_KEY` (the `CLERK_SECRET_KEY` of `backend/.env.development.local`). Without it,
-    those tests fail.
+  - In the CI: only two development secrets, for the E2E tests that sign in. They're the GitHub secrets
+    `CLERK_DEVELOPMENT_SECRET_KEY` and `STRIPE_DEVELOPMENT_SECRET_KEY` (Stripe's test mode), the `CLERK_SECRET_KEY` and
+    `STRIPE_SECRET_KEY` of `backend/.env.development.local`. The CI's database starts empty: the backend rebuilds the
+    test accounts' rows from Clerk and Stripe. Without them, those tests fail.
   - In production: they're GitHub secrets (Settings > Secrets and variables > Actions). The deploy writes them on the
     VPS (`~/backend.env.production.local`) and mounts that file in the container. The backend refuses to start if
     one is missing. To change a secret: update it in GitHub, then re-run the deploy.
