@@ -155,7 +155,11 @@ Secrets are never in the repository nor in the Docker image.
 - **Secrets** (Stripe secret key and webhook secret, Clerk secret key and webhook secret, Gmail app password): the
   backend reads them from `backend/.env.<NODE_ENV>.local`, ignored by git.
   - In development: create `backend/.env.development.local` from `backend/.env.example`. Without it, the backend
-    starts (the CI runs it that way) but the features using the secrets fail.
+    starts but the features using the secrets fail.
+  - In the CI: only two development secrets, for the E2E tests that sign in. They're the GitHub secrets
+    `CLERK_DEVELOPMENT_SECRET_KEY` and `STRIPE_DEVELOPMENT_SECRET_KEY` (Stripe's test mode), the `CLERK_SECRET_KEY` and
+    `STRIPE_SECRET_KEY` of `backend/.env.development.local`. The CI's database starts empty: the backend rebuilds the
+    test accounts' rows from Clerk and Stripe. Without them, those tests fail.
   - In production: they're GitHub secrets (Settings > Secrets and variables > Actions). The deploy writes them on the
     VPS (`~/backend.env.production.local`) and mounts that file in the container. The backend refuses to start if
     one is missing. To change a secret: update it in GitHub, then re-run the deploy.
@@ -226,8 +230,10 @@ npm run preview
 # Unit tests (from frontend/)
 npx vitest run
 
-# End-to-end testing (with npm run dev running)
+# End-to-end testing: starts npm run dev, or uses the one running
 npm run test:e2e
+# ...against the production build, like users get it: builds and starts npm run preview:local, or uses the one running
+E2E_APP=build npm run test:e2e
 
 # Resume templates: real PDFs compared with approved screenshots (in Docker)
 npm run test:templates
@@ -238,13 +244,16 @@ npm run test:templates -- --update-snapshots
 ### Testing Strategy
 - **Unit Tests**: Vitest for utility functions (`frontend/tests/`)
 - **E2E Tests**: Playwright for user workflows (`e2e/`). Those tagged `@clerk` sign in with Clerk's test accounts
+  and check what the user gets: the downloaded resume opens as a PDF (read with pdf.js) and shows what they typed, and
+  the dashboard lists it. They sign in through Clerk's form, with a testing token that gets them past Clerk's bot
+  protection (`e2e/helpers/clerk.ts`): they need the secret key of Clerk's development instance
 - **Template Tests**: Playwright prints every resume template to a real PDF and compares its pages with approved
   screenshots (`npm run test:templates`, in Playwright's Linux image). A template lab shows these PDFs in dev: see
   `frontend/tests/templates/README.md`
 - **Type Checking**: TypeScript strict mode
 - **The backend has no tests of its own**: the PDF renderer is covered by the template tests
 - **CI** (`.github/workflows/tests.yml`): every pull request, and every push to main before deploying, runs lint, the build,
-  the unit tests, the template tests and the E2E tests (except `@clerk`)
+  the unit tests, the template tests and the E2E tests, against the dev server and the production build
 
 ## Performance Considerations
 
