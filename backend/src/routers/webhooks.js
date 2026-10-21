@@ -40,6 +40,8 @@ const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET
 
         } else {
             console.log(`Unhandled event type ${event.type}.`);
+            // Without a response, Stripe would count a failure, retry for days, and could disable the endpoint
+            res.status(200).send();
         }
     });
 
