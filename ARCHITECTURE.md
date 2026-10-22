@@ -85,6 +85,9 @@ src/
 │   ├── ResumeBuilder.tsx  # Main app interface
 │   ├── Dashboard.tsx      # User dashboard
 │   ├── SignIn.tsx         # Authentication
+│   ├── Legal.tsx          # /legal: legal notice, terms of sale and use, privacy policy. Their texts are in
+│   │                      # components/Legal/, one per language: LegalFr.tsx is the binding one, LegalEn.tsx its
+│   │                      # translation. Linked from the home page's footer, and from Stripe (#terms, #privacy)
 │   └── layouts/           # Layout components
 ├── context/
 │   ├── ResumeContext.ts   # Resume state management
