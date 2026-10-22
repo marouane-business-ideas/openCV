@@ -13,6 +13,10 @@
       "download_resume": "Download Resume",
       "sign_in_to_download": "Sign in to download your resume as a PDF"
     },
+    "tips": {
+      "leave_a_tip": "Leave a tip",
+      "after_download": "Your resume is ready! If OnlineResume helped you, you can <a>leave a tip</a>."
+    },
     "language": {
       "toggle": "Toggle language",
       "english": "English",

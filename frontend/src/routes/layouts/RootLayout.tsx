@@ -8,6 +8,7 @@ import useGetUserAccountType from "../../lib/hooks/useGetUserAccountType";
 import useAuthState from "../../lib/hooks/useAuthState";
 import { ResumeContext } from "../../context/ResumeContext";
 import LanguageToggle from "../../components/LanguageToggle/LanguageToggle";
+import TipLink from "../../components/TipLink/TipLink";
 import { isHomePath, useHomePath } from "../../lib/homePath";
 
 function Layout() {
@@ -60,6 +61,7 @@ function Layout() {
                     </button>
 
                     <nav role="navigation" className="hidden lg:flex items-center gap-5 text-base">
+                        <TipLink className="flex items-center gap-1 hover:underline underline-offset-4" />
                         {authState === "signed-in" && <>
                             {location.pathname !== "/dashboard" && (
                                 <Link
@@ -100,6 +102,7 @@ function Layout() {
                 style={{ maxHeight: "0px" }}
             >
                 <nav role="navigation" className="p-4">
+                    <TipLink className="flex items-center justify-center gap-1 mb-3 font-bold" />
                     {authState === "signed-in" && <>
                         {location.pathname !== "/dashboard" && (
                             <Link
