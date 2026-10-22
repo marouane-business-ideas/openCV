@@ -7,6 +7,7 @@ import { clerkClient, clerkMiddleware } from "@clerk/express";
 
 import initApp from "./app.js";
 import { formatFullName } from "./db.js";
+import { findActiveSubscriptions } from "./subscriptions.js";
 
 import pdfRouter from "./routers/pdf.js";
 import clerkAuthRouter from "./routers/clerkAuth.js";
@@ -66,15 +67,12 @@ app.use(clerkMiddleware());
 const getUserProfile = async (userId) => {
     const [user, subscriptions] = await Promise.all([
         clerkClient.users.getUser(userId),
-        stripe.subscriptions.search({
-            query: `status:'active' AND metadata['clerck_user_id']:'${userId.replaceAll("'", "\\'")}'`,
-            limit: 1,
-        }),
+        findActiveSubscriptions(stripe, userId),
     ]);
     return {
         fullName: formatFullName(user.firstName, user.lastName),
         email: (user.primaryEmailAddress ?? user.emailAddresses[0])?.emailAddress,
-        isPremium: subscriptions.data.length > 0,
+        isPremium: subscriptions.length > 0,
     };
 };
 

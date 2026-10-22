@@ -140,6 +140,9 @@ src/
   ended when it's canceled or unpaid, given back if it's paid again (`customer.subscription.updated` and `.deleted`).
   While Stripe retries a failed renewal (`past_due`), the user stays premium. The Stripe webhook endpoint
   (Developers > Webhooks) must send these 3 events
+- Premium users manage or cancel their subscription in Stripe's customer portal, from the Account page
+  (`/manage-subscription` in `routers/stripe.js`). What it allows (cancellation at the end of the paid period, card
+  change, invoices) is set in the Stripe dashboard, in test and live mode: Settings > Billing > Customer portal
 
 ## Infrastructure & Deployment
 
