@@ -18,8 +18,6 @@ const initApp = async () => {
         const cluster = await Cluster.launch({
             concurrency: Cluster.CONCURRENCY_PAGE,
             maxConcurrency: 20,
-            retryLimit: 1,
-            retryDelay: 1000,
             puppeteerOptions: PUPPETEER_LAUNCH_OPTIONS,
         });
 
