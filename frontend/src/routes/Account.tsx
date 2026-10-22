@@ -7,7 +7,7 @@ import { AccountType_Type, ResumeContext } from "../context/ResumeContext";
 const AccountPage = () => {
     const { accountType } = useContext(ResumeContext);
     const { user } = useUser();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const formatAccountType = (accountType: AccountType_Type) => {
         switch (accountType) {
@@ -40,6 +40,7 @@ const AccountPage = () => {
                         <input type="hidden" id="clerck_user_email" name="clerck_user_email"
                             value={user?.primaryEmailAddress?.emailAddress ?? user?.emailAddresses[0].emailAddress}
                         />
+                        <input type="hidden" name="language" value={i18n.language} />
                         <button
                             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
                             type="submit"
@@ -53,6 +54,7 @@ const AccountPage = () => {
                 accountType.type === "premium" && <>
                     <p className="text-md text-gray-600 mb-4">{t("account.manage_subscription_hint")}</p>
                     <form action={`/api/users/${user?.id}/manage-subscription`} method="POST">
+                        <input type="hidden" name="language" value={i18n.language} />
                         <button
                             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
                             type="submit"

@@ -5,7 +5,7 @@ import CheckMark from "../components/CheckMark/CheckMark";
 
 const Subscribe = () => {
     const { user } = useUser();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     return (
         <div className="w-full bg-linear-to-b from-blue-50 to-white">
@@ -56,6 +56,7 @@ const Subscribe = () => {
                                     <input type="hidden" id="clerck_user_email" name="clerck_user_email"
                                         value={user?.primaryEmailAddress?.emailAddress ?? user?.emailAddresses[0].emailAddress}
                                     />
+                                    <input type="hidden" name="language" value={i18n.language} />
                                     <button
                                         className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 text-xl font-semibold rounded-xl
                                          shadow-lg hover:shadow-xl transition-all duration-300"

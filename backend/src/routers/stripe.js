@@ -3,12 +3,15 @@ import process from "process";
 
 import { findActiveSubscriptions } from "../subscriptions.js";
 
+// Stripe's pages in the app's language, sent by its forms: by default Stripe uses the browser's, which may differ
+const stripeLocale = (language) => (["en", "fr"].includes(language) ? language : "auto");
+
 const stripeRouter = (stripe) => {
     const router = express.Router();
 
     router.post("/:userId/create-checkout-session", async (req, res) => {
         const { userId } = req.params;
-        const { clerck_user_email } = req.body;
+        const { clerck_user_email, language } = req.body;
 
         try {
             const session = await stripe.checkout.sessions.create({
@@ -24,6 +27,7 @@ const stripeRouter = (stripe) => {
                 cancel_url: process.env.STRIPE_CANCEL_URL,
                 automatic_tax: { enabled: true },
                 currency: "eur",
+                locale: stripeLocale(language),
                 subscription_data: {
                     metadata: {
                         clerck_user_id: userId,
@@ -51,6 +55,7 @@ const stripeRouter = (stripe) => {
             const session = await stripe.billingPortal.sessions.create({
                 customer: subscription.customer,
                 return_url: process.env.STRIPE_PORTAL_RETURN_URL,
+                locale: stripeLocale(req.body.language),
             });
 
             res.redirect(303, session.url);
