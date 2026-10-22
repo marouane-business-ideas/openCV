@@ -132,6 +132,13 @@ src/
 - Webhook handling for user lifecycle events
 
 #### Payment Processing
+- **Pricing model**: the app is currently **free for everyone**: no PDF limit, and nothing shows the plans or sells
+  Premium. The free plan (5 PDFs) + Premium model is still all there, behind one switch set in 2 places:
+  `FREE_FOR_EVERYONE` in `backend/.env.development` and `.env.production` (the PDF limit, see `checkCanDownloadPdf`),
+  and `VITE_FREE_FOR_EVERYONE` in `frontend/.env.development` and `.env.production` (the home page's plans, the
+  Subscribe page, the Upgrade button, see `frontend/src/lib/pricing.ts`). To bring back freemium: set both to `false`
+  and deploy. Downloads are still counted while it's free: users who downloaded 5 PDFs or more would then be at the
+  free plan's limit right away (`UPDATE users SET downloadedPdfs = 0` gives everyone a fresh start)
 - Stripe integration for subscriptions
 - Premium account management
 - Webhook handling for payment events

@@ -1,11 +1,16 @@
+import { Navigate } from "react-router";
 import { useUser } from "@clerk/clerk-react";
 import { useTranslation } from "react-i18next";
 
 import CheckMark from "../components/CheckMark/CheckMark";
+import { FREE_FOR_EVERYONE } from "../lib/pricing";
 
 const Subscribe = () => {
     const { user } = useUser();
     const { t, i18n } = useTranslation();
+
+    // Nothing to subscribe to: e.g. an old link, or a sign-up started from the Premium card
+    if (FREE_FOR_EVERYONE) return <Navigate to="/resume" replace />;
 
     return (
         <div className="w-full bg-linear-to-b from-blue-50 to-white">

@@ -1,10 +1,13 @@
 import express from "express";
+import process from "process";
 
 import { checkCanDownloadPdf, incrementUserDownloadCount, PDF_LIMIT_ERROR } from "../db.js";
 import { renderPdf } from "../pdf/renderPdf.js";
 
 const pdfRouter = (db, cluster, getUserProfile) => {
     const router = express.Router();
+    // Read here rather than when the module loads: index.js loads the settings first
+    const freeForEveryone = process.env.FREE_FOR_EVERYONE === "true";
 
     router.route("/:userId/pdfs")
         .post(async (req, res) => {
@@ -12,7 +15,7 @@ const pdfRouter = (db, cluster, getUserProfile) => {
             const { resumeHtml, resumeData, template } = req.body;
 
             try {
-                await checkCanDownloadPdf(db, userId, getUserProfile);
+                await checkCanDownloadPdf(db, userId, getUserProfile, { freeForEveryone });
 
                 const pdfBuffer = await cluster.execute(({ page }) => renderPdf(page, resumeHtml));
 
@@ -73,7 +76,7 @@ const pdfRouter = (db, cluster, getUserProfile) => {
             const { resumeHtml, resumeData, template } = req.body;
 
             try {
-                await checkCanDownloadPdf(db, userId, getUserProfile);
+                await checkCanDownloadPdf(db, userId, getUserProfile, { freeForEveryone });
 
                 // Generate the PDF
                 const pdfBuffer = await cluster.execute(({ page }) => renderPdf(page, resumeHtml));
