@@ -16,10 +16,12 @@ if sudo docker container inspect onlineresume-previous >/dev/null 2>&1; then
 fi
 
 start_new_version() {
-    # --dns: don't depend on the host's resolver, which some VPS hosts make unreachable from inside containers
+    # --dns: don't depend on the host's resolver, which some VPS hosts make unreachable from inside containers.
+    # --log-driver: the logs go to the VPS's journal, which keeps them once the container is removed (see ARCHITECTURE.md)
     sudo docker run -d --name onlineresume \
         --restart unless-stopped \
         --dns 8.8.8.8 --dns 1.1.1.1 \
+        --log-driver journald \
         -p 80:80 -p 443:443 \
         -v ./database:/app/backend/database \
         -v ./httpsEncryption:/etc/letsencrypt \

@@ -167,6 +167,14 @@ once the tests pass. See ".github/workflows/deploy.yml" to for the github action
   deploy fails (its logs are in the GitHub Actions run). The VPS holds both images during the deploy: the previous one
   is deleted once the new version answers
 
+### Logs
+The backend's and nginx's logs (requests and errors) go to the container's output, which Docker writes to the VPS's
+journal (`--log-driver journald`, in `ops/deploy/replace-container.sh`). They survive deploys, which remove the
+container, and journald deletes the oldest ones once the journal reaches its size limit (by default 10% of the disk,
+4 GB at most). Behind Cloudflare, nginx logs Cloudflare's addresses, not visitors'.
+- **Read**: `sudo journalctl CONTAINER_NAME=onlineresume --since "1 hour ago"` (`-f` to follow, `-b` since the last
+  boot). `sudo docker logs onlineresume` shows the running container's only.
+
 ### Configuration and secrets
 Secrets are never in the repository nor in the Docker image.
 - **Settings** (ports, URLs, Stripe price, Clerk publishable keys): `.env.development` and `.env.production`, in the
