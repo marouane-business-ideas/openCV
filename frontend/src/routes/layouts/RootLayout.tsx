@@ -155,7 +155,8 @@ function Layout() {
                                     </svg>
                                 </a>
                             </div>
-                            <div className="px-5 pb-8 mt-8">
+                            <Link to="/legal" className="mt-6 underline underline-offset-4">{t("home.legal_link")}</Link>
+                            <div className="px-5 pb-8 mt-4">
                                 Copyright ©
                                 {new Date().getFullYear()}
                                 {" "}{t("home.footer_message")} <a target="_blank" className="underline underline-offset-4"

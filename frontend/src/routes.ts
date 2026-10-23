@@ -10,6 +10,7 @@ export default [
         route("sign-in", "./routes/SignIn.tsx"),
         route("sign-in/sso-callback", "./routes/SsoCallback.tsx"),
         route("sign-up/*", "./routes/SignUp.tsx"),
+        route("legal", "./routes/Legal.tsx"),
         layout("./routes/layouts/ProtectedLayout.tsx", { id: "protected-in-layout" }, [
             route("resume/:resumeId", "./routes/ResumeBuilder.tsx", { id: "saved-resume" }),
             route("dashboard", "./routes/layouts/DashboardLayout.tsx", [
