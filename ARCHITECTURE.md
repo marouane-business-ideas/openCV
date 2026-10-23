@@ -138,11 +138,11 @@ src/
   Premium. The free plan (5 PDFs) + Premium model is still all there, behind one switch set in 2 places:
   `FREE_FOR_EVERYONE` in `backend/.env.development` and `.env.production` (the PDF limit, see `checkCanDownloadPdf`),
   and `VITE_FREE_FOR_EVERYONE` in `frontend/.env.development` and `.env.production` (the home page's plans, the
-  Subscribe page, the Upgrade button, see `frontend/src/lib/pricing.ts`). To bring back freemium: set both to `false`
+  Subscribe page, the dashboard's Account page and links, see `frontend/src/lib/pricing.ts`). To bring back freemium: set both to `false`
   and deploy. Downloads are still counted while it's free: users who downloaded 5 PDFs or more would then be at the
   free plan's limit right away (`UPDATE users SET downloadedPdfs = 0` gives everyone a fresh start)
-- **Tips**: a "Leave a tip" link (header, and after each download) opens a Stripe Payment Link where users choose how
-  much to pay. It's created in the Stripe dashboard (Payment Links > Create, "Customers choose what to pay", in EUR),
+- **Tips**: a discreet "Leave a tip" link (bottom-right corner of the home page's footer, and a line after each
+  download) opens a Stripe Payment Link where users choose how much to pay. It's created in the Stripe dashboard (Payment Links > Create, "Customers choose what to pay", in EUR),
   in test mode for `frontend/.env.development` and live mode for `.env.production`: its URL goes in `VITE_TIP_URL`.
   No URL, no link. A tip changes no one's plan: the webhook ignores payments without a subscription
 - Stripe integration for subscriptions
