@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import LegalEn from "../components/Legal/LegalEn";
 import LegalFr from "../components/Legal/LegalFr";
 
-// Legal notice, terms of sale and use, privacy policy. Long legal texts don't belong in translation.json: each
-// language has its own version, the French one being binding. Linked to by Stripe's customer portal (#terms, #privacy)
+// Legal notice, terms of use, privacy policy. Long legal texts don't belong in translation.json: each language has
+// its own version, the French one being binding. Linked to by Stripe's payment page (#terms, #privacy)
 const Legal = () => {
     const { i18n } = useTranslation();
     const { hash } = useLocation();

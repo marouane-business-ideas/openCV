@@ -4,7 +4,7 @@ export const SUPPORT_EMAIL = "support@onlineresume.dev";
 
 export const SupportEmail = () => <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>;
 
-/** A detail only the publisher can give (identity, registration, mediator...), highlighted until it's filled in */
+/** A detail only the publisher can give (identity, registration...), highlighted until it's filled in */
 export const ToFill = ({ children }: { children: ReactNode }) => (
     <mark className="rounded bg-yellow-200 px-1">{children}</mark>
 );

@@ -4,12 +4,12 @@ import { LegalSection, SupportEmail, ToFill } from "./LegalParts";
 const LegalEn = () => (
     <>
         <h1>Legal notice, terms and privacy</h1>
-        <p className="text-sm text-gray-500">Last updated: October 22, 2026</p>
+        <p className="text-sm text-gray-500">Last updated: October 23, 2026</p>
 
         <nav aria-label="Contents">
             <ol>
                 <li><a href="#legal-notice">Legal notice</a></li>
-                <li><a href="#terms">Terms of sale and use</a></li>
+                <li><a href="#terms">Terms of use</a></li>
                 <li><a href="#privacy">Privacy policy</a></li>
             </ol>
         </nav>
@@ -45,11 +45,11 @@ const LegalEn = () => (
             </p>
         </LegalSection>
 
-        <LegalSection id="terms" title="2. Terms of sale and use">
+        <LegalSection id="terms" title="2. Terms of use">
             <h3>Purpose</h3>
             <p>
-                OnlineResume is an online service to create resumes and download them as PDF files. These terms apply to
-                its use and to the Premium subscription. Creating an account or subscribing means accepting them.
+                OnlineResume is a free online service to create resumes and download them as PDF files. These terms apply
+                to its use and to tips. Creating an account means accepting them.
             </p>
 
             <h3>Account</h3>
@@ -58,75 +58,49 @@ const LegalEn = () => (
                 content of your resumes.
             </p>
 
-            <h3>Free plan</h3>
-            <p>With a free account, you can download 5 resumes as PDF files, without a credit card.</p>
+            <h3>Free of charge</h3>
+            <p>
+                The service is free: creating, saving and downloading resumes costs nothing, with no download limit. If a
+                paid plan is ever offered, we will tell you in advance, and nothing will be charged without your
+                consent.
+            </p>
 
-            <h3>Premium subscription</h3>
+            <h3>Tips</h3>
             <ul>
-                <li><strong>What it includes:</strong> unlimited resume downloads for as long as the subscription lasts.</li>
                 <li>
-                    <strong>Price:</strong> the one shown on the subscription page, in euros, all taxes included. The
-                    exact total is shown on the payment page, before you confirm the order.
+                    <strong>Optional:</strong> you can leave a tip from the website, of the amount you choose, to support
+                    OnlineResume. It gives access to no extra feature: the service is the same with or without a tip.
                 </li>
                 <li>
-                    <strong>Payment:</strong> by card, when you subscribe, through our payment provider Stripe. We never
-                    have access to your card numbers.
+                    <strong>Payment:</strong> once, in euros, on the page of our payment provider Stripe. It isn’t a
+                    subscription: nothing is charged afterwards. We never have access to your card numbers.
                 </li>
                 <li>
-                    <strong>Duration and renewal:</strong> the subscription lasts one year. It renews automatically for
-                    one year, at the price then in force, unless you cancel it. We inform you by email, no earlier than
-                    three months and no later than one month before each renewal date, that you can choose not to renew
-                    it (article L215-1 of the French Consumer Code).
-                </li>
-                <li>
-                    <strong>Cancellation:</strong> at any time and online, from the Account page (“Manage or cancel my
-                    subscription”). It takes effect at the end of the period already paid for: Premium stays active until
-                    then, after which your account goes back to the free plan, with 5 new downloads. The current period
-                    isn’t refunded pro rata.
+                    <strong>Mistakes:</strong> if you entered the wrong amount or paid twice, write to us at
+                    {" "}<SupportEmail /> within 14 days of the payment: we refund you, with the payment method you used.
                 </li>
             </ul>
 
-            <h3>Right of withdrawal</h3>
-            <p>
-                If you are a consumer, you have 14 days from subscribing to withdraw, without giving a reason or paying
-                any fee (article L221-18 of the French Consumer Code). To do so, tell us your decision by email at
-                {" "}<SupportEmail /> or through the contact form, for example: “I withdraw from my Premium subscription
-                taken on [date] with the account [email address]”. We refund the full amount paid no later than 14 days
-                after your request, with the payment method you used, and your account goes back to the free plan.
-            </p>
-
             <h3>Deleting your account</h3>
             <p>
-                You can delete your account at any time, from the Account page or by writing to us. Deleting it erases
-                your account and your saved resumes, and ends your Premium subscription immediately, without a refund of
-                the remaining period, unless you are still within the withdrawal period.
-            </p>
-
-            <h3>Legal guarantee of conformity</h3>
-            <p>
-                If you are a consumer, you benefit from the legal guarantee of conformity for digital content and services
-                (articles L224-25-12 and following of the French Consumer Code). If the service doesn’t work as it
-                should, write to us at <SupportEmail />.
+                You can delete your account at any time by writing to us at <SupportEmail />. Deleting it erases your
+                account and your saved resumes.
             </p>
 
             <h3>Availability of the service</h3>
             <p>
-                We do our best to keep the service available at all times, but it may be interrupted, for maintenance in
-                particular. You remain responsible for the content of your resumes and for how you use them.
+                We do our best to keep the service available at all times and working as it should, but it may be
+                interrupted, for maintenance in particular. If something doesn’t work, write to us at <SupportEmail />.
+                You remain responsible for the content of your resumes and for how you use them.
             </p>
 
             <h3>Changes to these terms</h3>
             <p>
-                These terms may change. The ones that apply to your subscription are those in force when you subscribed
-                or when it last renewed. We inform you by email of any significant change.
+                These terms may change. We inform you by email of any significant change, before it applies.
             </p>
 
-            <h3>Complaints and mediation</h3>
-            <p>
-                For any complaint, write to us at <SupportEmail />. If we can’t find a solution, you can turn, free of
-                charge, to the following consumer mediator, within a year of your written complaint: <ToFill>[TO FILL IN:
-                name, address and website of the consumer mediator]</ToFill>.
-            </p>
+            <h3>Complaints</h3>
+            <p>For any complaint, write to us at <SupportEmail />.</p>
 
             <h3>Applicable law</h3>
             <p>
@@ -154,9 +128,12 @@ const LegalEn = () => (
                     saved on our server, so that you find it in your dashboard. Basis: performance of the contract.
                 </li>
                 <li>
-                    <strong>Subscription and payment:</strong> your subscription status and billing history. Your card
-                    details are entered on Stripe’s page and processed by Stripe: we never receive them. Basis:
-                    performance of the contract, and our legal obligations for invoices.
+                    <strong>Tips:</strong> if you leave one, you pay on Stripe’s page. We see in our Stripe account the
+                    amount, the date and the details you enter there (email address, name), never your card numbers. A
+                    tip isn’t linked to your OnlineResume account. Stripe also processes this data on its own behalf, to
+                    prevent fraud in particular (see its <a href="https://stripe.com/privacy" target="_blank"
+                    rel="noopener noreferrer">privacy policy</a>). Basis: performance of your payment, and our
+                    accounting obligations.
                 </li>
                 <li>
                     <strong>Contact form:</strong> your name, your message and your account identifier, to answer you.
@@ -172,8 +149,8 @@ const LegalEn = () => (
                 </li>
             </ul>
             <p>
-                An email address is needed to create an account, and payment details to subscribe: without them, these
-                features aren’t available. The website shows no ads, uses no audience measurement tool, doesn’t sell
+                An email address is needed to create an account, and payment details to leave a tip: without them,
+                these features aren’t available. The website shows no ads, uses no audience measurement tool, doesn’t sell
                 your data and makes no automated decision about you.
             </p>
 
@@ -181,7 +158,7 @@ const LegalEn = () => (
             <p>Your data is only accessible to the publisher and to the following providers, for the needs of the service:</p>
             <ul>
                 <li>Clerk (Clerk, Inc., United States): account creation and sign-in;</li>
-                <li>Stripe (Stripe Payments Europe, Ltd., Ireland): payment and billing;</li>
+                <li>Stripe (Stripe Payments Europe, Ltd., Ireland): payment of tips;</li>
                 <li>OVHcloud (OVH SAS, France): hosting of the website and its database, in Canada;</li>
                 <li>
                     Cloudflare (Cloudflare, Inc., United States): protection and routing of the website’s traffic, and
@@ -201,7 +178,7 @@ const LegalEn = () => (
             <ul>
                 <li>Account and resumes: until you delete your account;</li>
                 <li>Backups: 30 days, so deleted data disappears from the backups within 30 days;</li>
-                <li>Invoices: 10 years, as required by accounting rules (article L123-22 of the French Commercial Code);</li>
+                <li>Records of tips: 10 years, as required by accounting rules (article L123-22 of the French Commercial Code);</li>
                 <li>Contact form messages: as long as needed to handle your request, then 3 years at most;</li>
                 <li>Server logs: 12 months at most.</li>
             </ul>
@@ -214,16 +191,14 @@ const LegalEn = () => (
                 <li>the browser’s local storage (“resumeState”), to keep the resume you’re editing on your device.</li>
             </ul>
             <p>
-                The payment and subscription management pages, hosted by Stripe, use their own cookies, to prevent fraud
-                in particular.
+                The tip payment page, hosted by Stripe, uses its own cookies, to prevent fraud in particular.
             </p>
 
             <h3>Your rights</h3>
             <p>
                 You can access your data, correct it, erase it, restrict or object to its processing, and get a copy of
-                it in a reusable format. Write to us at <SupportEmail />: we answer within one month. You can also delete
-                your account and your resumes yourself from the Account page. If you believe your rights aren’t
-                respected, you can lodge a complaint with the CNIL, the French data protection authority
+                it in a reusable format. Write to us at <SupportEmail />: we answer within one month. If you believe your
+                rights aren’t respected, you can lodge a complaint with the CNIL, the French data protection authority
                 (<a href="https://www.cnil.fr/en" target="_blank" rel="noopener noreferrer">www.cnil.fr</a>).
             </p>
         </LegalSection>

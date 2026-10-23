@@ -4,12 +4,12 @@ import { LegalSection, SupportEmail, ToFill } from "./LegalParts";
 const LegalFr = () => (
     <>
         <h1>Mentions légales, conditions générales et confidentialité</h1>
-        <p className="text-sm text-gray-500">Dernière mise à jour : 22 octobre 2026</p>
+        <p className="text-sm text-gray-500">Dernière mise à jour : 23 octobre 2026</p>
 
         <nav aria-label="Sommaire">
             <ol>
                 <li><a href="#legal-notice">Mentions légales</a></li>
-                <li><a href="#terms">Conditions générales de vente et d’utilisation</a></li>
+                <li><a href="#terms">Conditions générales d’utilisation</a></li>
                 <li><a href="#privacy">Politique de confidentialité</a></li>
             </ol>
         </nav>
@@ -46,12 +46,12 @@ const LegalFr = () => (
             </p>
         </LegalSection>
 
-        <LegalSection id="terms" title="2. Conditions générales de vente et d’utilisation">
+        <LegalSection id="terms" title="2. Conditions générales d’utilisation">
             <h3>Objet</h3>
             <p>
-                OnlineResume est un service en ligne qui permet de créer des CV et de les télécharger au format PDF. Ces
-                conditions s’appliquent à son utilisation et à l’abonnement Premium. Créer un compte ou souscrire un
-                abonnement implique de les accepter.
+                OnlineResume est un service en ligne gratuit qui permet de créer des CV et de les télécharger au format
+                PDF. Ces conditions s’appliquent à son utilisation et aux pourboires. Créer un compte implique de les
+                accepter.
             </p>
 
             <h3>Compte</h3>
@@ -60,78 +60,54 @@ const LegalFr = () => (
                 contenu de vos CV.
             </p>
 
-            <h3>Offre gratuite</h3>
-            <p>Avec un compte gratuit, vous pouvez télécharger 5 CV au format PDF, sans carte bancaire.</p>
+            <h3>Gratuité</h3>
+            <p>
+                Le service est gratuit : créer, enregistrer et télécharger des CV ne coûte rien, sans limite de
+                téléchargements. Si une offre payante est proposée un jour, nous vous en informerons à l’avance, et rien
+                ne vous sera facturé sans votre accord.
+            </p>
 
-            <h3>Abonnement Premium</h3>
+            <h3>Pourboires</h3>
             <ul>
-                <li><strong>Contenu :</strong> téléchargements de CV illimités pendant toute la durée de l’abonnement.</li>
                 <li>
-                    <strong>Prix :</strong> celui affiché sur la page d’abonnement, en euros toutes taxes comprises. Le
-                    montant total exact est indiqué sur la page de paiement, avant que vous ne validiez la commande.
+                    <strong>Facultatifs :</strong> vous pouvez laisser un pourboire depuis le site, du montant de votre
+                    choix, pour soutenir OnlineResume. Il ne donne accès à aucune fonctionnalité supplémentaire : le
+                    service est le même avec ou sans pourboire.
                 </li>
                 <li>
-                    <strong>Paiement :</strong> par carte bancaire, à la souscription, via notre prestataire de paiement
-                    Stripe. Nous n’avons jamais accès à vos numéros de carte.
+                    <strong>Paiement :</strong> en une fois, en euros, sur la page de notre prestataire de paiement
+                    Stripe. Ce n’est pas un abonnement : rien n’est prélevé ensuite. Nous n’avons jamais accès à vos
+                    numéros de carte.
                 </li>
                 <li>
-                    <strong>Durée et renouvellement :</strong> l’abonnement dure un an. Il se renouvelle automatiquement
-                    pour un an, au prix alors en vigueur, sauf si vous le résiliez. Nous vous informons par email, au plus
-                    tôt trois mois et au plus tard un mois avant chaque échéance, de la possibilité de ne pas le
-                    renouveler (article L215-1 du Code de la consommation).
-                </li>
-                <li>
-                    <strong>Résiliation :</strong> à tout moment et en ligne, depuis la page Compte (« Gérer ou résilier
-                    mon abonnement »). Elle prend effet à la fin de la période déjà payée : Premium reste actif jusque-là,
-                    puis votre compte repasse à l’offre gratuite, avec 5 nouveaux téléchargements. La période en cours
-                    n’est pas remboursée au prorata.
+                    <strong>Erreur :</strong> si vous vous êtes trompé de montant ou avez payé deux fois, écrivez-nous à
+                    {" "}<SupportEmail /> dans les 14 jours qui suivent le paiement : nous vous remboursons, avec le moyen
+                    de paiement utilisé.
                 </li>
             </ul>
 
-            <h3>Droit de rétractation</h3>
-            <p>
-                Si vous êtes un consommateur, vous disposez de 14 jours à compter de la souscription pour vous rétracter,
-                sans avoir à vous justifier ni à payer de frais (article L221-18 du Code de la consommation). Pour
-                l’exercer, informez-nous de votre décision par email à <SupportEmail /> ou via le formulaire de contact,
-                par exemple : « Je me rétracte de mon abonnement Premium souscrit le [date] avec le compte [adresse
-                email] ». Nous vous remboursons l’intégralité du montant payé au plus tard 14 jours après votre demande,
-                avec le moyen de paiement utilisé, et votre compte repasse à l’offre gratuite.
-            </p>
-
             <h3>Suppression du compte</h3>
             <p>
-                Vous pouvez supprimer votre compte à tout moment, depuis la page Compte ou en nous écrivant. La
-                suppression efface votre compte et vos CV enregistrés, et met fin immédiatement à votre abonnement
-                Premium, sans remboursement de la période restante, sauf si vous êtes encore dans le délai de
-                rétractation.
-            </p>
-
-            <h3>Garantie légale de conformité</h3>
-            <p>
-                Si vous êtes un consommateur, vous bénéficiez de la garantie légale de conformité des contenus et services
-                numériques (articles L224-25-12 et suivants du Code de la consommation). Si le service ne fonctionne pas
-                comme prévu, écrivez-nous à <SupportEmail />.
+                Vous pouvez supprimer votre compte à tout moment en nous écrivant à <SupportEmail />. La suppression
+                efface votre compte et vos CV enregistrés.
             </p>
 
             <h3>Disponibilité du service</h3>
             <p>
-                Nous faisons notre possible pour que le service soit accessible en permanence, mais il peut être
-                interrompu, notamment pour des opérations de maintenance. Vous restez responsable du contenu de vos CV et
-                de l’usage que vous en faites.
+                Nous faisons notre possible pour que le service soit accessible en permanence et fonctionne comme prévu,
+                mais il peut être interrompu, notamment pour des opérations de maintenance. Si quelque chose ne
+                fonctionne pas, écrivez-nous à <SupportEmail />. Vous restez responsable du contenu de vos CV et de
+                l’usage que vous en faites.
             </p>
 
             <h3>Modification des conditions</h3>
             <p>
-                Ces conditions peuvent évoluer. Celles qui s’appliquent à votre abonnement sont celles en vigueur à sa
-                souscription ou à son dernier renouvellement. Nous vous informons par email de tout changement important.
+                Ces conditions peuvent évoluer. Nous vous informons par email de tout changement important, avant qu’il
+                s’applique.
             </p>
 
-            <h3>Réclamations et médiation</h3>
-            <p>
-                Pour toute réclamation, écrivez-nous à <SupportEmail />. Si nous ne trouvons pas de solution, vous pouvez
-                recourir gratuitement au médiateur de la consommation suivant, dans l’année qui suit votre réclamation
-                écrite : <ToFill>[À COMPLÉTER : nom, adresse et site internet du médiateur de la consommation]</ToFill>.
-            </p>
+            <h3>Réclamations</h3>
+            <p>Pour toute réclamation, écrivez-nous à <SupportEmail />.</p>
 
             <h3>Droit applicable</h3>
             <p>
@@ -160,9 +136,12 @@ const LegalFr = () => (
                     l’exécution du contrat.
                 </li>
                 <li>
-                    <strong>Abonnement et paiement :</strong> statut de votre abonnement et historique de facturation. Vos
-                    données de carte sont saisies sur la page de Stripe et traitées par Stripe : nous ne les recevons
-                    jamais. Base : l’exécution du contrat, et nos obligations légales pour les factures.
+                    <strong>Pourboires :</strong> si vous en laissez un, vous payez sur la page de Stripe. Nous voyons
+                    dans notre compte Stripe le montant, la date et les coordonnées que vous y saisissez (adresse email,
+                    nom), jamais vos numéros de carte. Un pourboire n’est pas lié à votre compte OnlineResume. Stripe
+                    traite aussi ces données pour son propre compte, notamment pour prévenir la fraude (voir
+                    sa <a href="https://stripe.com/fr/privacy" target="_blank" rel="noopener noreferrer">politique de
+                    confidentialité</a>). Base : l’exécution de votre paiement, et nos obligations comptables.
                 </li>
                 <li>
                     <strong>Formulaire de contact :</strong> votre nom, votre message et l’identifiant de votre compte,
@@ -179,8 +158,8 @@ const LegalFr = () => (
                 </li>
             </ul>
             <p>
-                L’adresse email est nécessaire pour créer un compte, et les données de paiement pour s’abonner : sans
-                elles, ces fonctionnalités ne sont pas disponibles. Le site n’affiche pas de publicité, n’utilise aucun
+                L’adresse email est nécessaire pour créer un compte, et les données de paiement pour laisser un
+                pourboire : sans elles, ces fonctionnalités ne sont pas disponibles. Le site n’affiche pas de publicité, n’utilise aucun
                 outil de mesure d’audience, ne vend pas vos données et ne prend aucune décision automatisée à votre sujet.
             </p>
 
@@ -188,7 +167,7 @@ const LegalFr = () => (
             <p>Vos données ne sont accessibles qu’à l’éditeur et aux prestataires suivants, pour les besoins du service :</p>
             <ul>
                 <li>Clerk (Clerk, Inc., États-Unis) : création de compte et connexion ;</li>
-                <li>Stripe (Stripe Payments Europe, Ltd., Irlande) : paiement et facturation ;</li>
+                <li>Stripe (Stripe Payments Europe, Ltd., Irlande) : paiement des pourboires ;</li>
                 <li>OVHcloud (OVH SAS, France) : hébergement du site et de la base de données, au Canada ;</li>
                 <li>
                     Cloudflare (Cloudflare, Inc., États-Unis) : protection et acheminement du trafic du site, et stockage
@@ -208,7 +187,10 @@ const LegalFr = () => (
             <ul>
                 <li>Compte et CV : jusqu’à la suppression de votre compte ;</li>
                 <li>Sauvegardes : 30 jours, donc une donnée supprimée disparaît des sauvegardes au plus tard 30 jours après ;</li>
-                <li>Factures : 10 ans, durée imposée par les obligations comptables (article L123-22 du Code de commerce) ;</li>
+                <li>
+                    Justificatifs des pourboires : 10 ans, durée imposée par les obligations comptables (article L123-22
+                    du Code de commerce) ;
+                </li>
                 <li>Messages du formulaire de contact : le temps de traiter votre demande, puis 3 ans au plus ;</li>
                 <li>Journaux du serveur : 12 mois au plus.</li>
             </ul>
@@ -226,17 +208,16 @@ const LegalFr = () => (
                 </li>
             </ul>
             <p>
-                Les pages de paiement et de gestion de l’abonnement, hébergées par Stripe, utilisent leurs propres
-                cookies, notamment pour prévenir la fraude.
+                La page de paiement des pourboires, hébergée par Stripe, utilise ses propres cookies, notamment pour
+                prévenir la fraude.
             </p>
 
             <h3>Vos droits</h3>
             <p>
                 Vous pouvez accéder à vos données, les rectifier, les effacer, en limiter le traitement, vous y opposer et
                 en demander une copie dans un format réutilisable. Écrivez-nous à <SupportEmail /> : nous vous répondons
-                dans un délai d’un mois. Vous pouvez aussi supprimer vous-même votre compte et vos CV depuis la page
-                Compte. Si vous estimez que
-                vos droits ne sont pas respectés, vous pouvez adresser une réclamation à la CNIL
+                dans un délai d’un mois. Si vous estimez que vos droits ne sont pas respectés, vous pouvez adresser une
+                réclamation à la CNIL
                 (<a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">www.cnil.fr</a>).
             </p>
         </LegalSection>
