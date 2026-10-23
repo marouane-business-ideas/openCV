@@ -2,3 +2,16 @@
 # deploy.sh builds the image from a local folder, where these files exist
 **/*.local
 **/.env
+
+# Nor do the local folder's other files that aren't the app's code: the image installs and builds its own
+# (node_modules for Linux, the frontend's build), the database is the VPS's, mounted when the container starts, and
+# .claude holds full copies of the repository (worktrees)
+**/node_modules
+frontend/build
+frontend/.react-router
+backend/database
+.git
+.claude
+**/test-results
+**/playwright-report
+**/.DS_Store

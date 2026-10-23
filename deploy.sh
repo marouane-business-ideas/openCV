@@ -7,9 +7,6 @@
  # Exit script in case of error in a command
  set -e 
   
-# I don't want the files/directories to be deployed
- rm -rf node_modules frontend/node_modules backend/node_modules frontend/build backend/dist backend/database/database.db
- 
  docker build --platform linux/amd64 -t onlineresume:latest .
 
  docker save onlineresume:latest | gzip | ssh ubuntu@54.39.230.66 'sudo docker stop $(sudo docker ps -q) && \
