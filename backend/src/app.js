@@ -14,12 +14,13 @@ const initApp = async () => {
         const db = await initDb();
         console.log("Database initialized successfully");
 
-        // Initialize the Puppeteer cluster
+        // Printing a PDF keeps a CPU busy: measured on the VPS (2 vCPUs), 10 at a time print as many PDFs per minute as
+        // 20 (about 550), with half the extra memory and pages opening twice as fast. Opening a page must stay well
+        // under the 5 s puppeteer-cluster allows: past that it restarts Chrome, failing the PDFs in progress, and can
+        // crash the server. The other requests wait in the cluster's queue
         const cluster = await Cluster.launch({
             concurrency: Cluster.CONCURRENCY_PAGE,
-            maxConcurrency: 20,
-            retryLimit: 1,
-            retryDelay: 1000,
+            maxConcurrency: 10,
             puppeteerOptions: PUPPETEER_LAUNCH_OPTIONS,
         });
 
