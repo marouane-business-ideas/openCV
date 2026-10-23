@@ -162,8 +162,10 @@ src/
 once the tests pass. See ".github/workflows/deploy.yml" to for the github actions implementation
 - **Deployment script**: See deploy.sh script at the root of the project
 - **Downtime**: a few seconds per deploy. The image is sent to the VPS while the site keeps running; only then
-  `ops/deploy/replace-container.sh` stops the running container (`onlineresume`) and starts one of the new image. The
-  VPS holds both images during the deploy: the previous one is deleted once the new container runs
+  `ops/deploy/replace-container.sh` stops the running container (`onlineresume`) and starts one of the new image. If
+  the new version doesn't answer through nginx within a minute, the previous container is started again and the
+  deploy fails (its logs are in the GitHub Actions run). The VPS holds both images during the deploy: the previous one
+  is deleted once the new version answers
 
 ### Configuration and secrets
 Secrets are never in the repository nor in the Docker image.

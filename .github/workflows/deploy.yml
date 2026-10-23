@@ -66,7 +66,7 @@ jobs:
       - name: Remove local Docker image
         run: docker image rm onlineresume:latest
 
-      # The site is down only now, for a few seconds
+      # The site is down only now, for a few seconds. If the new version doesn't answer, the previous one runs again
       - name: Replace the running container on VPS
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_HOST }} 'bash -s' < ops/deploy/replace-container.sh
