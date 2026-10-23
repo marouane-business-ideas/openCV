@@ -122,7 +122,9 @@ src/
 - Uses Puppeteer Cluster for performance
 - Generates resumes from HTML templates: the frontend renders the template to a self-contained HTML document
   (`buildResumeHtml`, fonts embedded) and the backend prints it (`src/pdf/renderPdf.js`)
-- Handles multiple concurrent requests
+- Prints 10 PDFs at a time, the other requests wait in a queue (`src/app.js`). Printing is CPU-bound: on the VPS's
+  2 vCPUs, about 460 PDFs per minute at 4 at a time, 550 at 10 or 20. At 10, rendering adds 160 MB of memory at peak
+  (330 MB at 20) and Chrome opens a page in 0.5 s (1 s at 20; puppeteer-cluster gives up at 5 s)
 - System-installed Chrome for Docker compatibility
 
 #### Authentication & Authorization
