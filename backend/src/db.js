@@ -132,8 +132,13 @@ export async function updatePlanFromSubscription(db, { status, metadata }, getUs
     return null;
 }
 
-/** Throws PDF_LIMIT_ERROR when a free user has used up their PDFs, and refuses users the limit can't be checked for */
-export async function checkCanDownloadPdf(db, userId, getUserProfile) {
+/**
+ * Throws PDF_LIMIT_ERROR when a free user has used up their PDFs, and refuses users the limit can't be checked for.
+ * freeForEveryone (the FREE_FOR_EVERYONE setting): there's no limit, so nothing to check.
+ */
+export async function checkCanDownloadPdf(db, userId, getUserProfile, { freeForEveryone = false } = {}) {
+    if (freeForEveryone) return;
+
     await ensureUser(db, userId, getUserProfile);
 
     const user = await db.get("SELECT accountType, downloadedPdfs, maxPdfs FROM users WHERE id = ?", [userId]);

@@ -12,6 +12,7 @@ import i18n from "../i18n";
 import { getHomePathLanguage, homePaths, SITE_URL, useHomePath } from "../lib/homePath";
 import useIsHydrated from "../lib/hooks/useIsHydrated";
 import useAuthState from "../lib/hooks/useAuthState";
+import { FREE_FOR_EVERYONE } from "../lib/pricing";
 
 // The home page shows the language of its URL, also when reached from another page or with the browser's back and
 // forward buttons. Runs in the browser before the page is shown, so that it is rendered in that language right away
@@ -37,6 +38,12 @@ const Home: React.FC = () => {
     // The build renders this page for visitors without a saved account type: premium users see their version once
     // the saved one is read
     const isPremium = useIsHydrated() && accountType?.type === "premium";
+
+    // Free for everyone: no plan to highlight, nor to sell (see lib/pricing.ts)
+    const highlightTitle = FREE_FOR_EVERYONE ? t("home.free_for_everyone_title")
+        : t("home.plan_highlight", { plan: isPremium ? t("home.premium") : t("home.free") });
+    const highlightKey = FREE_FOR_EVERYONE ? "home.free_for_everyone_highlight"
+        : isPremium ? "home.premium_plan_secondary_highlight" : "home.free_plan_secondary_highlight";
 
     return (
         <div className="h-full px-3 lg:py-36 py-20">
@@ -65,9 +72,7 @@ const Home: React.FC = () => {
             <section className="mt-16 text-center">
                 <div className="rounded-lg p-8 max-w-2xl mx-auto">
                     <h3 className="lg:text-2xl text-lg font-semibold mb-4">
-                        {t("home.plan_highlight", {
-                            plan: isPremium ? t("home.premium") : t("home.free"),
-                        })}
+                        {highlightTitle}
                     </h3>
                     <div className="flex items-center justify-center space-x-4">
                         <svg xmlns="http://www.w3.org/2000/svg" className="lg:h-12 lg:w-12 h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24"
@@ -76,19 +81,10 @@ const Home: React.FC = () => {
                              1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                         </svg>
                         <p className="lg:text-xl text-base">
-                            {isPremium ?
-                                <>
-                                    <Trans
-                                        i18nKey="home.premium_plan_secondary_highlight"
-                                        components={{ span: <span className="font-bold text-blue-600" /> }}
-                                    />
-                                </>
-                                :
-                                <Trans
-                                    i18nKey="home.free_plan_secondary_highlight"
-                                    components={{ span: <span className="font-bold text-blue-600" /> }}
-                                />
-                            }
+                            <Trans
+                                i18nKey={highlightKey}
+                                components={{ span: <span className="font-bold text-blue-600" /> }}
+                            />
                         </p>
                     </div>
                 </div>
@@ -119,7 +115,7 @@ const Home: React.FC = () => {
                         resume={getResumeDummyData("modern")} />
                 </MiniResumePreview>
             </section>
-            <section className="mt-28 flex flex-col items-center md:flex-row justify-center gap-8">
+            {!FREE_FOR_EVERYONE && <section className="mt-28 flex flex-col items-center md:flex-row justify-center gap-8">
                 {!isSignedIn && <PricingCard
                     name={t("common.pricing_card.free_plan.title")}
                     title={t("common.pricing_card.free_plan.secondary_title")}
@@ -143,7 +139,7 @@ const Home: React.FC = () => {
                     link={`${isSignedIn ? "/subscribe" : "/sign-up?redirect_url=/subscribe"}`}
                     footNote={t("common.pricing_card.premium_plan.footnote")}
                 />}
-            </section>
+            </section>}
         </div>
     );
 };

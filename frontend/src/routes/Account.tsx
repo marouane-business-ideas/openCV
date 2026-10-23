@@ -3,6 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useTranslation } from "react-i18next";
 
 import { AccountType_Type, ResumeContext } from "../context/ResumeContext";
+import { FREE_FOR_EVERYONE } from "../lib/pricing";
 
 const AccountPage = () => {
     const { accountType } = useContext(ResumeContext);
@@ -34,7 +35,7 @@ const AccountPage = () => {
                 </p>
             </div>
             {
-                accountType.type === "free" && <>
+                accountType.type === "free" && !FREE_FOR_EVERYONE && <>
                     <form action={`/api/users/${user?.id}/create-checkout-session`} method="POST">
                         <input type="hidden" id="clerck_user_id" name="clerck_user_id" value={user?.id} />
                         <input type="hidden" id="clerck_user_email" name="clerck_user_email"

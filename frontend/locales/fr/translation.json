@@ -13,6 +13,10 @@
         "download_resume": "Télécharger le CV",
         "sign_in_to_download": "Connectez-vous pour télécharger votre CV au format PDF"
       },
+      "tips": {
+        "leave_a_tip": "Laisser un pourboire",
+        "after_download": "Votre CV est prêt ! Si OnlineResume vous a été utile, vous pouvez <a>laisser un pourboire</a>."
+      },
       "language": {
         "toggle": "Changer la langue",
         "english": "Anglais",
@@ -51,6 +55,8 @@
       "free_plan_secondary_highlight": "Téléchargez jusqu'à <span>5 CVs</span> gratuitement !",
       "premium_plan_highlight": "Plan premium",
       "premium_plan_secondary_highlight": "<span>Téléchargements illimitées</span> de CVs",
+      "free_for_everyone_title": "Gratuit pour tous",
+      "free_for_everyone_highlight": "Téléchargements de CV <span>illimités</span>, sans frais",
       "coming_soon": "<span>Bientôt disponible :</span> Nouveaux modèles de CV !",
       "footer_message": "Réalisé avec ❤️ par"
     },
