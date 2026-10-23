@@ -3,9 +3,10 @@ import classNames from "classnames";
 import { useParams } from "react-router";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { ArrowDownTrayIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import { resumeInfoType, TemplateType } from "../../context/ResumeContext";
+import { TIP_URL } from "../../lib/pricing";
 import DownloadError from "../../utils/DownloadError";
 import { buildResumeHtml } from "../../components/ResumeModels/buildResumeHtml";
 
@@ -14,6 +15,7 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
     const { user, isSignedIn } = useUser();
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadError, setDownloadError] = useState<string | null>(null);
+    const [hasDownloaded, setHasDownloaded] = useState(false);
     const { getToken } = useAuth();
     const { t } = useTranslation();
 
@@ -55,6 +57,7 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
     const handleDownload = async () => {
         if (!isSignedIn) return;
         setDownloadError(null);
+        setHasDownloaded(false);
         setIsDownloading(true);
 
         try {
@@ -73,6 +76,7 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
             a.click();
             a.remove();
             setIsDownloading(false);
+            setHasDownloaded(true);
         } catch (error) {
             handleError(error);
         }
@@ -99,6 +103,14 @@ const DownloadPdf = ({ resume, isEditing, resumeTemplate }: { resume: resumeInfo
             {!isSignedIn && <p className="md:text-sm text-xs text-gray-500">{t("common.buttons.sign_in_to_download")}</p>}
             {isDownloading && <ArrowPathIcon className="animate-spin size-7 text-blue-400" aria-hidden="true" />}
             {downloadError && <p className="text-sm text-red-500">{downloadError}</p>}
+            {hasDownloaded && TIP_URL && <p className="md:text-sm text-xs text-gray-600 text-center">
+                <Trans
+                    i18nKey="common.tips.after_download"
+                    components={{
+                        a: <a href={TIP_URL} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline underline-offset-2" />,
+                    }}
+                />
+            </p>}
         </>
     );
 };

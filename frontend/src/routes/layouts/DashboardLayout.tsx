@@ -2,6 +2,8 @@ import { Link, Outlet, useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
+import { FREE_FOR_EVERYONE } from "../../lib/pricing";
+
 function DashboardLayout() {
     const location = useLocation();
     const { t } = useTranslation();
@@ -15,20 +17,24 @@ function DashboardLayout() {
                              ${location.pathname === "/dashboard" ? "bg-gray-200" : ""}`}>
                             {t("dashboard.resume_previews")}
                         </Link>
-                        <Link to="/dashboard/account" className={`inline-block py-2 px-4 rounded transition duration-200
-                             ${location.pathname === "/dashboard/account" ? "bg-gray-200" : ""}`}>
-                            {t("dashboard.account")}
-                        </Link>
+                        {!FREE_FOR_EVERYONE && (
+                            <Link to="/dashboard/account" className={`inline-block py-2 px-4 rounded transition duration-200
+                                 ${location.pathname === "/dashboard/account" ? "bg-gray-200" : ""}`}>
+                                {t("dashboard.account")}
+                            </Link>
+                        )}
                     </nav>
                     <nav className="hidden md:flex flex-col gap-3">
                         <Link to="/dashboard" className={`block py-2.5 px-4 rounded transition duration-200
                              ${location.pathname === "/dashboard" ? "bg-gray-200" : ""}`}>
                             {t("dashboard.resume_previews")}
                         </Link>
-                        <Link to="/dashboard/account" className={`block py-2.5 px-4 rounded transition duration-200
-                             ${location.pathname === "/dashboard/account" ? "bg-gray-200" : ""}`}>
-                            {t("dashboard.account")}
-                        </Link>
+                        {!FREE_FOR_EVERYONE && (
+                            <Link to="/dashboard/account" className={`block py-2.5 px-4 rounded transition duration-200
+                                 ${location.pathname === "/dashboard/account" ? "bg-gray-200" : ""}`}>
+                                {t("dashboard.account")}
+                            </Link>
+                        )}
                         <Link to="/contact" className="absolute flex gap-2 bottom-5 py-2.5 px-4 rounded-sm transition duration-200">
                             <InformationCircleIcon className="size-6" />
                             {t("dashboard.contact_support")}

@@ -1,8 +1,10 @@
 import { useContext } from "react";
+import { Navigate } from "react-router";
 import { useUser } from "@clerk/clerk-react";
 import { useTranslation } from "react-i18next";
 
 import { AccountType_Type, ResumeContext } from "../context/ResumeContext";
+import { FREE_FOR_EVERYONE } from "../lib/pricing";
 
 const AccountPage = () => {
     const { accountType } = useContext(ResumeContext);
@@ -20,6 +22,9 @@ const AccountPage = () => {
         }
     };
 
+    // No plan to show or change while the app is free for everyone: e.g. an old link
+    if (FREE_FOR_EVERYONE) return <Navigate to="/dashboard" replace />;
+
     return (
         <div className="p-6 bg-white shadow-md rounded-lg">
             <h1 className="text-2xl font-bold mb-4">
@@ -34,7 +39,7 @@ const AccountPage = () => {
                 </p>
             </div>
             {
-                accountType.type === "free" && <>
+                accountType.type === "free" && !FREE_FOR_EVERYONE && <>
                     <form action={`/api/users/${user?.id}/create-checkout-session`} method="POST">
                         <input type="hidden" id="clerck_user_id" name="clerck_user_id" value={user?.id} />
                         <input type="hidden" id="clerck_user_email" name="clerck_user_email"

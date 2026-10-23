@@ -13,6 +13,10 @@
       "download_resume": "Download Resume",
       "sign_in_to_download": "Sign in to download your resume as a PDF"
     },
+    "tips": {
+      "leave_a_tip": "Leave a tip",
+      "after_download": "Your resume is ready! If OnlineResume helped you, you can <a>leave a tip</a>."
+    },
     "language": {
       "toggle": "Toggle language",
       "english": "English",
@@ -50,6 +54,8 @@
   "free_plan_secondary_highlight": "Download up to <span>5 resumes</span> for free!",
   "premium_plan_highlight": "Premium Plan Highlight",
   "premium_plan_secondary_highlight": "<span>Unlimited </span>resume downloads",
+  "free_for_everyone_title": "Free for everyone",
+  "free_for_everyone_highlight": "<span>Unlimited</span> resume downloads, at no cost",
   "coming_soon": "<span>Coming Soon:</span> New resume templates!",
   "footer_message": "Made with ❤️ by",
   "legal_link": "Legal notice, terms and privacy"

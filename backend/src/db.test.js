@@ -41,6 +41,13 @@ test("premium users have no limit", async () => {
     await checkCanDownloadPdf(db, "user_1", profile("ada@example.com"));
 });
 
+test("when the app is free for everyone, a free user who used up their 5 PDFs can still download", async () => {
+    const db = await initDb(":memory:");
+    for (let i = 0; i < 5; i++) await downloadPdf(db, "user_1", profile("ada@example.com"));
+
+    await checkCanDownloadPdf(db, "user_1", () => assert.fail("nothing should be checked"), { freeForEveryone: true });
+});
+
 test("a user whose row can't be created is refused, not given unlimited PDFs", async () => {
     const db = await initDb(":memory:");
     // Another account already uses this email: the row can't be inserted

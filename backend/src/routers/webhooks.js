@@ -32,6 +32,11 @@ const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET
                 const session = await stripe.checkout.sessions.list({ payment_intent: paymentIntent.id });
                 // A renewal has no checkout session: the subscription events below keep the plan up to date
                 if (!session.data.length) return;
+                // A tip (paid through a Stripe Payment Link) is a checkout without a subscription: it gives nothing
+                if (!session.data[0].subscription) {
+                    console.log(`Payment ${paymentIntent.id} without a subscription (a tip): plan unchanged`);
+                    return;
+                }
                 const subscription = await stripe.subscriptions.retrieve(session.data[0].subscription);
 
                 await markUserPremium(db, subscription.metadata.clerck_user_id, subscription.metadata.clerck_user_email,
