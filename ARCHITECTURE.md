@@ -136,7 +136,7 @@ src/
   Premium. The free plan (5 PDFs) + Premium model is still all there, behind one switch set in 2 places:
   `FREE_FOR_EVERYONE` in `backend/.env.development` and `.env.production` (the PDF limit, see `checkCanDownloadPdf`),
   and `VITE_FREE_FOR_EVERYONE` in `frontend/.env.development` and `.env.production` (the home page's plans, the
-  Subscribe page, the Upgrade button, see `frontend/src/lib/pricing.ts`). To bring back freemium: set both to `false`
+  Subscribe page, the dashboard's Account page and links, see `frontend/src/lib/pricing.ts`). To bring back freemium: set both to `false`
   and deploy. Downloads are still counted while it's free: users who downloaded 5 PDFs or more would then be at the
   free plan's limit right away (`UPDATE users SET downloadedPdfs = 0` gives everyone a fresh start)
 - **Tips**: a discreet "Leave a tip" link (bottom-right corner of the home page's footer, and a line after each
