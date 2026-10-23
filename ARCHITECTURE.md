@@ -170,10 +170,16 @@ once the tests pass. See ".github/workflows/deploy.yml" to for the github action
 ### Logs
 The backend's and nginx's logs (requests and errors) go to the container's output, which Docker writes to the VPS's
 journal (`--log-driver journald`, in `ops/deploy/replace-container.sh`). They survive deploys, which remove the
-container, and journald deletes the oldest ones once the journal reaches its size limit (by default 10% of the disk,
-4 GB at most). Behind Cloudflare, nginx logs Cloudflare's addresses, not visitors'.
+container. journald deletes them after 12 months (see Retention), or sooner if the journal reaches its size limit (by
+default 10% of the disk, 4 GB at most). Behind Cloudflare, nginx logs Cloudflare's addresses, not visitors'.
 - **Read**: `sudo journalctl CONTAINER_NAME=onlineresume --since "1 hour ago"` (`-f` to follow, `-b` since the last
   boot). `sudo docker logs onlineresume` shows the running container's only.
+- **Retention**: 12 months at most, as the privacy policy says, set by `ops/journald/retention.conf`. Install it once,
+  on the VPS, from a checkout of the repo:
+  ```bash
+  sudo install -D -m 644 ops/journald/retention.conf /etc/systemd/journald.conf.d/retention.conf
+  sudo systemctl restart systemd-journald
+  ```
 
 ### Configuration and secrets
 Secrets are never in the repository nor in the Docker image.
