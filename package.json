@@ -24,5 +24,9 @@
     "@playwright/test": "^1.54.1",
     "concurrently": "^9.1.2",
     "pdfjs-dist": "5.4.624"
+  },
+  "allowScripts": {
+    "@clerk/shared": false,
+    "fsevents": false
   }
 }

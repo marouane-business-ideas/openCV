@@ -61,7 +61,6 @@ function Layout() {
                     </button>
 
                     <nav role="navigation" className="hidden lg:flex items-center gap-5 text-base">
-                        <TipLink className="flex items-center gap-1 hover:underline underline-offset-4" />
                         {authState === "signed-in" && <>
                             {location.pathname !== "/dashboard" && (
                                 <Link
@@ -102,7 +101,6 @@ function Layout() {
                 style={{ maxHeight: "0px" }}
             >
                 <nav role="navigation" className="p-4">
-                    <TipLink className="flex items-center justify-center gap-1 mb-3 font-bold" />
                     {authState === "signed-in" && <>
                         {location.pathname !== "/dashboard" && (
                             <Link
@@ -133,7 +131,7 @@ function Layout() {
             <main className="h-full w-full">
                 <Outlet />
                 {isHomePath(location.pathname) &&
-                    <footer className="flex justify-center w-full text-xs md:text-sm">
+                    <footer className="relative flex flex-col items-center w-full text-xs md:text-sm">
                         <div className="flex flex-col items-center">
                             <div className="flex items-center space-x-4 mb-4">
                                 <LanguageToggle />
@@ -166,6 +164,8 @@ function Layout() {
                                 </a>
                             </div>
                         </div>
+                        <TipLink className="self-end flex items-center gap-1 mr-4 mb-4 text-gray-500 hover:text-gray-800
+                             md:absolute md:right-6 md:bottom-8 md:m-0" />
                     </footer>
                 }
             </main>
