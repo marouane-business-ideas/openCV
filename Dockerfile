@@ -1,5 +1,6 @@
-# Use the official Node.js image as a base
-FROM node:22.6.0
+# Node's LTS, the major version in .nvmrc (each deploy builds with its latest release). On Debian 12 (bookworm):
+# Debian 13 no longer has apt-key, which the Chrome install below uses
+FROM node:24-bookworm
 
 # We don't need the standalone Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
