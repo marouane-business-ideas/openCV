@@ -17,13 +17,13 @@ const contactFormRouter = (mailClientPwd) => {
         const { name, formMessage } = req.body;
 
         try {
-            const message = await client.sendAsync({
+            // Not logged: the sent email holds the visitor's message
+            await client.sendAsync({
                 from: "<faris.marouane@gmail.com>",
                 to: "<support@onlineresume.dev>",
                 subject: `Message from user: ${name}. userID: ${userId}`,
                 text: formMessage,
             });
-            console.log(message);
             res.sendStatus(200);
         } catch (err) {
             console.error(err);
