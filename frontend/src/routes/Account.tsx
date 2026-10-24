@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { Navigate } from "react-router";
 import { useUser } from "@clerk/clerk-react";
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +21,9 @@ const AccountPage = () => {
                 return accountType;
         }
     };
+
+    // No plan to show or change while the app is free for everyone: e.g. an old link
+    if (FREE_FOR_EVERYONE) return <Navigate to="/dashboard" replace />;
 
     return (
         <div className="p-6 bg-white shadow-md rounded-lg">

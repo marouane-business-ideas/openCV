@@ -96,7 +96,7 @@ src/
 ## Backend Architecture
 
 ### Technology Stack
-- **Runtime**: Node.js 22.6.0
+- **Runtime**: Node.js 24, the LTS (`.nvmrc`: the CI and `nvm use` read it, the Dockerfile names the same version)
 - **Framework**: Express.js 5.1.0
 - **Database**: SQLite 3
 - **Authentication**: Clerk Express SDK
@@ -122,7 +122,9 @@ src/
 - Uses Puppeteer Cluster for performance
 - Generates resumes from HTML templates: the frontend renders the template to a self-contained HTML document
   (`buildResumeHtml`, fonts embedded) and the backend prints it (`src/pdf/renderPdf.js`)
-- Handles multiple concurrent requests
+- Prints 10 PDFs at a time, the other requests wait in a queue (`src/app.js`). Printing is CPU-bound: on the VPS's
+  2 vCPUs, about 460 PDFs per minute at 4 at a time, 550 at 10 or 20. At 10, rendering adds 160 MB of memory at peak
+  (330 MB at 20) and Chrome opens a page in 0.5 s (1 s at 20; puppeteer-cluster gives up at 5 s)
 - System-installed Chrome for Docker compatibility
 
 #### Authentication & Authorization
@@ -130,17 +132,21 @@ src/
 - JWT token validation
 - User session management
 - Webhook handling for user lifecycle events
+- **Account deletion**: when a user's Clerk account is deleted (by the user, or from Clerk's dashboard), Clerk's
+  `user.deleted` webhook deletes their row and their saved resumes (`deleteUser` in `db.js`). The webhook endpoint
+  (Clerk dashboard > Webhooks) must send `user.deleted`. Their data stays in the database backups until R2 deletes
+  them, after 30 days
 
 #### Payment Processing
 - **Pricing model**: the app is currently **free for everyone**: no PDF limit, and nothing shows the plans or sells
   Premium. The free plan (5 PDFs) + Premium model is still all there, behind one switch set in 2 places:
   `FREE_FOR_EVERYONE` in `backend/.env.development` and `.env.production` (the PDF limit, see `checkCanDownloadPdf`),
   and `VITE_FREE_FOR_EVERYONE` in `frontend/.env.development` and `.env.production` (the home page's plans, the
-  Subscribe page, the Upgrade button, see `frontend/src/lib/pricing.ts`). To bring back freemium: set both to `false`
+  Subscribe page, the dashboard's Account page and links, see `frontend/src/lib/pricing.ts`). To bring back freemium: set both to `false`
   and deploy. Downloads are still counted while it's free: users who downloaded 5 PDFs or more would then be at the
   free plan's limit right away (`UPDATE users SET downloadedPdfs = 0` gives everyone a fresh start)
-- **Tips**: a "Leave a tip" link (header, and after each download) opens a Stripe Payment Link where users choose how
-  much to pay. It's created in the Stripe dashboard (Payment Links > Create, "Customers choose what to pay", in EUR),
+- **Tips**: a discreet "Leave a tip" link (bottom-right corner of the home page's footer, and a line after each
+  download) opens a Stripe Payment Link where users choose how much to pay. It's created in the Stripe dashboard (Payment Links > Create, "Customers choose what to pay", in EUR),
   in test mode for `frontend/.env.development` and live mode for `.env.production`: its URL goes in `VITE_TIP_URL`.
   No URL, no link. A tip changes no one's plan: the webhook ignores payments without a subscription
 - Stripe integration for subscriptions
@@ -232,7 +238,7 @@ off OVH, and only reachable through the `.eu.` endpoint). R2 deletes backups aft
 
 ### Containerization
 - **Docker**: Single container deployment
-- **Base Image**: Node.js 22.6.0
+- **Base Image**: Node.js 24 on Debian 12 (`node:24-bookworm`)
 - **Additional Services**: Nginx, Supervisor, Chrome browser
 
 ### Process Management
