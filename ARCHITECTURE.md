@@ -132,6 +132,10 @@ src/
 - JWT token validation
 - User session management
 - Webhook handling for user lifecycle events
+- **Account deletion**: when a user's Clerk account is deleted (by the user, or from Clerk's dashboard), Clerk's
+  `user.deleted` webhook deletes their row and their saved resumes (`deleteUser` in `db.js`). The webhook endpoint
+  (Clerk dashboard > Webhooks) must send `user.deleted`. Their data stays in the database backups until R2 deletes
+  them, after 30 days
 
 #### Payment Processing
 - **Pricing model**: the app is currently **free for everyone**: no PDF limit, and nothing shows the plans or sells
