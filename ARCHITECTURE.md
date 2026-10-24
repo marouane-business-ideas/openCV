@@ -96,7 +96,7 @@ src/
 ## Backend Architecture
 
 ### Technology Stack
-- **Runtime**: Node.js 22.6.0
+- **Runtime**: Node.js 24, the LTS (`.nvmrc`: the CI and `nvm use` read it, the Dockerfile names the same version)
 - **Framework**: Express.js 5.1.0
 - **Database**: SQLite 3
 - **Authentication**: Clerk Express SDK
@@ -215,7 +215,7 @@ off OVH, and only reachable through the `.eu.` endpoint). R2 deletes backups aft
 
 ### Containerization
 - **Docker**: Single container deployment
-- **Base Image**: Node.js 22.6.0
+- **Base Image**: Node.js 24 on Debian 12 (`node:24-bookworm`)
 - **Additional Services**: Nginx, Supervisor, Chrome browser
 
 ### Process Management
