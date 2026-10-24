@@ -180,11 +180,16 @@ container. journald deletes them after 12 months (see Retention), or sooner if t
 default 10% of the disk, 4 GB at most). Behind Cloudflare, nginx logs Cloudflare's addresses, not visitors'.
 - **Read**: `sudo journalctl CONTAINER_NAME=onlineresume --since "1 hour ago"` (`-f` to follow, `-b` since the last
   boot). `sudo docker logs onlineresume` shows the running container's only.
-- **Retention**: 12 months at most, as the privacy policy says, set by `ops/journald/retention.conf`. Install it once,
-  on the VPS, from a checkout of the repo:
+- **Retention**: 12 months at most, as the privacy policy says. The setting is in `ops/journald/retention.conf`, which
+  the deploy doesn't install: do it once, and again if the file changes. The VPS has no copy of the repository, so
+  this runs on your computer, from the repository's folder, up to date with main. It sends the file through SSH,
+  saves it as `/etc/systemd/journald.conf.d/retention.conf` and restarts journald so it reads it:
   ```bash
-  sudo install -D -m 644 ops/journald/retention.conf /etc/systemd/journald.conf.d/retention.conf
-  sudo systemctl restart systemd-journald
+  ssh ubuntu@54.39.230.66 'sudo mkdir -p /etc/systemd/journald.conf.d &&
+    sudo tee /etc/systemd/journald.conf.d/retention.conf >/dev/null &&
+    sudo systemctl restart systemd-journald' < ops/journald/retention.conf
+  # Check: the last lines show that file, with MaxRetentionSec=12month
+  ssh ubuntu@54.39.230.66 'systemd-analyze cat-config systemd/journald.conf | tail -6'
   ```
 
 ### Configuration and secrets
