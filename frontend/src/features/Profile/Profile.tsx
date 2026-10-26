@@ -74,6 +74,15 @@ const Profile = ({ edited }: { edited: boolean }) => {
                             id="nationality" name="nationality" placeholder="American" value={personalInfo.nationality} />
                     </div>
                 </div>
+                <div className="flex gap-2 justify-between items-end">
+                    <div className="flex flex-col gap-2 w-2/5">
+                        <label className="text-base font-medium text-gray-700" htmlFor="birthDate">{t("form.profile.birth_date")}</label>
+                        <input onChange={(e) => handleInputChange(e, "birthDate")}
+                            className="border p-1 rounded-md focus:outline-hidden border-gray-300" type="date"
+                            id="birthDate" name="birthDate" aria-describedby="birthDate-hint" value={personalInfo.birthDate ?? ""} />
+                    </div>
+                    <p id="birthDate-hint" className="w-3/5 pb-1 text-sm text-gray-500">{t("form.profile.birth_date_hint")}</p>
+                </div>
             </div>
         </Card>
     );

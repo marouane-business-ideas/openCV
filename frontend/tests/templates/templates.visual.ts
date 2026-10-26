@@ -24,6 +24,8 @@ const cases = templates.flatMap((template) => fixtures.flatMap((fixture) =>
 
 for (const { template, fixture, lang, name } of cases) {
     test(name, async ({ page }, testInfo) => {
+        // The long resume has a date of birth: its age, and so the screenshots, must not change with the years
+        await page.clock.setFixedTime(new Date("2026-06-15T12:00:00"));
         await page.goto(`/template-lab.html?template=${template}&fixture=${fixture}&lang=${lang}&editor=1`);
         const result: TemplateLabResult = await (await page.waitForFunction(() => window.templateLabResult)).jsonValue();
 

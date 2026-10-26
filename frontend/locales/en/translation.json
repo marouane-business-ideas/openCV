@@ -84,7 +84,9 @@
       "email": "Email",
       "phone_number": "Phone Number",
       "location": "Location",
-      "nationality": "Nationality"
+      "nationality": "Nationality",
+      "birth_date": "Date of birth",
+      "birth_date_hint": "Optional. The resume shows your age, not the date."
     },
     "work_experience": {
       "work_experience": "Work Experience",
@@ -146,7 +148,9 @@
     "skills": "SKILLS",
     "expertise": "EXPERTISE",
     "contact": "CONTACT",
-    "nationality": "Nationality: {{nationality}}"
+    "nationality": "Nationality: {{nationality}}",
+    "age_one": "{{count}} year old",
+    "age_other": "{{count}} years old"
   },
   "dashboard": {
     "title": "Your Resumes",
