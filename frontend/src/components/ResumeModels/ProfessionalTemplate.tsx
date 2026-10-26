@@ -88,6 +88,8 @@ const Styles: { [key: string]: React.CSSProperties } = {
         letterSpacing: "0.175px",
         gap: "5px",
         alignItems: "center",
+        // An entry longer than the column wraps: its lines are centered too
+        textAlign: "center",
     },
     experienceDate: {
         fontSize: "14px",
