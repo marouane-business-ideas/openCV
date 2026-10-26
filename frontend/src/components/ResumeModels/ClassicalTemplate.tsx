@@ -220,7 +220,8 @@ const ClassicalTemplate = ({
                         <ExperienceTopSection>
                             <div style={{ display: "flex", flexDirection: "row", gap: "5px" }}>
                                 <div style={{ fontWeight: 900 }}>{job.company}</div>
-                                <div>•</div>
+                                {/* The bullet only separates two filled fields */}
+                                {job.company.trim() && job.location.trim() && <div>•</div>}
                                 <div style={{ fontWeight: 900 }}>{job.location}</div>
                             </div>
                             <div style={{ fontStyle: "italic" }}>{job.jobTitle}</div>
