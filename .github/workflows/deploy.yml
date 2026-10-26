@@ -17,6 +17,10 @@ jobs:
     # Nothing is deployed when a test fails
     needs: tests
     runs-on: ubuntu-latest
+    # Two deploys at once would replace the container at the same time: the second one waits
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repo
@@ -53,28 +57,16 @@ jobs:
         run: |
           docker build --platform linux/amd64 -t onlineresume:latest .
 
-      - name: Save and transfer Docker image to VPS
+      # The site keeps running meanwhile (about 2 minutes): the loaded image takes the name onlineresume:latest, the
+      # running container keeps the image it started from
+      - name: Send the Docker image to the VPS
         run: |
-          docker save onlineresume:latest | gzip | ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_HOST }} '
-            sudo docker stop $(sudo docker ps -q) || true
-            sudo docker rm $(sudo docker ps -a -q) || true
-            sudo docker image rm onlineresume:latest --force || true
-            gunzip | sudo docker load
-          '
+          docker save onlineresume:latest | gzip | ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_HOST }} 'gunzip | sudo docker load'
 
       - name: Remove local Docker image
         run: docker image rm onlineresume:latest
 
-      - name: Run Docker container on VPS
+      # The site is down only now, for a few seconds. If the new version doesn't answer, the previous one runs again
+      - name: Replace the running container on VPS
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_HOST }} '
-            # --dns: don't depend on the host's resolver, which some VPS hosts make unreachable from inside containers
-            sudo docker run -d --name onlineresume \
-              --restart unless-stopped \
-              --dns 8.8.8.8 --dns 1.1.1.1 \
-              -p 80:80 -p 443:443 \
-              -v ./database:/app/backend/database \
-              -v ./httpsEncryption:/etc/letsencrypt \
-              -v ./backend.env.production.local:/app/backend/.env.production.local:ro \
-              onlineresume:latest
-          '
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_HOST }} 'bash -s' < ops/deploy/replace-container.sh

@@ -167,6 +167,30 @@ src/
 - **Github Actions**: All commits on main pushed to remote are automatically deployed to an OVH VPS in Canada (**user**: ubuntu /**IP**: 54.39.230.66),
 once the tests pass. See ".github/workflows/deploy.yml" to for the github actions implementation
 - **Deployment script**: See deploy.sh script at the root of the project
+- **Downtime**: a few seconds per deploy. The image is sent to the VPS while the site keeps running; only then
+  `ops/deploy/replace-container.sh` stops the running container (`onlineresume`) and starts one of the new image. If
+  the new version doesn't answer through nginx within a minute, the previous container is started again and the
+  deploy fails (its logs are in the GitHub Actions run). The VPS holds both images during the deploy: the previous one
+  is deleted once the new version answers
+
+### Logs
+The backend's and nginx's logs (requests and errors) go to the container's output, which Docker writes to the VPS's
+journal (`--log-driver journald`, in `ops/deploy/replace-container.sh`). They survive deploys, which remove the
+container. journald deletes them after 12 months (see Retention), or sooner if the journal reaches its size limit (by
+default 10% of the disk, 4 GB at most). Behind Cloudflare, nginx logs Cloudflare's addresses, not visitors'.
+- **Read**: `sudo journalctl CONTAINER_NAME=onlineresume --since "1 hour ago"` (`-f` to follow, `-b` since the last
+  boot). `sudo docker logs onlineresume` shows the running container's only.
+- **Retention**: 12 months at most, as the privacy policy says. The setting is in `ops/journald/retention.conf`, which
+  the deploy doesn't install: do it once, and again if the file changes. The VPS has no copy of the repository, so
+  this runs on your computer, from the repository's folder, up to date with main. It sends the file through SSH,
+  saves it as `/etc/systemd/journald.conf.d/retention.conf` and restarts journald so it reads it:
+  ```bash
+  ssh ubuntu@54.39.230.66 'sudo mkdir -p /etc/systemd/journald.conf.d &&
+    sudo tee /etc/systemd/journald.conf.d/retention.conf >/dev/null &&
+    sudo systemctl restart systemd-journald' < ops/journald/retention.conf
+  # Check: the last lines show that file, with MaxRetentionSec=12month
+  ssh ubuntu@54.39.230.66 'systemd-analyze cat-config systemd/journald.conf | tail -6'
+  ```
 
 ### Configuration and secrets
 Secrets are never in the repository nor in the Docker image.
