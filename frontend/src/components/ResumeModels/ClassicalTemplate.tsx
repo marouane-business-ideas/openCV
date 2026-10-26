@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { languageLevelLabel } from "../../utils/languageLevel";
 import Schemify, { withoutScheme } from "../../utils/schemify";
 import { formatPhoneNumber } from "../../utils/formatPhone";
+import { ageFromBirthDate } from "../../utils/age";
 import { ResumeTemplateProps } from "../../Types/CommonTypes";
 
 const firstColumnWidth = "160px";
@@ -148,6 +149,7 @@ const ClassicalTemplate = ({
     const filledSkills = skills.filter((skill) => skill.trim());
     const filledLanguages = languages.filter((language) => language.language.trim());
     const filledLinks = links.filter((link) => link.linkName || link.linkUrl);
+    const age = ageFromBirthDate(personalInfo.birthDate);
 
     return (
         <div inert={inert} className={customClassName} style={{ ...Styles.pageContainer, ...customStyle, color: themeColor }}>
@@ -191,6 +193,13 @@ const ClassicalTemplate = ({
                     <>
                         <div>•</div>
                         <div>{t("resume.nationality", { nationality: personalInfo.nationality })}</div>
+                    </>
+                )}
+                {age !== null && (
+                    <>
+                        <div>•</div>
+                        {/* Short: kept on one line when the other details squeeze the row */}
+                        <div style={{ whiteSpace: "nowrap" }}>{t("resume.age", { count: age })}</div>
                     </>
                 )}
             </div>

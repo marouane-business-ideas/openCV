@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { languageLevelLabel } from "../../utils/languageLevel";
 import Schemify, { withoutScheme } from "../../utils/schemify";
 import { formatPhoneNumber } from "../../utils/formatPhone";
+import { ageFromBirthDate } from "../../utils/age";
 import { ResumeTemplateProps } from "../../Types/CommonTypes";
 
 const Styles: { [key: string]: React.CSSProperties } = {
@@ -149,6 +150,7 @@ const ProfessionalTemplate = ({
     const filledSkills = skills.filter((skill) => skill.trim());
     const filledLanguages = languages.filter((language) => language.language.trim());
     const filledLinks = links.filter((link) => link.linkName || link.linkUrl);
+    const age = ageFromBirthDate(personalInfo.birthDate);
 
     return (
         <div inert={inert} className={customClassName} style={{ ...Styles.pageContainer, ...customStyle, color: themeColor }}>
@@ -204,6 +206,7 @@ const ProfessionalTemplate = ({
                                 {personalInfo.email}
                             </a>
                             {personalInfo.nationality && <span style={{ lineBreak: "anywhere" }} >{t("resume.nationality", { nationality: personalInfo.nationality })}</span>}
+                            {age !== null && <span>{t("resume.age", { count: age })}</span>}
                         </SectionTextColumn>
                     </div>
                     {filledLinks.length > 0 && (

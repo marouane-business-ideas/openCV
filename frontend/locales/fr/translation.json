@@ -85,7 +85,9 @@
             "email": "Email",
             "phone_number": "Numéro de téléphone",
             "location": "Lieu",
-            "nationality": "Nationalité"
+            "nationality": "Nationalité",
+            "birth_date": "Date de naissance",
+            "birth_date_hint": "Facultatif. Le CV affiche votre âge, pas la date."
           },
           "work_experience": {
             "work_experience": "Expérience professionnelle",
@@ -147,7 +149,9 @@
     "skills": "COMPÉTENCES",
     "expertise": "EXPERTISE",
     "contact": "CONTACT",
-    "nationality": "Nationalité\u00a0: {{nationality}}"
+    "nationality": "Nationalité\u00a0: {{nationality}}",
+    "age_one": "{{count}}\u00a0an",
+    "age_other": "{{count}}\u00a0ans"
   },
     "dashboard": {
       "title": "Vos CVs",

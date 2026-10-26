@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import Schemify, { withoutScheme } from "../../utils/schemify";
 import { formatPhoneNumber } from "../../utils/formatPhone";
 import { languageLevelLabel } from "../../utils/languageLevel";
+import { ageFromBirthDate } from "../../utils/age";
 import { ResumeTemplateProps } from "../../Types/CommonTypes";
 import { fontFaceCss } from "./templateFonts";
 import { modernTemplateFonts } from "./modernTemplateFonts";
@@ -47,8 +48,10 @@ const ModernTemplate = ({
     const filledLanguages = languages.filter((language) => language.language.trim());
     const filledLinks = links.filter((link) => link.linkName || link.linkUrl);
 
+    const age = ageFromBirthDate(personalInfo.birthDate);
+
     const hasMainContacts = personalInfo.phoneNumber || personalInfo.email;
-    const hasOtherContacts = personalInfo.location || personalInfo.nationality;
+    const hasOtherContacts = personalInfo.location || personalInfo.nationality || age !== null;
 
     return (
         <div inert={inert} className={classNames("rt-modern", customClassName)}
@@ -102,6 +105,7 @@ const ModernTemplate = ({
                                         {personalInfo.nationality && (
                                             <li>{t("resume.nationality", { nationality: personalInfo.nationality })}</li>
                                         )}
+                                        {age !== null && <li>{t("resume.age", { count: age })}</li>}
                                     </ul>
                                 )}
                             </div>

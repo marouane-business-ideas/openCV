@@ -77,6 +77,7 @@ const long: resumeInfoType = {
         phoneNumber: "+33612345678",
         location: "12 rue des Petits-Champs, 75002 Paris, France",
         nationality: "Française",
+        birthDate: "1984-03-12",
         summary: "Engineering leader with fifteen years of experience building payment platforms used by millions of people. " +
             "I enjoy turning ambiguous business problems into simple, reliable systems, and growing the teams that run them.\n" +
             "Passionnée par la transmission : mentorat, conférences et contributions open source.",

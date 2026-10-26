@@ -1,4 +1,6 @@
+import i18n from "../../i18n";
 import { resumeInfoType } from "../../context/ResumeContext";
+import { ageFromBirthDate } from "../../utils/age";
 import { formatPhoneNumber } from "../../utils/formatPhone";
 import { withoutScheme } from "../../utils/schemify";
 import { PdfPage } from "./inspectPdf";
@@ -25,6 +27,7 @@ const htmlTexts = (html: string) => {
 
 const expectedTexts = (resume: resumeInfoType) => {
     const { personalInfo, workExperience, education, skills, languages, links } = resume;
+    const age = ageFromBirthDate(personalInfo.birthDate);
     return [
         personalInfo.name,
         personalInfo.title,
@@ -32,6 +35,8 @@ const expectedTexts = (resume: resumeInfoType) => {
         formatPhoneNumber(personalInfo.phoneNumber),
         personalInfo.location,
         personalInfo.nationality,
+        // The templates show the age, never the date of birth
+        age === null ? "" : i18n.t("resume.age", { count: age }),
         ...htmlTexts(personalInfo.summary),
         ...workExperience.flatMap((job) => [job.company, job.jobTitle, job.date, job.location, ...htmlTexts(job.description)]),
         ...education.flatMap((school) => [school.schoolName, school.degree, school.date, ...htmlTexts(school.description)]),

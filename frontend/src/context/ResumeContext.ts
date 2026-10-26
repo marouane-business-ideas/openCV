@@ -164,6 +164,7 @@ export const defaultContext = savedState ? JSON.parse(savedState) : {
             phoneNumber: "",
             location: "",
             nationality: "",
+            birthDate: "",
             summary: ""
         },
         workExperience: [{
@@ -197,6 +198,8 @@ export type resumeInfoType = {
         phoneNumber: string;
         location: string;
         nationality: string;
+        // "1990-04-23", or empty: the resume shows the age, never the date. Missing in resumes saved before
+        birthDate?: string;
         summary: string;
     };
     workExperience: {
