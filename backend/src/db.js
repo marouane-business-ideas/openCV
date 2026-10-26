@@ -85,6 +85,18 @@ export async function addUser(db, { id, fullName, email, accountType = "free" })
 }
 
 /**
+ * When a user deletes their account (Clerk's user.deleted webhook), their row and their saved resumes go, and it
+ * returns how many resumes. pdf_metadata's ON DELETE CASCADE doesn't do it: SQLite ignores foreign keys unless
+ * PRAGMA foreign_keys is on, and turning it on would make a migration that rebuilds the users table delete every
+ * resume. The resumes go first: if the second step fails, Clerk retries the webhook and it's done again.
+ */
+export async function deleteUser(db, userId) {
+    const { changes: resumes } = await db.run("DELETE FROM pdf_metadata WHERE userId = ?", [userId]);
+    await db.run("DELETE FROM users WHERE id = ?", [userId]);
+    return resumes;
+}
+
+/**
  * Users normally get their row from Clerk's user.created webhook, at sign-up. When it's missing (the webhook failed,
  * or the database was started over), it's created here from the user's Clerk profile and Stripe subscription:
  * without a row, the download count can't be saved, the free plan's limit would never apply, and paying users would

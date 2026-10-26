@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 
 import {
-    addUser, checkCanDownloadPdf, ensureUser, formatFullName, incrementUserDownloadCount, initDb, markUserPremium, PDF_LIMIT_ERROR,
+    addUser, checkCanDownloadPdf, deleteUser, ensureUser, formatFullName, incrementUserDownloadCount, initDb, markUserPremium, PDF_LIMIT_ERROR,
     updatePlanFromSubscription,
 } from "./db.js";
 
@@ -166,6 +166,22 @@ test("the app doesn't fetch the profile of a user the sign-up webhook already ad
 
     assert.equal(await addUser(db, { id: "user_1", fullName: "Ada Lovelace", email: "ada@example.com" }), true);
     await ensureUser(db, "user_1", () => assert.fail("the profile shouldn't be fetched"));
+});
+
+test("a deleted account's row and saved resumes are deleted, and no one else's", async () => {
+    const db = await initDb(":memory:");
+    const saveResume = (userId) => db.run(`INSERT INTO pdf_metadata (userId, filename, jsonContent, htmlContent, template)
+        VALUES (?, 'CV.pdf', '{}', '<html></html>', 'classic')`, [userId]);
+    await addUser(db, { id: "user_1", fullName: "Ada Lovelace", email: "ada@example.com" });
+    await addUser(db, { id: "user_2", fullName: "Grace Hopper", email: "grace@example.com" });
+    await saveResume("user_1");
+    await saveResume("user_1");
+    await saveResume("user_2");
+
+    assert.equal(await deleteUser(db, "user_1"), 2);
+
+    assert.deepEqual(await db.all("SELECT id FROM users"), [{ id: "user_2" }]);
+    assert.deepEqual(await db.all("SELECT userId FROM pdf_metadata"), [{ userId: "user_2" }]);
 });
 
 test("a name the user didn't enter is left out of their full name", () => {

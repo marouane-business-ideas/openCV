@@ -2,7 +2,7 @@ import express from "express";
 import { Webhook } from "svix";
 import bodyParser from "body-parser";
 
-import { addUser, formatFullName, markUserPremium, updatePlanFromSubscription } from "../db.js";
+import { addUser, deleteUser, formatFullName, markUserPremium, updatePlanFromSubscription } from "../db.js";
 
 const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET, db, getUserProfile) => {
     const router = express.Router();
@@ -102,8 +102,8 @@ const webhooksRouter = (stripe, stripeWebhookSigningSecret, CLERK_WEBHOOK_SECRET
             const { id } = data;
 
             try {
-                await db.run("DELETE FROM users WHERE id = ?", [id]);
-                console.log("User deleted from database:", id);
+                const resumes = await deleteUser(db, id);
+                console.log(`User deleted from database, with their ${resumes} saved resumes:`, id);
                 return res.sendStatus(204);
             } catch (err) {
                 console.error("Error deleting user:", err);
