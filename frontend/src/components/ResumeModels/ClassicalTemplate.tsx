@@ -93,7 +93,10 @@ const Styles: { [key: string]: React.CSSProperties } = {
     experienceDate: {
         fontSize: "14px",
         letterSpacing: "0.175px",
+        // A long date wraps: next to a short text, it would otherwise widen the column and shift the entry's text
+        width: firstColumnWidth,
         minWidth: firstColumnWidth,
+        maxWidth: firstColumnWidth,
         fontWeight: 900,
     },
     experienceTopSection: {

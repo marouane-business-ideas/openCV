@@ -101,7 +101,9 @@ const long: resumeInfoType = {
             description: "Specialized in distributed systems and cryptography.", id: "long-school-1" },
         { schoolName: "Université Pierre et Marie Curie", degree: "Licence de mathématiques", date: "2003 - 2006",
             description: "Mention très bien.", id: "long-school-2" },
-        { schoolName: "Lycée Henri-IV", degree: "Baccalauréat scientifique", date: "2003", description: "", id: "long-school-3" },
+        // A date longer than the date column of the classic template, next to a short text
+        { schoolName: "Lycée Henri-IV", degree: "Baccalauréat scientifique", date: "Septembre 2002 – Juillet 2003",
+            description: "", id: "long-school-3" },
     ],
     skills: ["TypeScript", "Node.js", "React", "PostgreSQL", "Kafka", "Kubernetes", "AWS", "Terraform", "Go", "Python",
         "Domain-Driven Design", "Payments (PCI-DSS)", "Hiring & mentoring", "Public speaking",
