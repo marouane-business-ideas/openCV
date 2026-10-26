@@ -141,6 +141,11 @@ const ClassicalTemplate = ({
     const { personalInfo, workExperience, education, skills, languages, links, themeColor: tempThemeColor } = resume;
     const themeColor = customThemeColor ?? tempThemeColor;
 
+    // The form keeps empty entries: a section without any filled entry isn't shown
+    const filledSkills = skills.filter((skill) => skill.trim());
+    const filledLanguages = languages.filter((language) => language.language.trim());
+    const filledLinks = links.filter((link) => link.linkName || link.linkUrl);
+
     return (
         <div inert={inert} className={customClassName} style={{ ...Styles.pageContainer, ...customStyle, color: themeColor }}>
             <div style={Styles.personnalInfoContainer}>
@@ -229,40 +234,46 @@ const ClassicalTemplate = ({
                         </ExperienceTopSection>
                     </div>
                 ))}
-                <div style={Styles.sectionRow}>
-                    <SectionTitle>{t("resume.skills")}</SectionTitle>
-                    <div style={{ fontWeight: "900" }}>
-                        {skills.map((skill, index) => (
-                            <span key={`${skill}-${index}`}>
-                                {skill}{index !== skills.length - 1 ? ", " : ""}
-                            </span>))}
+                {filledSkills.length > 0 && (
+                    <div style={Styles.sectionRow}>
+                        <SectionTitle>{t("resume.skills")}</SectionTitle>
+                        <div style={{ fontWeight: "900" }}>
+                            {filledSkills.map((skill, index) => (
+                                <span key={`${skill}-${index}`}>
+                                    {skill}{index !== filledSkills.length - 1 ? ", " : ""}
+                                </span>))}
+                        </div>
                     </div>
-                </div>
-                <div style={Styles.sectionRow}>
-                    <SectionTitle>{t("resume.languages")}</SectionTitle>
-                    <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap" }}>
-                        {languages.map((language, index) => (
-                            <div key={language.id} style={{ display: "flex", gap: "3px" }}>
-                                <span>{language.language}</span>
-                                {language.level && <span>({languageLevelLabel(language.level, t)})</span>}
-                                <span style={{ fontWeight: "900", marginLeft: "2px" }} >{index !== languages.length - 1 ? "•" : ""}</span>
-                            </div>))
-                        }
+                )}
+                {filledLanguages.length > 0 && (
+                    <div style={Styles.sectionRow}>
+                        <SectionTitle>{t("resume.languages")}</SectionTitle>
+                        <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap" }}>
+                            {filledLanguages.map((language, index) => (
+                                <div key={language.id} style={{ display: "flex", gap: "3px" }}>
+                                    <span>{language.language}</span>
+                                    {language.level && <span>({languageLevelLabel(language.level, t)})</span>}
+                                    <span style={{ fontWeight: "900", marginLeft: "2px" }} >{index !== filledLanguages.length - 1 ? "•" : ""}</span>
+                                </div>))
+                            }
+                        </div>
                     </div>
-                </div>
-                <div style={Styles.sectionRow}>
-                    <SectionTitle>{t("resume.links")}</SectionTitle>
-                    <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap" }}>
-                        {links.map((link, index) => (
-                            <div key={link.id} style={{ display: "flex", gap: "3px" }}>
-                                <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >
-                                    {withoutScheme(link.linkName)}
-                                </a>
-                                <span style={{ fontWeight: "900", marginLeft: "2px" }} >{index !== links.length - 1 ? "•" : ""}</span>
-                            </div>))
-                        }
+                )}
+                {filledLinks.length > 0 && (
+                    <div style={Styles.sectionRow}>
+                        <SectionTitle>{t("resume.links")}</SectionTitle>
+                        <div style={{ display: "flex", flexDirection: "row", gap: "5px", flexWrap: "wrap" }}>
+                            {filledLinks.map((link, index) => (
+                                <div key={link.id} style={{ display: "flex", gap: "3px" }}>
+                                    <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >
+                                        {withoutScheme(link.linkName || link.linkUrl)}
+                                    </a>
+                                    <span style={{ fontWeight: "900", marginLeft: "2px" }} >{index !== filledLinks.length - 1 ? "•" : ""}</span>
+                                </div>))
+                            }
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );

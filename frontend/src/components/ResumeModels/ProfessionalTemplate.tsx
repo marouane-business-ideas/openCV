@@ -143,6 +143,11 @@ const ProfessionalTemplate = ({
     const { personalInfo, workExperience, education, skills, languages, links, themeColor: tempThemeColor } = resume;
     const themeColor = customThemeColor ?? tempThemeColor;
 
+    // The form keeps empty entries: a section without any filled entry isn't shown
+    const filledSkills = skills.filter((skill) => skill.trim());
+    const filledLanguages = languages.filter((language) => language.language.trim());
+    const filledLinks = links.filter((link) => link.linkName || link.linkUrl);
+
     return (
         <div inert={inert} className={customClassName} style={{ ...Styles.pageContainer, ...customStyle, color: themeColor }}>
             <div style={Styles.personnalInfoContainer}>
@@ -199,74 +204,80 @@ const ProfessionalTemplate = ({
                             {personalInfo.nationality && <span style={{ lineBreak: "anywhere" }} >{t("resume.nationality", { nationality: personalInfo.nationality })}</span>}
                         </SectionTextColumn>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <SectionTitle>
-                                <div style={{
-                                    width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
-                                    marginRight: "5px"
-                                }} />
-                                {t("resume.links")}
-                                <div style={{
-                                    width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
-                                    marginLeft: "5px"
-                                }} />
-                            </SectionTitle>
+                    {filledLinks.length > 0 && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <SectionTitle>
+                                    <div style={{
+                                        width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
+                                        marginRight: "5px"
+                                    }} />
+                                    {t("resume.links")}
+                                    <div style={{
+                                        width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
+                                        marginLeft: "5px"
+                                    }} />
+                                </SectionTitle>
+                            </div>
+                            <SectionTextColumn>
+                                {filledLinks.map((link) => (
+                                    <div key={link.id}
+                                        style={{ lineBreak: "anywhere" }}
+                                    >
+                                        <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >{withoutScheme(link.linkName || link.linkUrl)}</a>
+                                    </div>))
+                                }
+                            </SectionTextColumn>
                         </div>
-                        <SectionTextColumn>
-                            {links.map((link) => (
-                                <div key={link.id}
-                                    style={{ lineBreak: "anywhere" }}
-                                >
-                                    <a style={{ ...Styles.link, color: themeColor }} target="_blank" href={Schemify(link.linkUrl, "https")} >{withoutScheme(link.linkName)}</a>
-                                </div>))
-                            }
-                        </SectionTextColumn>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <SectionTitle>
-                                <div style={{
-                                    width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
-                                    marginRight: "5px"
-                                }} />
-                                {t("resume.languages")}
-                                <div style={{
-                                    width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
-                                    marginLeft: "5px"
-                                }} />
-                            </SectionTitle>
+                    )}
+                    {filledLanguages.length > 0 && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <SectionTitle>
+                                    <div style={{
+                                        width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
+                                        marginRight: "5px"
+                                    }} />
+                                    {t("resume.languages")}
+                                    <div style={{
+                                        width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
+                                        marginLeft: "5px"
+                                    }} />
+                                </SectionTitle>
+                            </div>
+                            <SectionTextColumn>
+                                {filledLanguages.map((language) => (
+                                    <div key={language.id} style={{ display: "flex", gap: "3px" }}>
+                                        <span>{language.language}</span>
+                                        {language.level && <span>({languageLevelLabel(language.level, t)})</span>}
+                                    </div>))
+                                }
+                            </SectionTextColumn>
                         </div>
-                        <SectionTextColumn>
-                            {languages.map((language) => (
-                                <div key={language.id} style={{ display: "flex", gap: "3px" }}>
-                                    <span>{language.language}</span>
-                                    {language.level && <span>({languageLevelLabel(language.level, t)})</span>}
-                                </div>))
-                            }
-                        </SectionTextColumn>
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <SectionTitle>
-                                <div style={{
-                                    width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
-                                    marginRight: "5px"
-                                }} />
-                                {t("resume.skills")}
-                                <div style={{
-                                    width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
-                                    marginLeft: "5px"
-                                }} />
-                            </SectionTitle>
+                    )}
+                    {filledSkills.length > 0 && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                <SectionTitle>
+                                    <div style={{
+                                        width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
+                                        marginRight: "5px"
+                                    }} />
+                                    {t("resume.skills")}
+                                    <div style={{
+                                        width: "2px", height: "2px", borderRadius: "50%", border: `2px solid ${themeColor}`,
+                                        marginLeft: "5px"
+                                    }} />
+                                </SectionTitle>
+                            </div>
+                            <SectionTextColumn>
+                                {filledSkills.map((skill, index) => (
+                                    <span key={`${skill}-${index}`}>
+                                        {skill}
+                                    </span>))}
+                            </SectionTextColumn>
                         </div>
-                        <SectionTextColumn>
-                            {skills.map((skill, index) => (
-                                <span key={`${skill}-${index}`}>
-                                    {skill}
-                                </span>))}
-                        </SectionTextColumn>
-                    </div>
+                    )}
                 </div>
                 <div style={Styles.sectionColumnRight}>
                     <div style={{ display: "flex", flexDirection: "column", }}>

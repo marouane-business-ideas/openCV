@@ -37,7 +37,8 @@ const expectedTexts = (resume: resumeInfoType) => {
         ...education.flatMap((school) => [school.schoolName, school.degree, school.date, ...htmlTexts(school.description)]),
         ...skills,
         ...languages.map((language) => language.language),
-        ...links.map((link) => withoutScheme(link.linkName)),
+        // Without a name, the templates show the URL
+        ...links.map((link) => withoutScheme(link.linkName || link.linkUrl)),
     ].filter((text) => text.trim());
 };
 
